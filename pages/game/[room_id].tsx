@@ -2,10 +2,10 @@ import { NextPageContext } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import prisma from "../../database/prisma";
+import { useSocket } from "../../hooks/useSocket";
 import { EVENTS } from "../../socket/events.types";
 import { Cookie } from "../../utils/Cookie";
 import { STATUS } from "../../utils/GameDataTypes";
-import { useSocket } from "../hooks/useSocket";
 
 export async function getServerSideProps(context: NextPageContext) {
 	// get room_id from params
