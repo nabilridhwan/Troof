@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model game {
+  room_id                          String     @id @default("") @db.VarChar
+  status                           String     @db.VarChar
+  game_type                        BigInt
+  room_created_at                  DateTime   @default(now()) @db.Timestamptz(6)
+  game_log                         game_log[]
+  player_gameToplayer_game_room_id player[]   @relation("gameToplayer_game_room_id")
+
+  @@map(" game")
+}
+
+model game_log {
+  id         BigInt    @id @default(autoincrement())
+  log        Json
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  room_id    String    @db.VarChar
+  game       game      @relation(fields: [room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model game_type {
+  id          BigInt    @id @unique @default(autoincrement())
+  description String
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  name        String
+}
+
+model player {
+  player_id                      String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  display_name                   String    @db.VarChar
+  joined_at                      DateTime? @default(now()) @db.Timestamptz(6)
+  game_room_id                   String    @db.VarChar
+  is_party_leader                Boolean   @default(false)
+  game_gameToplayer_game_room_id game      @relation("gameToplayer_game_room_id", fields: [game_room_id], references: [room_id], onDelete: NoAction, onUpdate: NoAction)
+}
