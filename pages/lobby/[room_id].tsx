@@ -1,7 +1,6 @@
 import { NextPageContext } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import prisma from "../../database/prisma";
 import { useSocket } from "../../hooks/useSocket";
 import { EVENTS } from "../../socket/events.types";
 import { Cookie } from "../../utils/Cookie";
@@ -11,85 +10,42 @@ export async function getServerSideProps(context: NextPageContext) {
 	// get room_id from params
 	const { room_id } = context.query;
 
-	let player_id = Cookie.getPlayerID(context.req, context.res);
-
-	console.log(player_id);
-
-	if (!player_id) {
-		return {
-			redirect: {
-				destination: "/",
-				permanent: false,
-			},
-		};
-	}
-
-	player_id = player_id.toString();
-
-	if (!room_id) {
-		return {
-			redirect: {
-				destination: "/",
-				permanent: false,
-			},
-		};
-	}
-
-	// TODO: Check if the room exists
-	const players = await prisma.player.findMany({
-		where: {
-			game_room_id: room_id as string,
-		},
-	});
-
-	const partyLeader = await prisma.player.findFirst({
-		where: {
-			game_room_id: room_id as string,
-			is_party_leader: true,
-		},
-	});
-
-	if (players.length === 0) {
-		return {
-			redirect: {
-				destination: "/",
-				permanent: false,
-			},
-		};
-	}
-
-	// Check the players and see if the player is the party leader
-	const isPartyLeader = partyLeader?.player_id === player_id;
+	const player_id = Cookie.getPlayerID(context.req, context.res);
 
 	return {
 		props: {
-			// Pass the query string to the page
-			r: room_id,
+			room_id,
 			player_id,
-			isPartyLeader,
-			players: players.map((player) => ({
-				...player,
-				joined_at: player.joined_at!.toISOString(),
-			})),
 		},
 	};
 }
 
 export default function GamePage({
-	r: roomID,
+	room_id: roomID,
 	player_id,
-	isPartyLeader,
 }: {
-	r: string;
+	room_id: string;
 	player_id: string;
 	isPartyLeader: boolean;
 }) {
 	const [room_id] = useState<string>(roomID);
 	const [players, setPlayers] = useState<any[]>([]);
-
 	const [gameStatus, setGameStatus] = useState<string>("in_lobby");
+	const [isPartyLeader, setIsPartyLeader] = useState<boolean>(false);
 
 	const { socket } = useSocket();
+
+	console.log(player_id);
+
+	useEffect(() => {
+		if (players && players.length > 0) {
+			const filteredPartyLeaderPlayerID = players.filter(
+				(player) => player.is_party_leader
+			)[0].player_id;
+
+			setIsPartyLeader(filteredPartyLeaderPlayerID === player_id);
+		}
+	}, [players, player_id]);
 
 	useEffect(() => {
 		console.log(socket);
@@ -140,15 +96,15 @@ export default function GamePage({
 		};
 	}, [player_id, room_id, socket]);
 
-	const startGame = () => {
+	const setGameToStart = () => {
 		if (!socket) return;
-		socket.emit(EVENTS.STATUS_CHANGE, {
+
+		socket.emit(EVENTS.START_GAME, {
 			room_id: room_id,
-			status: STATUS.IN_PROGRESS,
 		});
 	};
 
-	const inLobbyGame = () => {
+	const setGameToStop = () => {
 		if (!socket) return;
 		socket.emit(EVENTS.STATUS_CHANGE, {
 			room_id: room_id,
@@ -197,14 +153,14 @@ export default function GamePage({
 			{isPartyLeader && (
 				<>
 					<button
-						onClick={startGame}
+						onClick={setGameToStart}
 						disabled={gameStatus !== STATUS.IN_LOBBY}
 					>
 						Start Game
 					</button>
 
 					<button
-						onClick={inLobbyGame}
+						onClick={setGameToStop}
 						disabled={gameStatus !== STATUS.IN_PROGRESS}
 					>
 						Stop Game

@@ -3,17 +3,15 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import prisma from "../../database/prisma";
 import { useSocket } from "../../hooks/useSocket";
-import { EVENTS } from "../../socket/events.types";
+import { EVENTS, TRUTH_OR_DARE_GAME } from "../../socket/events.types";
 import { Cookie } from "../../utils/Cookie";
-import { STATUS } from "../../utils/GameDataTypes";
+import { ACTION, STATUS } from "../../utils/GameDataTypes";
 
 export async function getServerSideProps(context: NextPageContext) {
 	// get room_id from params
 	const { room_id } = context.query;
 
 	let player_id = Cookie.getPlayerID(context.req, context.res);
-
-	console.log(player_id);
 
 	if (!player_id) {
 		return {
@@ -36,20 +34,13 @@ export async function getServerSideProps(context: NextPageContext) {
 	}
 
 	// TODO: Check if the room exists
-	const players = await prisma.player.findMany({
+	const player = await prisma.player.findFirst({
 		where: {
-			game_room_id: room_id as string,
+			player_id: player_id,
 		},
 	});
 
-	const partyLeader = await prisma.player.findFirst({
-		where: {
-			game_room_id: room_id as string,
-			is_party_leader: true,
-		},
-	});
-
-	if (players.length === 0) {
+	if (!player) {
 		return {
 			redirect: {
 				destination: "/",
@@ -58,45 +49,59 @@ export async function getServerSideProps(context: NextPageContext) {
 		};
 	}
 
-	// Check the players and see if the player is the party leader
-	const isPartyLeader = partyLeader?.player_id === player_id;
+	const rtnPlayer = {
+		display_name: player.display_name,
+		player_id: player.player_id,
+	};
 
 	return {
 		props: {
 			// Pass the query string to the page
 			r: room_id,
 			player_id,
-			isPartyLeader,
-			players: players.map((player) => ({
-				...player,
-				joined_at: player.joined_at!.toISOString(),
-			})),
+			player: rtnPlayer,
 		},
+	};
+}
+
+interface Player {
+	player_id: string;
+	display_name: string;
+	is_party_leader: boolean;
+	player: {
+		player_id: string;
+		display_name: string;
 	};
 }
 
 export default function GamePage({
 	r: roomID,
 	player_id,
-	isPartyLeader,
+	player,
 }: {
 	r: string;
 	player_id: string;
-	isPartyLeader: boolean;
+	player: {
+		player_id: string;
+		display_name: string;
+	};
 }) {
 	const [room_id] = useState<string>(roomID);
 	const [players, setPlayers] = useState<any[]>([]);
 
 	const [gameStatus, setGameStatus] = useState<string>("in_lobby");
 
+	const [currentPlayer, setCurrentPlayer] = useState<Partial<Player>>({});
+	const [action, setAction] = useState<ACTION>(ACTION.WAITING_FOR_SELECTION);
+	const [text, setText] = useState<string>("");
+
 	const { socket } = useSocket();
 
 	useEffect(() => {
-		console.log(socket);
 		if (socket) {
-			console.log("Emitting join_room");
+			console.log("Emitting joined truth or dare game");
 
-			socket.emit(EVENTS.JOIN_ROOM, {
+			socket.emit(TRUTH_OR_DARE_GAME.JOINED, {
 				room_id: room_id,
 			});
 
@@ -110,6 +115,42 @@ export default function GamePage({
 				setGameStatus(data.status);
 			});
 
+			socket.on(
+				TRUTH_OR_DARE_GAME.CONTINUE,
+				(data: {
+					player: Player;
+					player_id: string;
+					data: string;
+					action: ACTION;
+				}) => {
+					console.log("Continue game received");
+					console.log(data);
+					setCurrentPlayer(data.player);
+					setText("");
+					setAction(data.action);
+				}
+			);
+
+			socket.on(
+				TRUTH_OR_DARE_GAME.INCOMING_DATA,
+				(data: {
+					player: Player;
+					player_id: string;
+					data: string;
+					action: ACTION;
+				}) => {
+					console.log("New data received");
+					console.log(data);
+					setText(
+						data.action === ACTION.WAITING_FOR_SELECTION
+							? ""
+							: data.data
+					);
+					setCurrentPlayer(data.player ?? {});
+					setAction(data.action ?? ACTION.WAITING_FOR_SELECTION);
+				}
+			);
+
 			socket.on("disconnect", () => {
 				console.log("Disconnected");
 				// Tell the server that they have been disconnected
@@ -121,24 +162,38 @@ export default function GamePage({
 		}
 	}, [socket, room_id, player_id]);
 
-	useEffect(() => {
-		return () => {
-			if (socket) {
-				console.log("Leaving room");
-				// Tell the server that they have been disconnected
-				socket.emit(EVENTS.DISCONNECTED, {
-					room_id: room_id,
-					player_id,
-				});
-			}
-		};
-	}, [player_id, room_id, socket]);
-
 	const inLobbyGame = () => {
 		if (!socket) return;
 		socket.emit(EVENTS.STATUS_CHANGE, {
 			room_id: room_id,
 			status: STATUS.IN_LOBBY,
+		});
+	};
+
+	const selectTruth = () => {
+		console.log("Selecting truth");
+		console.log(!!socket);
+		if (!socket) return;
+		console.log("Emitting to server to select truth");
+		socket.emit(TRUTH_OR_DARE_GAME.SELECT_TRUTH, {
+			room_id: room_id,
+			player_id: player_id,
+		});
+	};
+
+	const selectDare = () => {
+		if (!socket) return;
+		socket.emit(TRUTH_OR_DARE_GAME.SELECT_DARE, {
+			room_id: room_id,
+			player_id: player_id,
+		});
+	};
+
+	const handleContinue = () => {
+		if (!socket) return;
+		socket.emit(TRUTH_OR_DARE_GAME.CONTINUE, {
+			room_id: room_id,
+			player_id: player_id,
 		});
 	};
 
@@ -155,18 +210,38 @@ export default function GamePage({
 
 			<main>
 				<p>Room ID: {room_id}</p>
+				<p>Player ID: {player_id}</p>
+				<p>Player Name: {player.display_name}</p>
 			</main>
 
-			{isPartyLeader && (
-				<>
-					<button
-						onClick={inLobbyGame}
-						disabled={gameStatus !== STATUS.IN_PROGRESS}
-					>
-						Stop Game
-					</button>
-				</>
-			)}
+			{/* If it is the current player and the action is to wait for a selection, Show the selection truth or dare buttons */}
+			{currentPlayer.player_id === player_id &&
+				action === ACTION.WAITING_FOR_SELECTION && (
+					<>
+						<p>Select One</p>
+						<button onClick={selectTruth}>Truth</button>
+						<button onClick={selectDare}>Dare</button>
+					</>
+				)}
+
+			<h2>{text}</h2>
+
+			<div>
+				<p>
+					For {currentPlayer.display_name} ({currentPlayer.player_id})
+				</p>
+			</div>
+
+			{/* If it is the current player and they're not waiting for selection */}
+			{currentPlayer.player_id === player_id &&
+				action !== ACTION.WAITING_FOR_SELECTION && (
+					<div>
+						<button onClick={handleContinue}>Continue</button>
+					</div>
+				)}
+
+			<br />
+			<br />
 		</div>
 	);
 }

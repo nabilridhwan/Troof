@@ -8,3 +8,9 @@ export enum Type {
 	TruthOrDare = 1,
 	WouldYouRather = 2,
 }
+
+export enum ACTION {
+	WAITING_FOR_SELECTION = "waiting_for_selection",
+	TRUTH = "truth",
+	DARE = "dare",
+}

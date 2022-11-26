@@ -14,8 +14,10 @@ export function useSocket() {
 	}, [useEffectRan]);
 
 	const clientSocketInitializer = async () => {
-		await fetch(`${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/socket`);
-		setSocket(io());
+		// TODO: initialize with backend url
+		const url = `http://localhost:3030`;
+		console.log(`Connecting to socket at ${url}`);
+		setSocket(io(url));
 	};
 
 	return { socket };

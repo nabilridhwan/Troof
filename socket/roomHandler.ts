@@ -87,9 +87,48 @@ const roomHandler = (io: Server, socket: Socket) => {
 		io.to(obj.room_id).emit(EVENTS.STATUS_CHANGE, { status });
 	};
 
+	const startGameHandler = async (obj: IRoomID) => {
+		console.log(`Start game received for ${obj.room_id}`);
+		// Write to database that the game has started
+		const { status } = await prisma.game.update({
+			where: {
+				room_id: obj.room_id,
+			},
+			data: {
+				status: STATUS.IN_PROGRESS,
+			},
+
+			select: {
+				status: true,
+			},
+		});
+
+		// Create sequence from list of players
+		const players = await prisma.player.findMany({
+			where: {
+				game_room_id: obj.room_id,
+			},
+		});
+
+		if (!players) return;
+
+		// Create the sequence in the database
+		await prisma.player_sequence.create({
+			data: {
+				sequence: players.map((player) => player.player_id),
+				current_player_id: players[0].player_id,
+				game_room_id: obj.room_id,
+			},
+		});
+
+		// Broadcast to the room that the game has started
+		io.to(obj.room_id).emit(EVENTS.STATUS_CHANGE, { status });
+	};
+
 	socket.on(EVENTS.STATUS_CHANGE, statusChangeHandler);
 	socket.on(EVENTS.DISCONNECTED, disconnectedHandler);
 	socket.on(EVENTS.JOIN_ROOM, joinRoomHandler);
+	socket.on(EVENTS.START_GAME, startGameHandler);
 };
 
 export default roomHandler;

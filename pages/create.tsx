@@ -2,7 +2,7 @@ import { nanoid } from "nanoid";
 import { NextPageContext } from "next/types";
 import prisma from "../database/prisma";
 import { Cookie } from "../utils/Cookie";
-import { Type } from "../utils/GameDataTypes";
+import { STATUS, Type } from "../utils/GameDataTypes";
 
 // Export getServerSideProps to get the query string
 export async function getServerSideProps(context: NextPageContext) {
@@ -24,7 +24,7 @@ export async function getServerSideProps(context: NextPageContext) {
 		data: {
 			room_id,
 			game_type: Type.TruthOrDare,
-			status: "in_lobby",
+			status: STATUS.IN_LOBBY,
 		},
 		select: {
 			room_id: true,
