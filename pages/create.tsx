@@ -1,17 +1,40 @@
-import { nanoid } from "nanoid";
+import axios from "axios";
 import { NextPageContext } from "next/types";
-import prisma from "../database/prisma";
 import { Cookie } from "../utils/Cookie";
-import { STATUS, Type } from "../utils/GameDataTypes";
 
 // Export getServerSideProps to get the query string
 export async function getServerSideProps(context: NextPageContext) {
-	// Generate a random room id
-	const room_id = nanoid(6).toUpperCase();
-
 	const { display_name } = context.query;
 
-	if (!room_id) {
+	try {
+		const res = await axios.post("http://localhost:3030/api/room", {
+			display_name,
+		});
+
+		const {
+			status,
+			data: {
+				message,
+				data: {
+					room_id,
+					room_creator: { player_id },
+				},
+			},
+		} = res;
+
+		// Get the room ID and player ID from the response
+
+		// TODO: Set the room ID in the response so that when the user visits the room page, they can join the room
+		// Set player ID in cookies
+		Cookie.setPlayerID(player_id, context.req, context.res);
+
+		return {
+			redirect: {
+				destination: `/lobby/${room_id}`,
+				permanent: true,
+			},
+		};
+	} catch (error: any) {
 		return {
 			redirect: {
 				destination: "/",
@@ -19,38 +42,6 @@ export async function getServerSideProps(context: NextPageContext) {
 			},
 		};
 	}
-
-	const { room_id: inserted_room_id } = await prisma.game.create({
-		data: {
-			room_id,
-			game_type: Type.TruthOrDare,
-			status: STATUS.IN_LOBBY,
-		},
-		select: {
-			room_id: true,
-		},
-	});
-
-	const { player_id } = await prisma.player.create({
-		data: {
-			game_room_id: inserted_room_id,
-			display_name: display_name as string,
-			is_party_leader: true,
-		},
-		select: {
-			player_id: true,
-		},
-	});
-
-	// Set player ID in cookies
-	Cookie.setPlayerID(player_id, context.req, context.res);
-
-	return {
-		redirect: {
-			destination: `/lobby/${room_id}`,
-			permanent: true,
-		},
-	};
 }
 
 export default function CreateRoomPage() {

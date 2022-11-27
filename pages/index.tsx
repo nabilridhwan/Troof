@@ -44,7 +44,9 @@ export default function Home() {
 					onChange={(e) => setDisplayName(e.target.value)}
 				/>
 
-				<button onClick={createNewRoom}>Create Room</button>
+				<button disabled={!!roomIDInput} onClick={createNewRoom}>
+					Create Room
+				</button>
 				<button onClick={joinGame}>Join Room</button>
 				{/* <button onClick={giveTruth}>Truth</button> */}
 				{/* <button onClick={giveDare}>Dare</button> */}

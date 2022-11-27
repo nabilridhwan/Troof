@@ -1,7 +1,7 @@
+import axios from "axios";
 import { NextPageContext } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import prisma from "../../database/prisma";
 import { useSocket } from "../../hooks/useSocket";
 import { EVENTS, TRUTH_OR_DARE_GAME } from "../../socket/events.types";
 import { Cookie } from "../../utils/Cookie";
@@ -22,23 +22,14 @@ export async function getServerSideProps(context: NextPageContext) {
 		};
 	}
 
-	player_id = player_id.toString();
-
-	if (!room_id) {
-		return {
-			redirect: {
-				destination: "/",
-				permanent: false,
-			},
-		};
-	}
-
-	// TODO: Check if the room exists
-	const player = await prisma.player.findFirst({
-		where: {
-			player_id: player_id,
+	// Find the player using the API
+	const playerFromAPI = await axios.get("http://localhost:3030/api/player", {
+		params: {
+			player_id,
 		},
 	});
+
+	const player = playerFromAPI.data.data;
 
 	if (!player) {
 		return {
