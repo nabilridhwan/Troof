@@ -148,7 +148,9 @@ export default function Home() {
 									className="input-huge my-10 text-center"
 									value={roomIDInput}
 									onChange={(e) =>
-										setRoomIDInput(e.target.value)
+										setRoomIDInput(
+											e.target.value.toUpperCase()
+										)
 									}
 								/>
 

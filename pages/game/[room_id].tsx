@@ -215,7 +215,7 @@ export default function GamePage({
 					{/* Current Player Name */}
 					<main className="w-full flex items-center justify-center my-10">
 						<div className="rnd bdr w-fit px-10 py-5">
-							<h1 className="font-Playfair font-black text-5xl">
+							<h1 className="font-Playfair font-black text-5xl text-center">
 								{currentPlayer.display_name}
 							</h1>
 						</div>
@@ -227,7 +227,7 @@ export default function GamePage({
 							<>
 								<p className="text-center">Select One</p>
 
-								<div className="flex flex-wrap items-center justify-center gap-10 my-20">
+								<div className="flex flex-wrap items-center justify-center gap-5 my-20">
 									<motion.button
 										whileHover={{ scale: 1.1, y: -10 }}
 										whileTap={{ scale: 0.9 }}
@@ -304,6 +304,11 @@ export default function GamePage({
 								</motion.button>
 							</div>
 						)}
+				</div>
+
+				<div className="my-5 text-center absolute bottom-0">
+					<p>You are: {player.display_name}</p>
+					<p>Room Code: {room_id}</p>
 				</div>
 			</div>
 		</Container>
