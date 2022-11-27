@@ -1,5 +1,5 @@
-import axios from "axios";
 import { NextPageContext } from "next";
+import axiosInstance from "../../utils/axiosInstance";
 import { Cookie } from "../../utils/Cookie";
 
 // Export getServerSideProps to get the query string
@@ -8,7 +8,7 @@ export async function getServerSideProps(context: NextPageContext) {
 	const { room_id, display_name } = context.query;
 
 	try {
-		const res = await axios.post("http://localhost:3030/api/room/join", {
+		const res = await axiosInstance.post("/api/room/join", {
 			room_id,
 			display_name,
 		});

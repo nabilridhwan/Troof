@@ -9,11 +9,11 @@ html {
 }
 
 .btn-huge {
-	@apply p-10 rounded-3xl shadow-lg border border-black/10;
+	@apply p-10 rounded-3xl shadow-lg border border-black/10 disabled:text-black/50;
 }
 
 .btn {
-	@apply w-full p-3 rounded-2xl shadow-sm border border-black/10;
+	@apply w-full p-3 rounded-2xl shadow-sm border border-black/10 disabled:text-black/50;
 }
 
 .bdr {

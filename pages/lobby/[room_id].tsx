@@ -159,11 +159,12 @@ export default function GamePage({
 						{isPartyLeader && (
 							<>
 								<motion.button
-									whileHover={{ scale: 1.05 }}
-									whileTap={{ scale: 0.9 }}
 									className="btn"
 									onClick={setGameToStart}
-									disabled={gameStatus !== STATUS.IN_LOBBY}
+									disabled={
+										gameStatus !== STATUS.IN_LOBBY ||
+										players.length < 2
+									}
 								>
 									Start Game
 								</motion.button>

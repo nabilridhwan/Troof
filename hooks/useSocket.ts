@@ -14,8 +14,7 @@ export function useSocket() {
 	}, [useEffectRan]);
 
 	const clientSocketInitializer = async () => {
-		// TODO: initialize with backend url
-		const url = `http://localhost:3030`;
+		const url = process.env.NEXT_PUBLIC_SERVICES_URL!;
 		console.log(`Connecting to socket at ${url}`);
 		setSocket(io(url));
 	};
