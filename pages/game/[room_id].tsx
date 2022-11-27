@@ -192,6 +192,16 @@ export default function GamePage({
 		});
 	};
 
+	const handleLeaveGame = () => {
+		if (!socket) return;
+		socket.emit(EVENTS.DISCONNECTED, {
+			room_id: room_id,
+			player_id: player_id,
+		});
+
+		window.location.href = "/";
+	};
+
 	return (
 		<Container>
 			<Head>
@@ -216,7 +226,7 @@ export default function GamePage({
 					<main className="w-full flex items-center justify-center my-10">
 						<div className="rnd bdr w-fit px-10 py-5">
 							<h1 className="font-Playfair font-black text-5xl text-center">
-								{currentPlayer.display_name}
+								{player.display_name}
 							</h1>
 						</div>
 					</main>
@@ -258,11 +268,20 @@ export default function GamePage({
 							</p>
 						)}
 
+					{/* The truth/dare text */}
 					{action !== ACTION.WAITING_FOR_SELECTION && (
 						<>
-							<h2 className="text-center text-3xl font-semibold">
-								{text}
-							</h2>
+							<div className="rnd bdr w-fit px-10 py-5 space-y-4">
+								{currentPlayer.player_id !== player_id && (
+									<h1 className="font-Playfair font-black text-2xl text-center">
+										{currentPlayer.display_name}
+									</h1>
+								)}
+
+								<h2 className="text-center text-3xl font-semibold">
+									{text}
+								</h2>
+							</div>
 						</>
 					)}
 
@@ -273,14 +292,9 @@ export default function GamePage({
 								<motion.button
 									whileHover={{
 										scale: 1.01,
-										y: -10,
-										boxShadow:
-											"0px 10px 0px rgba(0, 0, 0, 0.2)",
 									}}
 									whileTap={{
 										scale: 0.9,
-										y: 0,
-										boxShadow: "0",
 									}}
 									className="btn my-10 t"
 									onClick={handleContinue}
@@ -295,7 +309,7 @@ export default function GamePage({
 						currentPlayer.player_id !== player.player_id && (
 							<div>
 								<motion.button
-									whileHover={{ scale: 1.05, y: -10 }}
+									whileHover={{ scale: 1.05 }}
 									whileTap={{ scale: 0.9 }}
 									className="btn my-10 bg-black/10 border-none"
 									onClick={handleContinue}
@@ -309,6 +323,17 @@ export default function GamePage({
 				<div className="my-5 text-center absolute bottom-0">
 					<p>You are: {player.display_name}</p>
 					<p>Room Code: {room_id}</p>
+
+					<div>
+						<motion.button
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.9 }}
+							className="btn my-1 bg-red-400 text-white border-none"
+							onClick={handleLeaveGame}
+						>
+							Leave Game
+						</motion.button>
+					</div>
 				</div>
 			</div>
 		</Container>
