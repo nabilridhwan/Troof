@@ -1,7 +1,9 @@
 import axios from "axios";
+import { motion } from "framer-motion";
 import { NextPageContext } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
+import Container from "../../components/Container";
 import { useSocket } from "../../hooks/useSocket";
 import { EVENTS, TRUTH_OR_DARE_GAME } from "../../socket/events.types";
 import { Cookie } from "../../utils/Cookie";
@@ -189,7 +191,7 @@ export default function GamePage({
 	};
 
 	return (
-		<div>
+		<Container>
 			<Head>
 				<title>Create Next App</title>
 				<meta
@@ -199,40 +201,88 @@ export default function GamePage({
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<main>
+			<div className="w-full h-screen flex items-center justify-center">
+				{/* Main items */}
+				<div>
+					{/* <main>
 				<p>Room ID: {room_id}</p>
 				<p>Player ID: {player_id}</p>
 				<p>Player Name: {player.display_name}</p>
-			</main>
+			</main> */}
 
-			{/* If it is the current player and the action is to wait for a selection, Show the selection truth or dare buttons */}
-			{currentPlayer.player_id === player_id &&
-				action === ACTION.WAITING_FOR_SELECTION && (
-					<>
-						<p>Select One</p>
-						<button onClick={selectTruth}>Truth</button>
-						<button onClick={selectDare}>Dare</button>
-					</>
-				)}
+					{/* Current Player Name */}
+					<main className="w-full flex items-center justify-center my-10">
+						<div className="rnd bdr w-fit px-10 py-5">
+							<h1 className="font-Playfair font-black text-5xl">
+								{currentPlayer.display_name}
+							</h1>
+						</div>
+					</main>
 
-			<h2>{text}</h2>
+					{/* If it is the current player and the action is to wait for a selection, Show the selection truth or dare buttons */}
+					{currentPlayer.player_id === player_id &&
+						action === ACTION.WAITING_FOR_SELECTION && (
+							<>
+								<p className="text-center">Select One</p>
 
-			<div>
-				<p>
-					For {currentPlayer.display_name} ({currentPlayer.player_id})
-				</p>
+								<div className="flex flex-wrap items-center justify-center gap-10 my-20">
+									<motion.button
+										whileHover={{ scale: 1.1 }}
+										whileTap={{ scale: 0.9 }}
+										className="btn-huge w-[200px] aspect-square"
+										onClick={selectTruth}
+									>
+										Truth
+									</motion.button>
+
+									<motion.button
+										whileHover={{ scale: 1.1 }}
+										whileTap={{ scale: 0.9 }}
+										className="btn-huge w-[200px] aspect-square"
+										onClick={selectDare}
+									>
+										Dare
+									</motion.button>
+								</div>
+							</>
+						)}
+
+					{/* Show this below if the current player is not the player and that the action is waiting for selection */}
+					{currentPlayer.player_id !== player_id &&
+						action === ACTION.WAITING_FOR_SELECTION && (
+							<p className="text-center">
+								Waiting for {currentPlayer.display_name} to
+								select
+							</p>
+						)}
+
+					{action !== ACTION.WAITING_FOR_SELECTION && (
+						<>
+							<h2 className="text-center text-3xl font-semibold">
+								{text}
+							</h2>
+						</>
+					)}
+
+					{/* If it is the current player and they're not waiting for selection */}
+					{currentPlayer.player_id === player_id &&
+						action !== ACTION.WAITING_FOR_SELECTION && (
+							<div>
+								<motion.button
+									whileHover={{ scale: 1.05 }}
+									whileTap={{ scale: 0.9 }}
+									className="btn my-10"
+									onClick={handleContinue}
+								>
+									Continue
+								</motion.button>
+							</div>
+						)}
+
+					<br />
+					<br />
+				</div>
 			</div>
-
-			{/* If it is the current player and they're not waiting for selection */}
-			{currentPlayer.player_id === player_id &&
-				action !== ACTION.WAITING_FOR_SELECTION && (
-					<div>
-						<button onClick={handleContinue}>Continue</button>
-					</div>
-				)}
-
-			<br />
-			<br />
-		</div>
+		</Container>
 	);
 }

@@ -15,6 +15,7 @@ export async function getServerSideProps(context: NextPageContext) {
 
 		const { player_id, room_id: room_id_response } = res.data.data;
 
+		// TODO: Set the room ID in the response so that when the user visits the room page, they can rejoin the room
 		// Set player ID in cookie
 		Cookie.setPlayerID(player_id, context.req, context.res);
 

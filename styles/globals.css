@@ -1,26 +1,33 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+	@apply font-Poppins bg-primary text-text;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.btn-huge {
+	@apply p-10 rounded-3xl shadow-lg border border-black/10;
 }
 
-* {
-  box-sizing: border-box;
+.btn {
+	@apply w-full p-3 rounded-2xl shadow-sm border border-black/10;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
+.bdr {
+	@apply border-2 border-black/10;
+}
+
+.rnd {
+	@apply rounded-xl;
+}
+
+input {
+	@apply block w-full rounded-lg py-5 px-3 bg-primary border-2 border-black/30 outline-none focus:bg-primary/10 focus:border-black;
+}
+
+.t {
+	@apply transition-all duration-300 ease-out;
 }
