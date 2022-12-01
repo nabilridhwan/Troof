@@ -1,3 +1,24 @@
+## Version 0.1.2
+
+### What's new
+
+-   Added the very new beta version of the chat. It's not finished yet, but you can try it out. It does send basic messages.
+
+### Known Issues
+
+-   Some Dares have part of their sentence showing up.
+-   If a player disconnects (not from pressing the "leave" button), the game will still consider them as connected.
+    -   A workaround is for the Party Leader to click on the "force continue" button.
+-   Users will be redirected to the home page or an error page if their "game" couldnt be found with no obvious error message"
+
+### Roadmap
+
+-   Add Chat functionality to chat among your friends [WIP!]
+-   Cleanup of games that are already destroyed.
+-   Add "Copied" upon clicking on the Room Code
+-   "Force Continue" button should be there at all times
+-   Allow Party Leader to have the power to remove users from the game
+
 ## Version 0.1.1
 
 ### What's new

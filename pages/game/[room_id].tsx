@@ -4,6 +4,7 @@ import { NextPageContext } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import Container from "../../components/Container";
+import ChatBox from "../../components/message/ChatBox";
 import { useSocket } from "../../hooks/useSocket";
 import {
 	Action,
@@ -18,9 +19,22 @@ import { Cookie } from "../../utils/Cookie";
 
 export async function getServerSideProps(context: NextPageContext) {
 	// get room_id from params
-	const { room_id } = context.query;
+	let { room_id } = context.query;
 
 	let player_id = Cookie.getPlayerID(context.req, context.res);
+	let roomIdFromCookie = Cookie.getRoomId(context.req, context.res);
+
+	// if (roomIdFromCookie) {
+	// 	room_id = roomIdFromCookie;
+
+	// 	// Redirect to the game page
+	// 	return {
+	// 		redirect: {
+	// 			destination: `/game/${room_id}`,
+	// 			permanent: true,
+	// 		},
+	// 	};
+	// }
 
 	if (!player_id) {
 		return {
@@ -201,125 +215,130 @@ export default function GamePage({
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 
-				<div className="w-full h-[80%] flex items-center justify-center">
-					{/* Main items */}
-					<div>
-						{/* <main>
-				<p>Room ID: {room_id}</p>
-				<p>Player ID: {player_id}</p>
-				<p>Player Name: {player.display_name}</p>
-			</main> */}
-
-						<p className="font-bold text-sm text-center my-10">
-							<span className="bg-black text-white rounded-lg py-1 px-2">
-								Room Code: {room_id}
-							</span>
-						</p>
-
-						{/* Current Player Name */}
-						<main className="w-full flex items-center justify-center my-10">
-							<div className="rnd bdr w-fit px-10 py-5">
-								<h1 className="font-Playfair font-black text-5xl text-center">
-									{currentPlayer.display_name}
-								</h1>
-							</div>
-						</main>
-
-						{/* If it is the current player and the action is to wait for a selection, Show the selection truth or dare buttons */}
-						{currentPlayer.player_id === player_id &&
-							action === Action.Waiting_For_Selection && (
-								<>
-									<p className="text-center">Select One</p>
-
-									<div className="flex flex-wrap items-center justify-center gap-5 my-20">
-										<motion.button
-											whileHover={{ scale: 1.1, y: -10 }}
-											whileTap={{ scale: 0.9 }}
-											className="btn-huge w-[200px] aspect-square"
-											onClick={selectTruth}
-										>
-											Truth
-										</motion.button>
-
-										<motion.button
-											whileHover={{ scale: 1.1, y: -10 }}
-											whileTap={{ scale: 0.9 }}
-											className="btn-huge w-[200px] aspect-square"
-											onClick={selectDare}
-										>
-											Dare
-										</motion.button>
-									</div>
-								</>
-							)}
-
-						{/* Show this below if the current player is not the player and that the action is waiting for selection */}
-						{currentPlayer.player_id !== player_id &&
-							action === Action.Waiting_For_Selection && (
-								<p className="text-center">
-									Waiting for {currentPlayer.display_name} to
-									select
+				<div className="grid grid-rows-2 gap-2">
+					<div className="row-span-1 h-max">
+						<div className="w-full h-full flex items-center justify-center">
+							{/* Main items */}
+							<div className="">
+								<p className="font-bold text-sm text-center my-10">
+									<span className="bg-black text-white rounded-lg py-1 px-2">
+										Room Code: {room_id}
+									</span>
 								</p>
-							)}
 
-						{/* The truth/dare text */}
-						{action !== Action.Waiting_For_Selection && (
-							<>
-								<div className="rnd bdr w-fit px-10 py-5 space-y-4">
-									<h2 className="text-center text-3xl font-semibold">
-										{text}
-									</h2>
-								</div>
-							</>
-						)}
+								{/* Current Player Name */}
+								<main className="w-full flex items-center justify-center my-10">
+									<div className="rnd bdr w-fit px-10 py-5">
+										<h1 className="font-Playfair font-black text-5xl text-center">
+											{currentPlayer.display_name}
+										</h1>
+									</div>
+								</main>
 
-						{/* If it is the current player and they're not waiting for selection */}
-						{currentPlayer.player_id === player_id &&
-							action !== Action.Waiting_For_Selection && (
-								<div>
-									<motion.button
-										whileHover={{
-											scale: 1.01,
-										}}
-										whileTap={{
-											scale: 0.9,
-										}}
-										className="btn my-10 t bg-green-400 text-black/50"
-										onClick={handleContinue}
-									>
-										Continue
-									</motion.button>
-								</div>
-							)}
+								{/* If it is the current player and the action is to wait for a selection, Show the selection truth or dare buttons */}
+								{currentPlayer.player_id === player_id &&
+									action === Action.Waiting_For_Selection && (
+										<>
+											<p className="text-center">
+												Select One
+											</p>
 
-						{/* Show Force Continue button for party leader */}
-						{player.is_party_leader &&
-							currentPlayer.player_id !== player.player_id && (
-								<div>
-									<motion.button
-										whileHover={{ scale: 1.05 }}
-										whileTap={{ scale: 0.9 }}
-										className="btn my-10 bg-black/10 border-none"
-										onClick={handleContinue}
-									>
-										Force Continue
-									</motion.button>
-								</div>
-							)}
+											<div className="flex flex-wrap items-center justify-center gap-5 my-20">
+												<motion.button
+													whileHover={{
+														scale: 1.1,
+														y: -10,
+													}}
+													whileTap={{ scale: 0.9 }}
+													className="btn-huge w-[120px] aspect-square"
+													onClick={selectTruth}
+												>
+													Truth
+												</motion.button>
+
+												<motion.button
+													whileHover={{
+														scale: 1.1,
+														y: -10,
+													}}
+													whileTap={{ scale: 0.9 }}
+													className="btn-huge w-[120px] aspect-square"
+													onClick={selectDare}
+												>
+													Dare
+												</motion.button>
+											</div>
+										</>
+									)}
+
+								{/* Show this below if the current player is not the player and that the action is waiting for selection */}
+								{currentPlayer.player_id !== player_id &&
+									action === Action.Waiting_For_Selection && (
+										<p className="text-center">
+											Waiting for{" "}
+											{currentPlayer.display_name} to
+											select
+										</p>
+									)}
+
+								{/* The truth/dare text */}
+								{action !== Action.Waiting_For_Selection && (
+									<>
+										<div className="rnd bdr w-fit px-10 py-5 space-y-4">
+											<h2 className="text-center text-3xl font-semibold">
+												{text}
+											</h2>
+										</div>
+									</>
+								)}
+
+								{/* If it is the current player and they're not waiting for selection */}
+								{currentPlayer.player_id === player_id &&
+									action !== Action.Waiting_For_Selection && (
+										<div>
+											<motion.button
+												whileHover={{
+													scale: 1.01,
+												}}
+												whileTap={{
+													scale: 0.9,
+												}}
+												className="btn my-10 t bg-green-400 text-black/50"
+												onClick={handleContinue}
+											>
+												Continue
+											</motion.button>
+										</div>
+									)}
+
+								{/* Show Force Continue button for party leader */}
+								{player.is_party_leader &&
+									currentPlayer.player_id !==
+										player.player_id && (
+										<div>
+											<motion.button
+												whileHover={{ scale: 1.05 }}
+												whileTap={{ scale: 0.9 }}
+												className="btn my-10 bg-black/10 border-none"
+												onClick={handleContinue}
+											>
+												Force Continue
+											</motion.button>
+										</div>
+									)}
+							</div>
+						</div>
 					</div>
+
+					{/* Chatbox */}
+					<ChatBox player_id={player_id} room_id={roomID} />
 				</div>
 			</Container>
 
+			{/* Bottom items */}
 			<div className="fixed bottom-0 w-full">
 				<div className="flex justify-between items-center bg-black/10 px-5 py-2">
 					<div className="flex flex-col gap-3">
-						{/* <p className="font-bold text-sm">
-							Room Code:{" "}
-							<span className="bg-black text-white rounded-lg py-1 px-2">
-								{room_id}
-							</span>
-						</p> */}
-
 						<p className="text-sm font-bold">
 							<span className="font-black bg-black font-Playfair text-white rounded-lg py-1 px-2">
 								{player.display_name}

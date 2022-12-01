@@ -46,7 +46,7 @@ export default function Home() {
 
 					<p className="font-bold text-sm text-center mb-6 mt-2">
 						<span className="bg-black text-white rounded-lg py-1 px-2">
-							v0.1.1 (Beta)
+							v0.1.2 (Beta)
 						</span>
 					</p>
 
@@ -62,7 +62,7 @@ export default function Home() {
 							<p>Create a Room</p>
 
 							{mainScreenAction === "create" && (
-								<div className="bg-purple-500 h-[2px]" />
+								<div className="bg-black/30 h-[5px] rounded-full" />
 							)}
 						</div>
 
@@ -73,7 +73,7 @@ export default function Home() {
 							<p> Join a Room</p>
 
 							{mainScreenAction === "join" && (
-								<div className="bg-purple-500 h-[2px]" />
+								<div className="bg-black/30 h-[5px] rounded-full" />
 							)}
 						</div>
 					</div>
