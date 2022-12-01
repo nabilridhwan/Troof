@@ -7,7 +7,7 @@ export async function getServerSideProps(context: NextPageContext) {
 	const { display_name } = context.query;
 
 	try {
-		const res = await axiosInstance.post("/api/room", {
+		const res = await axiosInstance.post("/api/room/create", {
 			display_name,
 		});
 
@@ -21,6 +21,8 @@ export async function getServerSideProps(context: NextPageContext) {
 				},
 			},
 		} = res;
+
+		console.log(status);
 
 		// Get the room ID and player ID from the response
 

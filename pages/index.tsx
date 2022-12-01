@@ -8,7 +8,7 @@ export default function Home() {
 
 	const [mainScreenAction, setMainScreenAction] = useState<
 		"create" | "join" | "none"
-	>("none");
+	>("create");
 
 	const joinGame = () => {
 		if (roomIDInput.trim()) {
@@ -43,10 +43,43 @@ export default function Home() {
 					>
 						Troof!
 					</motion.h1>
-					<p>Synchronized online Truth Or Dare game!</p>
+
+					<p className="font-bold text-sm text-center mb-6 mt-2">
+						<span className="bg-black text-white rounded-lg py-1 px-2">
+							v0.1.1 (Beta)
+						</span>
+					</p>
+
+					<p className="text-lg mb-10">
+						Synchronized online Truth Or Dare game!
+					</p>
+
+					<div className="flex py-5 justify-around">
+						<div
+							className="w-full cursor-pointer"
+							onClick={() => setMainScreenAction("create")}
+						>
+							<p>Create a Room</p>
+
+							{mainScreenAction === "create" && (
+								<div className="bg-purple-500 h-[2px]" />
+							)}
+						</div>
+
+						<div
+							className="w-full cursor-pointer"
+							onClick={() => setMainScreenAction("join")}
+						>
+							<p> Join a Room</p>
+
+							{mainScreenAction === "join" && (
+								<div className="bg-purple-500 h-[2px]" />
+							)}
+						</div>
+					</div>
 
 					<AnimateSharedLayout>
-						{mainScreenAction === "none" && (
+						{/* {mainScreenAction === "none" && (
 							<>
 								<motion.button
 									whileHover={{
@@ -96,7 +129,7 @@ export default function Home() {
 									Join a Room
 								</motion.button>
 							</>
-						)}
+						)} */}
 
 						{mainScreenAction === "create" && (
 							<>
@@ -144,13 +177,11 @@ export default function Home() {
 									animate={{ opacity: 1 }}
 									exit={{ opacity: 0 }}
 									type="text"
-									placeholder="Room ID"
+									placeholder="Display Name"
 									className="input-huge my-10 text-center"
-									value={roomIDInput}
+									value={displayName}
 									onChange={(e) =>
-										setRoomIDInput(
-											e.target.value.toUpperCase()
-										)
+										setDisplayName(e.target.value)
 									}
 								/>
 
@@ -159,11 +190,13 @@ export default function Home() {
 									animate={{ opacity: 1 }}
 									exit={{ opacity: 0 }}
 									type="text"
-									placeholder="Display Name"
+									placeholder="Room Code"
 									className="input-huge my-10 text-center"
-									value={displayName}
+									value={roomIDInput}
 									onChange={(e) =>
-										setDisplayName(e.target.value)
+										setRoomIDInput(
+											e.target.value.toUpperCase()
+										)
 									}
 								/>
 

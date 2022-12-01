@@ -5,15 +5,23 @@ import { NextPageContext } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { useSocket } from "../../hooks/useSocket";
-import { EVENTS } from "../../socket/events.types";
+import { EVENTS, Room, Status } from "../../Types";
 import { Cookie } from "../../utils/Cookie";
-import { STATUS } from "../../utils/GameDataTypes";
 
 export async function getServerSideProps(context: NextPageContext) {
 	// get room_id from params
 	const { room_id } = context.query;
 
 	const player_id = Cookie.getPlayerID(context.req, context.res);
+
+	if (!player_id) {
+		return {
+			redirect: {
+				destination: "/",
+				permanent: false,
+			},
+		};
+	}
 
 	return {
 		props: {
@@ -59,12 +67,12 @@ export default function GamePage({
 				room_id: room_id,
 			});
 
-			socket.on(EVENTS.ROOM_PLAYERS_UPDATE, (data) => {
-				console.log(EVENTS.ROOM_PLAYERS_UPDATE, " received");
+			socket.on(EVENTS.PLAYERS_UPDATE, (data) => {
+				console.log(EVENTS.PLAYERS_UPDATE, " received");
 				setPlayers(data);
 			});
 
-			socket.on(EVENTS.STATUS_CHANGE, (data) => {
+			socket.on(EVENTS.GAME_UPDATE, (data: Room) => {
 				console.log("Status change received");
 				setGameStatus(data.status);
 			});
@@ -81,7 +89,7 @@ export default function GamePage({
 	}, [socket, room_id, player_id]);
 
 	useEffect(() => {
-		if (gameStatus === STATUS.IN_PROGRESS) {
+		if (gameStatus === Status.In_Game) {
 			window.location.href = `/game/${room_id}`;
 		}
 	}, [gameStatus, room_id]);
@@ -109,9 +117,9 @@ export default function GamePage({
 
 	const setGameToStop = () => {
 		if (!socket) return;
-		socket.emit(EVENTS.STATUS_CHANGE, {
+		socket.emit(EVENTS.GAME_UPDATE, {
 			room_id: room_id,
-			status: STATUS.IN_LOBBY,
+			status: Status.In_Lobby,
 		});
 	};
 
@@ -122,8 +130,8 @@ export default function GamePage({
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<main className="h-screen w-screen flex items-center justify-center">
-				<div className="grid grid-rows-2 md:grid-cols-2 mx-20 gap-5 w-[1000px] h-max">
+			<main className="h-screen flex items-center justify-center">
+				<div className="grid grid-cols-1 md:grid-cols-2 mx-20 gap-5 w-[1000px] h-max">
 					<div id="room-code-region" className="h-max bdr rnd p-5">
 						<h1>Room Code:</h1>
 
@@ -135,7 +143,7 @@ export default function GamePage({
 					</div>
 
 					<div id="right-region" className="bdr rnd p-5 space-y-6">
-						<h1>Players ({players.length} player(s))</h1>
+						<h1>Players ({players.length})</h1>
 
 						<div className="rnd bdr px-4 py-2">
 							{players &&
@@ -162,7 +170,7 @@ export default function GamePage({
 									className="btn"
 									onClick={setGameToStart}
 									disabled={
-										gameStatus !== STATUS.IN_LOBBY ||
+										gameStatus !== Status.In_Lobby ||
 										players.length < 2
 									}
 								>

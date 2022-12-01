@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import { ClientToServerEvents, ServerToClientEvents } from "../Types";
 
 export function useSocket() {
-	const [socket, setSocket] = useState<Socket | null>(null);
+	const [socket, setSocket] = useState<Socket<
+		ServerToClientEvents,
+		ClientToServerEvents
+	> | null>(null);
 
 	const [useEffectRan, setUseEffectRan] = useState(false);
 
@@ -16,7 +20,8 @@ export function useSocket() {
 	const clientSocketInitializer = async () => {
 		const url = process.env.NEXT_PUBLIC_SERVICES_URL!;
 		console.log(`Connecting to socket at ${url}`);
-		setSocket(io(url));
+		const s: Socket<ServerToClientEvents, ClientToServerEvents> = io(url);
+		setSocket(s);
 	};
 
 	return { socket };
