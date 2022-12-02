@@ -1,3 +1,25 @@
+## Version 0.1.4
+
+### What's new
+
+-   Fixed a bug where someone can join/create a room with empty names
+-   Fixed some layout issues to make it responsive on typical mobile devices
+-   There are _more_ new system messages that will appear in the chatbox (This will facilitate mobile users)
+    -   When a player's selects a truth/dare
+    -   When it's the next player's turn
+-   Improved the messages bubbles design
+-   Now you can send your pure heartfelt reaction using the new Reaction bar!
+-   Renamed the "Force Continue" button to "Force Skip" and moved it as part of the players section.
+-   Improved layout on laptops.
+
+### Known Issues
+
+-   Some Dares have part of their sentence showing up.
+    -   **[UPDATE]** This will be part of the roadmap, and will be pushed all the way to the back!
+-   If a player disconnects (not from pressing the "leave" button), the game will still consider them as connected.
+    -   A workaround is for the Party Leader to click on the "force continue" button.
+-   Users will be redirected to the home page or an error page if their "game" couldnt be found with no obvious error message" [WIP!]
+
 ## Version 0.1.3
 
 ### What's new

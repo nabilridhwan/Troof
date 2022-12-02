@@ -1,4 +1,6 @@
 import { IconSend } from "@tabler/icons";
+import { Emoji, EmojiStyle } from "emoji-picker-react";
+import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../../hooks/useSocket";
 import {
@@ -7,6 +9,10 @@ import {
 	MESSAGE_EVENTS,
 	SystemMessage,
 } from "../../Types";
+import OtherPlayerChatBubble from "./OtherPlayerChatBubble";
+import OtherPlayerEmojiReaction from "./OtherPlayerEmojiReact";
+import SelfChatBubble from "./SelfChatBubble";
+import SelfEmojiReaction from "./SelfEmojiReact";
 
 interface ChatBoxProps {
 	room_id: string;
@@ -43,6 +49,25 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 		}
 	};
 
+	const sendReaction = (emoji: string) => {
+		setInputMessage("");
+
+		const newMessageObject: Message = {
+			room_id,
+			player_id,
+			message: emoji,
+			type: "reaction",
+			created_at: new Date(),
+		};
+
+		if (socket) {
+			console.log("Emitting new message");
+
+			// Emit to socket
+			socket.emit(MESSAGE_EVENTS.MESSAGE_REACTION, newMessageObject);
+		}
+	};
+
 	useEffect(() => {
 		if (socket) {
 			console.log("Emitting joined chatbox");
@@ -52,6 +77,10 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 			});
 
 			socket.on(MESSAGE_EVENTS.MESSAGE_NEW, (data) => {
+				setMessages((oldMessages) => [...oldMessages, data]);
+			});
+
+			socket.on(MESSAGE_EVENTS.MESSAGE_REACTION, (data) => {
 				setMessages((oldMessages) => [...oldMessages, data]);
 			});
 
@@ -78,8 +107,13 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 		}
 	};
 
+	const handleReaction = (emoji: string) => {
+		sendReaction(emoji);
+	};
+
 	return (
-		<div>
+		<div className="w-full">
+			{/* Chat box */}
 			<div
 				ref={messagesBoxRefElement}
 				className="h-[300px] bg-black/5 p-3 rounded-xl overflow-auto mb-2"
@@ -103,27 +137,25 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 								{message.type === "message" && (
 									<>
 										{message.player_id === player_id ? (
-											<div className="flex flex-row justify-end my-1">
-												<div className="bg-gray-50 w-fit p-2 rounded-lg">
-													<p>{message.message}</p>
-													<div />
-												</div>
-											</div>
+											<SelfChatBubble message={message} />
 										) : (
-											<div className="flex flex-row justify-start my-1 ">
-												<div className="bg-blue-500 text-white/95 w-fit p-2 rounded-lg">
-													<p className="text-xs font-bold ">
-														{
-															message.player
-																.display_name
-														}
-													</p>
+											<OtherPlayerChatBubble
+												message={message}
+											/>
+										)}
+									</>
+								)}
 
-													<p>{message.message}</p>
-
-													<div />
-												</div>
-											</div>
+								{message.type === "reaction" && (
+									<>
+										{message.player_id === player_id ? (
+											<SelfEmojiReaction
+												message={message}
+											/>
+										) : (
+											<OtherPlayerEmojiReaction
+												message={message}
+											/>
 										)}
 									</>
 								)}
@@ -139,6 +171,58 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 						);
 					}
 				)}
+			</div>
+
+			{/* Emoji Bar */}
+			<div className="flex flex-wrap justify-center gap-4 my-2 mx-auto w-fit">
+				<motion.button
+					whileTap={{ scale: 0.9 }}
+					onClick={() => handleReaction("1f923")}
+				>
+					<Emoji unified="1f923" emojiStyle={EmojiStyle.APPLE} />
+				</motion.button>
+
+				<motion.button
+					whileTap={{ scale: 0.9 }}
+					onClick={() => handleReaction("1fae3")}
+				>
+					<Emoji unified="1fae3" emojiStyle={EmojiStyle.APPLE} />
+				</motion.button>
+
+				<motion.button
+					whileTap={{ scale: 0.9 }}
+					onClick={() => handleReaction("1f621")}
+				>
+					<Emoji unified="1f621" emojiStyle={EmojiStyle.APPLE} />
+				</motion.button>
+
+				<motion.button
+					whileTap={{ scale: 0.9 }}
+					onClick={() => handleReaction("1f92e")}
+				>
+					<Emoji unified="1f92e" emojiStyle={EmojiStyle.APPLE} />
+				</motion.button>
+
+				<motion.button
+					whileTap={{ scale: 0.9 }}
+					onClick={() => handleReaction("1f44d")}
+				>
+					<Emoji unified="1f44d" emojiStyle={EmojiStyle.APPLE} />
+				</motion.button>
+
+				<motion.button
+					whileTap={{ scale: 0.9 }}
+					onClick={() => handleReaction("1f62d")}
+				>
+					<Emoji unified="1f62d" emojiStyle={EmojiStyle.APPLE} />
+				</motion.button>
+
+				<motion.button
+					whileTap={{ scale: 0.9 }}
+					onClick={() => handleReaction("1f44e")}
+				>
+					<Emoji unified="1f44e" emojiStyle={EmojiStyle.APPLE} />
+				</motion.button>
 			</div>
 
 			<form onSubmit={handleMessageSubmit}>

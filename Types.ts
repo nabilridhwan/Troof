@@ -10,6 +10,7 @@ export enum EVENTS {
 
 export enum MESSAGE_EVENTS {
 	MESSAGE_NEW = "message:new",
+	MESSAGE_REACTION = "message:reaction",
 	MESSAGE_ANSWER = "message:answer",
 	MESSAGE_UPDATE = "message:update",
 	MESSAGE_DELETE = "message:delete",
@@ -111,6 +112,7 @@ export interface ServerToClientEvents {
 	// Messages
 	[MESSAGE_EVENTS.MESSAGE_NEW]: (message: MessageUpdate) => void;
 	[MESSAGE_EVENTS.MESSAGE_ANSWER]: (message: MessageUpdate) => void;
+	[MESSAGE_EVENTS.MESSAGE_REACTION]: (message: MessageUpdate) => void;
 	[MESSAGE_EVENTS.MESSAGE_SYSTEM]: (message: SystemMessage) => void;
 }
 
@@ -142,4 +144,5 @@ export interface ClientToServerEvents {
 	[MESSAGE_EVENTS.MESSAGE_NEW]: (obj: Message) => void;
 	[MESSAGE_EVENTS.MESSAGE_ANSWER]: (obj: Message) => void;
 	[MESSAGE_EVENTS.JOIN]: (obj: RoomIDObject) => void;
+	[MESSAGE_EVENTS.MESSAGE_REACTION]: (obj: Message) => void;
 }

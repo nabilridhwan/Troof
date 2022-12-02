@@ -1,4 +1,9 @@
-import { IconCrown, IconLogout, IconTrash } from "@tabler/icons";
+import {
+	IconArrowForward,
+	IconCrown,
+	IconLogout,
+	IconTrash,
+} from "@tabler/icons";
 import cx from "classnames";
 import { motion } from "framer-motion";
 import { useSocket } from "../hooks/useSocket";
@@ -21,15 +26,23 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 		});
 	};
 
+	const handleContinue = () => {
+		if (!socket) return;
+		socket.emit(TRUTH_OR_DARE_GAME.CONTINUE, {
+			room_id: room_id,
+		});
+	};
+
 	return (
 		<div className="my-2">
 			<p>Players ({players.length})</p>
-			<div className="bg-black/10 p-3 my-1 rounded-2xl">
+			<div className="bg-black/5 p-3 my-1 rounded-2xl">
 				{players.map((player, index) => (
-					<div className="flex py-1" key={index}>
+					<div className="flex py-1 my-2 w-full" key={index}>
 						<span
 							className={cx({
 								"font-bold": player.player_id === p.player_id,
+								"flex-1": true,
 							})}
 						>
 							{player.display_name}
@@ -52,10 +65,25 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 					</div>
 				))}
 
+				{/* Show Force Continue button for party leader */}
+				{p.is_party_leader && (
+					<div>
+						<motion.button
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.9 }}
+							className="btn my-2 bg-orange-500 text-white border-none flex items-center gap-2 text-sm"
+							onClick={handleContinue}
+						>
+							<IconArrowForward size={16} />
+							Force Skip
+						</motion.button>
+					</div>
+				)}
+
 				<motion.button
 					whileHover={{ scale: 1.05 }}
 					whileTap={{ scale: 0.9 }}
-					className="btn my-1 bg-red-500 text-white border-none flex items-center gap-2 text-sm"
+					className="btn my-2 bg-red-500 text-white border-none flex items-center gap-2 text-sm"
 					onClick={() => removePlayer(p.player_id)}
 				>
 					<IconLogout size={16} />

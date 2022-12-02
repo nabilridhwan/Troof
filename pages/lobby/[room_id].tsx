@@ -169,7 +169,7 @@ export default function GamePage({
 					</div>
 
 					{!isPartyLeader && (
-						<p className="my-5 italic text-black/50">
+						<p className="my-5 italic text-black/50 text-center">
 							Waiting for party leader to start the game...
 						</p>
 					)}
