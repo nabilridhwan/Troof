@@ -11,6 +11,7 @@
 -   Now you can send your pure heartfelt reaction using the new Reaction bar!
 -   Renamed the "Force Continue" button to "Force Skip" and moved it as part of the players section.
 -   Improved layout on laptops.
+-   Added a new 'Server' version in the home page. This tells users if they're playing on up-to-date servers which supports all the new features. The server and game version should be the game.
 
 ### Known Issues
 

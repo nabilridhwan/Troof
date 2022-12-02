@@ -1,5 +1,6 @@
 import { AxiosError } from "axios";
 import { NextPageContext } from "next";
+import Head from "next/head";
 import axiosInstance from "../../utils/axiosInstance";
 import { Cookie } from "../../utils/Cookie";
 
@@ -54,5 +55,16 @@ export async function getServerSideProps(context: NextPageContext) {
 }
 
 export default function JoinPage() {
-	return <div></div>;
+	return (
+		<div>
+			<Head>
+				<title>Join a game</title>
+				<meta
+					name="description"
+					content="Come play a synchronized truth or dare game with me!"
+				/>
+				<link rel="icon" href="/favicon.ico" />
+			</Head>
+		</div>
+	);
 }

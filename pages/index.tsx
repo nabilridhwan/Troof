@@ -1,13 +1,35 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { NextPageContext } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CreateRoomSection from "../components/home/CreateRoomSection";
 import JoinRoomSection from "../components/home/JoinRoomSection";
+import axiosInstance from "../utils/axiosInstance";
 
 type MainScreenAction = "create" | "join" | "none";
 
-export default function Home() {
+export async function getServerSideProps(context: NextPageContext) {
+	try {
+		const res = await axiosInstance.get("/");
+
+		const { version } = res.data.data;
+
+		return {
+			props: {
+				serverVersion: `v${version}`,
+			},
+		};
+	} catch (error) {
+		return {
+			props: {
+				serverVersion: "Error",
+			},
+		};
+	}
+}
+
+export default function Home({ serverVersion }: { serverVersion: string }) {
 	const { query } = useRouter();
 
 	const { room_id = "", error } = query;
@@ -68,9 +90,14 @@ export default function Home() {
 						Troof!
 					</motion.h1>
 
-					<p className="font-bold text-sm text-center mb-6 mt-2">
+					<p className="font-bold text-sm text-center mb-6 mt-2 space-x-1">
 						<span className="bg-black text-white rounded-lg py-1 px-2">
-							Beta v0.1.4
+							<span className="text-xs">Game</span> v0.1.4
+						</span>
+
+						<span className="bg-black text-white rounded-lg py-1 px-2">
+							<span className="text-xs">Server</span>{" "}
+							{serverVersion}
 						</span>
 					</p>
 
