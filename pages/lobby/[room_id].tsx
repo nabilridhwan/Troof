@@ -1,9 +1,10 @@
-import { IconCrown } from "@tabler/icons";
+import { IconCrown, IconUserPlus } from "@tabler/icons";
 import cx from "classnames";
 import { motion } from "framer-motion";
 import { NextPageContext } from "next";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import Container from "../../components/Container";
 import { useSocket } from "../../hooks/useSocket";
 import { EVENTS, Room, Status } from "../../Types";
 import { Cookie } from "../../utils/Cookie";
@@ -43,6 +44,13 @@ export default function GamePage({
 	const [players, setPlayers] = useState<any[]>([]);
 	const [gameStatus, setGameStatus] = useState<string>("in_lobby");
 	const [isPartyLeader, setIsPartyLeader] = useState<boolean>(false);
+
+	const [inviteButtonText, setInviteButtonText] = useState<ReactNode>(
+		<>
+			<IconUserPlus />
+			<span>Invite Players</span>
+		</>
+	);
 
 	const { socket } = useSocket();
 
@@ -123,6 +131,27 @@ export default function GamePage({
 		});
 	};
 
+	const handleCopyRoomCode = () => {
+		navigator.clipboard.writeText(
+			`${window.location.origin}/join/${room_id}`
+		);
+
+		// Show Copied! for a second
+		setInviteButtonText(
+			<>
+				<p>Copied!</p>
+			</>
+		);
+		setTimeout(() => {
+			setInviteButtonText(
+				<>
+					<IconUserPlus />
+					<span>Invite Players</span>
+				</>
+			);
+		}, 1000);
+	};
+
 	return (
 		<div>
 			<Head>
@@ -130,65 +159,69 @@ export default function GamePage({
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<main className="h-screen flex items-center justify-center">
-				<div className="grid grid-cols-1 md:grid-cols-2 mx-20 gap-5 w-[1000px] h-max">
-					<div id="room-code-region" className="h-max bdr rnd p-5">
-						<h1>Room Code:</h1>
-
-						<div className="bdr rnd h-full my-5 py-20 flex items-center justify-center">
-							<h1 className="font-Poppins font-black text-5xl">
-								{room_id}
-							</h1>
-						</div>
+			<Container>
+				<main className="h-screen flex flex-col items-center justify-center">
+					<h1>Room Code:</h1>
+					<div className="bdr rnd h-fit my-5 py-7 px-6 flex items-center justify-center">
+						<h1 className="font-Poppins font-black text-6xl">
+							{room_id}
+						</h1>
 					</div>
 
-					<div id="right-region" className="bdr rnd p-5 space-y-6">
-						<h1>Players ({players.length})</h1>
+					{!isPartyLeader && (
+						<p className="my-5 italic text-black/50">
+							Waiting for party leader to start the game...
+						</p>
+					)}
 
-						<div className="rnd bdr px-4 py-2">
-							{players &&
-								players.map((player: any) => (
-									<div
-										key={player.player_id}
-										className={`flex my-3 ${cx({
+					<motion.button
+						onClick={handleCopyRoomCode}
+						whileHover={{ scale: 1.05 }}
+						whileTap={{ scale: 0.9 }}
+						className="flex gap-2 w-fit px-2 py-3 bg-black/10 rounded-xl my-2"
+					>
+						{inviteButtonText}
+					</motion.button>
+
+					<div className="flex gap-2">
+						{players &&
+							players.map((player: any) => (
+								<div
+									key={player.player_id}
+									className={`rnd bdr px-3 py-2 flex my-3 ${cx(
+										{
 											"font-bold":
 												player.player_id === player_id,
-										})}`}
-									>
-										{player.display_name}
-
-										{player.is_party_leader && (
-											<IconCrown className="mx-1 text-yellow-500" />
-										)}
-									</div>
-								))}
-						</div>
-
-						{isPartyLeader && (
-							<>
-								<motion.button
-									className="btn"
-									onClick={setGameToStart}
-									disabled={
-										gameStatus !== Status.In_Lobby ||
-										players.length < 2
-									}
+										}
+									)}`}
 								>
-									Start Game
-								</motion.button>
+									{player.display_name}
 
-								{/* <button
-									className="btn"
-									onClick={setGameToStop}
-									disabled={gameStatus !== STATUS.IN_PROGRESS}
-								>
-									Stop Game
-								</button> */}
-							</>
-						)}
+									{player.is_party_leader && (
+										<IconCrown className="mx-1 text-yellow-500" />
+									)}
+								</div>
+							))}
 					</div>
-				</div>
-			</main>
+
+					{isPartyLeader && (
+						<>
+							<motion.button
+								className="btn mt-48"
+								onClick={setGameToStart}
+								whileHover={{ scale: 1.05 }}
+								whileTap={{ scale: 0.9 }}
+								disabled={
+									gameStatus !== Status.In_Lobby ||
+									players.length < 2
+								}
+							>
+								Start Game
+							</motion.button>
+						</>
+					)}
+				</main>
+			</Container>
 		</div>
 	);
 }

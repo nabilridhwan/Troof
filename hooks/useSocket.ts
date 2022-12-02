@@ -8,20 +8,17 @@ export function useSocket() {
 		ClientToServerEvents
 	> | null>(null);
 
-	const [useEffectRan, setUseEffectRan] = useState(false);
+	const [effectRan, setEffectRan] = useState(false);
 
 	useEffect(() => {
-		if (!useEffectRan) {
-			clientSocketInitializer();
-			setUseEffectRan(true);
-		}
-	}, [useEffectRan]);
+		if (effectRan) return;
+		clientSocketInitializer();
+	}, [socket]);
 
 	const clientSocketInitializer = async () => {
 		const url = process.env.NEXT_PUBLIC_SERVICES_URL!;
-		console.log(`Connecting to socket at ${url}`);
-		const s: Socket<ServerToClientEvents, ClientToServerEvents> = io(url);
-		setSocket(s);
+		setSocket(io(url));
+		setEffectRan(true);
 	};
 
 	return { socket };

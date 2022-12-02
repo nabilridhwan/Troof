@@ -1,3 +1,31 @@
+## Version 0.1.3
+
+### What's new
+
+-   When a player joins or leaves the server, the server will now send a message to everybody's chat.
+-   Added a new section to see the current players active in the game. This is a work in progress and will be improved in the future.
+    -   The Party Leader can kick players from the game.
+-   The force button is now shown every time (it will only work if you are the Party Leader.)
+-   Proper error message when trying to join a game that doesn't exist or among other errors.
+-   Clicking on the Room Code in-game will copy the room code only to your clipboard.
+-   You can now send a person to join a game by clicking on the "Invite" button in the lobby. This will copy the link to your clipboard (in the form of `https://troof.nabilridhwan.com/join/55NKJ4`).
+    -   If the user is already in the game, they will be redirected to the game.
+    -   If the user is not in the game, they will to enter their display name and then be redirected to the game.
+-   Fixed an issue where chat messages were being sent to all games.
+
+### Known Issues
+
+-   Some Dares have part of their sentence showing up.
+    -   **[UPDATE]** This will be part of the roadmap, and will be pushed all the way to the back!
+-   If a player disconnects (not from pressing the "leave" button), the game will still consider them as connected.
+    -   A workaround is for the Party Leader to click on the "force continue" button.
+-   Users will be redirected to the home page or an error page if their "game" couldnt be found with no obvious error message" [WIP!]
+
+### Roadmap
+
+-   Cleanup of games that are already destroyed.
+-   Better Truths and Dare cards
+
 ## Version 0.1.2
 
 ### What's new

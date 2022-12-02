@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { NextPageContext } from "next";
 import axiosInstance from "../../utils/axiosInstance";
 import { Cookie } from "../../utils/Cookie";
@@ -27,11 +28,25 @@ export async function getServerSideProps(context: NextPageContext) {
 			},
 		};
 	} catch (error) {
-		console.log(error);
+		if (error instanceof AxiosError) {
+			const { status } = error.response!;
+
+			console.log(status);
+
+			if (status === 404) {
+				return {
+					redirect: {
+						destination: `/?error=room_not_found`,
+						permanent: true,
+					},
+				};
+			}
+		}
+
 		// TODO: Error handling
 		return {
 			redirect: {
-				destination: `/`,
+				destination: `/?room_id=${room_id}`,
 				permanent: true,
 			},
 		};

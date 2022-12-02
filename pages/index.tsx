@@ -1,14 +1,21 @@
 import { AnimateSharedLayout, motion } from "framer-motion";
 import Head from "next/head";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-	const [roomIDInput, setRoomIDInput] = useState<string>("");
+	const { query } = useRouter();
+
+	const { room_id = "", error } = query;
+
+	const [errorMessage, setErrorMessage] = useState<string>("");
+
+	const [roomIDInput, setRoomIDInput] = useState<string>(room_id as string);
 	const [displayName, setDisplayName] = useState<string>("");
 
 	const [mainScreenAction, setMainScreenAction] = useState<
 		"create" | "join" | "none"
-	>("create");
+	>("join");
 
 	const joinGame = () => {
 		if (roomIDInput.trim()) {
@@ -21,6 +28,14 @@ export default function Home() {
 		// Redirect to the create page
 		window.location.href = "/create?display_name=" + displayName;
 	};
+
+	useEffect(() => {
+		setRoomIDInput(room_id as string);
+	}, [room_id]);
+
+	useEffect(() => {
+		setErrorMessage(error as string);
+	}, [error]);
 
 	return (
 		<div>
@@ -46,7 +61,7 @@ export default function Home() {
 
 					<p className="font-bold text-sm text-center mb-6 mt-2">
 						<span className="bg-black text-white rounded-lg py-1 px-2">
-							v0.1.2 (Beta)
+							Beta v0.1.3
 						</span>
 					</p>
 
@@ -54,7 +69,20 @@ export default function Home() {
 						Synchronized online Truth Or Dare game!
 					</p>
 
+					<p className="text-red-500">{errorMessage}</p>
+
 					<div className="flex py-5 justify-around">
+						<div
+							className="w-full cursor-pointer"
+							onClick={() => setMainScreenAction("join")}
+						>
+							<p>Join a Room</p>
+
+							{mainScreenAction === "join" && (
+								<div className="bg-black/30 h-[5px] rounded-full" />
+							)}
+						</div>
+
 						<div
 							className="w-full cursor-pointer"
 							onClick={() => setMainScreenAction("create")}
@@ -62,17 +90,6 @@ export default function Home() {
 							<p>Create a Room</p>
 
 							{mainScreenAction === "create" && (
-								<div className="bg-black/30 h-[5px] rounded-full" />
-							)}
-						</div>
-
-						<div
-							className="w-full cursor-pointer"
-							onClick={() => setMainScreenAction("join")}
-						>
-							<p> Join a Room</p>
-
-							{mainScreenAction === "join" && (
 								<div className="bg-black/30 h-[5px] rounded-full" />
 							)}
 						</div>

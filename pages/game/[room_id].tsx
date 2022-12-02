@@ -1,10 +1,10 @@
-import { IconLogout } from "@tabler/icons";
 import { motion } from "framer-motion";
 import { NextPageContext } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import Container from "../../components/Container";
 import ChatBox from "../../components/message/ChatBox";
+import Players from "../../components/Players";
 import { useSocket } from "../../hooks/useSocket";
 import {
 	Action,
@@ -45,12 +45,23 @@ export async function getServerSideProps(context: NextPageContext) {
 		};
 	}
 
-	// Find the player using the API
-	const playerFromAPI = await axiosInstance.get("/api/player", {
-		params: {
-			player_id,
-		},
-	});
+	let playerFromAPI;
+
+	try {
+		// Find the player using the API
+		playerFromAPI = await axiosInstance.get("/api/player", {
+			params: {
+				player_id,
+			},
+		});
+	} catch (error) {
+		return {
+			redirect: {
+				destination: "/?error=player_not_found",
+				permanent: false,
+			},
+		};
+	}
 
 	const player = playerFromAPI.data.data;
 
@@ -93,13 +104,18 @@ export default function GamePage({
 	};
 }) {
 	const [room_id] = useState<string>(roomID);
-	const [players, setPlayers] = useState<any[]>([]);
+	const [players, setPlayers] = useState<Player[]>([]);
 
 	const [gameStatus, setGameStatus] = useState<string>("in_lobby");
 
 	const [currentPlayer, setCurrentPlayer] = useState<Partial<Player>>({});
 	const [action, setAction] = useState<Action>(Action.Waiting_For_Selection);
 	const [text, setText] = useState<string>("");
+
+	// This state below is for the Room code text. after copying, it will change to "Copied!"
+	const [roomCodeText, setRoomCodeText] = useState<string>(
+		`Room Code: ${room_id}`
+	);
 
 	const { socket } = useSocket();
 
@@ -114,6 +130,7 @@ export default function GamePage({
 
 			socket.on(EVENTS.PLAYERS_UPDATE, (data) => {
 				console.log(EVENTS.PLAYERS_UPDATE, " received");
+				console.log(data);
 				setPlayers(data);
 			});
 
@@ -147,6 +164,15 @@ export default function GamePage({
 					);
 				}
 			);
+
+			// Handles if the user successfully left the game
+			socket.on(EVENTS.LEFT_GAME, (playerRemoved: Player) => {
+				console.log(playerRemoved);
+				if (playerRemoved.player_id === player.player_id) {
+					console.log("Left game");
+					window.location.href = "/";
+				}
+			});
 
 			socket.on("disconnect", () => {
 				console.log("Disconnected");
@@ -199,8 +225,18 @@ export default function GamePage({
 			room_id: room_id,
 			player_id: player_id,
 		});
+	};
 
-		window.location.href = "/";
+	const handleCopyRoomCode = () => {
+		navigator.clipboard.writeText(
+			`${window.location.origin}/join/${room_id}`
+		);
+
+		// Show Copied! for a second
+		setRoomCodeText("Copied!");
+		setTimeout(() => {
+			setRoomCodeText(`Room Code: ${room_id}`);
+		}, 1000);
 	};
 
 	return (
@@ -215,16 +251,22 @@ export default function GamePage({
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 
-				<div className="grid grid-rows-2 gap-2">
-					<div className="row-span-1 h-max">
+				<div className="md:grid md:grid-cols-8 gap-5">
+					<div className="col-span-6">
 						<div className="w-full h-full flex items-center justify-center">
 							{/* Main items */}
 							<div className="">
-								<p className="font-bold text-sm text-center my-10">
+								{/* Room Code */}
+								<motion.p
+									whileHover={{ scale: 1.1 }}
+									whileTap={{ scale: 0.9 }}
+									className="font-bold text-sm text-center my-10 cursor-pointer"
+									onClick={handleCopyRoomCode}
+								>
 									<span className="bg-black text-white rounded-lg py-1 px-2">
-										Room Code: {room_id}
+										{roomCodeText}
 									</span>
-								</p>
+								</motion.p>
 
 								{/* Current Player Name */}
 								<main className="w-full flex items-center justify-center my-10">
@@ -249,7 +291,9 @@ export default function GamePage({
 														scale: 1.1,
 														y: -10,
 													}}
-													whileTap={{ scale: 0.9 }}
+													whileTap={{
+														scale: 0.9,
+													}}
 													className="btn-huge w-[120px] aspect-square"
 													onClick={selectTruth}
 												>
@@ -261,7 +305,9 @@ export default function GamePage({
 														scale: 1.1,
 														y: -10,
 													}}
-													whileTap={{ scale: 0.9 }}
+													whileTap={{
+														scale: 0.9,
+													}}
 													className="btn-huge w-[120px] aspect-square"
 													onClick={selectDare}
 												>
@@ -303,7 +349,7 @@ export default function GamePage({
 												whileTap={{
 													scale: 0.9,
 												}}
-												className="btn my-10 t bg-green-400 text-black/50"
+												className="btn mt-2 my-1 t bg-green-400 text-black/50"
 												onClick={handleContinue}
 											>
 												Continue
@@ -312,31 +358,36 @@ export default function GamePage({
 									)}
 
 								{/* Show Force Continue button for party leader */}
-								{player.is_party_leader &&
-									currentPlayer.player_id !==
-										player.player_id && (
-										<div>
-											<motion.button
-												whileHover={{ scale: 1.05 }}
-												whileTap={{ scale: 0.9 }}
-												className="btn my-10 bg-black/10 border-none"
-												onClick={handleContinue}
-											>
-												Force Continue
-											</motion.button>
-										</div>
-									)}
+								{player.is_party_leader && (
+									<div>
+										<motion.button
+											whileHover={{ scale: 1.05 }}
+											whileTap={{ scale: 0.9 }}
+											className="btn my-1 bg-red-400 border-none"
+											onClick={handleContinue}
+										>
+											Force Continue
+										</motion.button>
+									</div>
+								)}
 							</div>
 						</div>
 					</div>
 
-					{/* Chatbox */}
-					<ChatBox player_id={player_id} room_id={roomID} />
+					<div className="col-span-2 flex flex-col-reverse md:flex-col gap-5">
+						<Players
+							player={player}
+							players={players}
+							room_id={roomID}
+						/>
+
+						<ChatBox player_id={player_id} room_id={roomID} />
+					</div>
 				</div>
 			</Container>
 
 			{/* Bottom items */}
-			<div className="fixed bottom-0 w-full">
+			{/* <div className="fixed bottom-0 w-full">
 				<div className="flex justify-between items-center bg-black/10 px-5 py-2">
 					<div className="flex flex-col gap-3">
 						<p className="text-sm font-bold">
@@ -358,7 +409,7 @@ export default function GamePage({
 						</motion.button>
 					</div>
 				</div>
-			</div>
+			</div> */}
 		</>
 	);
 }
