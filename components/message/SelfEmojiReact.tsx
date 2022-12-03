@@ -8,7 +8,11 @@ interface OtherPlayerEmojiReactionProps {
 const SelfEmojiReaction = ({ message }: OtherPlayerEmojiReactionProps) => (
 	<div className="flex flex-row justify-end my-2">
 		<div className="bg-gray-50 w-fit p-2 rounded-lg rounded-br-none">
-			<Emoji unified={message.message} emojiStyle={EmojiStyle.APPLE} />
+			<Emoji
+				unified={message.message}
+				emojiStyle={EmojiStyle.APPLE}
+				size={30}
+			/>
 			<div />
 		</div>
 	</div>

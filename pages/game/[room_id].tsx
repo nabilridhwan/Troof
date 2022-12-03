@@ -4,6 +4,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import Container from "../../components/Container";
 import ChatBox from "../../components/message/ChatBox";
+import EmojiReactionScreen from "../../components/message/EmojiReactionScreen";
 import Players from "../../components/Players";
 import { useSocket } from "../../hooks/useSocket";
 import {
@@ -176,11 +177,19 @@ export default function GamePage({
 
 			socket.on("disconnect", () => {
 				console.log("Disconnected");
+				console.log("You are disconnected");
+
+				setTimeout(() => {
+					window.location.reload();
+				}, 3000);
+
+				// Refresh the page
+				// window.location.reload();
 				// Tell the server that they have been disconnected
-				socket.emit(EVENTS.DISCONNECTED, {
-					room_id: room_id,
-					player_id,
-				});
+				// socket.emit(EVENTS.DISCONNECTED, {
+				// 	room_id: room_id,
+				// 	player_id,
+				// });
 			});
 		}
 	}, [socket, room_id, player_id]);
@@ -247,12 +256,14 @@ export default function GamePage({
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 
-				<div className="md:h-screen md:flex md:items-center md:justify-center">
-					<div className="md:flex-1 md:grid md:grid-cols-9 gap-5">
-						<div className="col-span-7">
+				<EmojiReactionScreen room_id={room_id} />
+
+				<div className="my-5 lg:h-[93vh]">
+					<div className="lg:grid lg:grid-cols-12 gap-10">
+						<div className="col-span-9">
 							<div className="w-full h-full flex items-center justify-center">
 								{/* Main items */}
-								<div className=" my-2">
+								<div className=" my-2 flex-1">
 									{/* Room Code */}
 									<motion.p
 										whileHover={{ scale: 1.1 }}
@@ -330,7 +341,7 @@ export default function GamePage({
 									{action !==
 										Action.Waiting_For_Selection && (
 										<>
-											<div className="rnd bdr w-fit px-10 py-5 space-y-4 my-3">
+											<div className="rnd bdr w-fit px-10 py-5 space-y-4 mx-auto my-3">
 												<h2 className="text-center text-3xl font-semibold">
 													{text}
 												</h2>
@@ -361,15 +372,12 @@ export default function GamePage({
 							</div>
 						</div>
 
-						<div className="col-span-2 flex flex-col-reverse md:flex-col gap-5">
-							<div className="flex-1">
-								<Players
-									player={player}
-									players={players}
-									room_id={roomID}
-								/>
-							</div>
-
+						<div className="col-span-3 h-full flex flex-col-reverse md:flex-col">
+							<Players
+								player={player}
+								players={players}
+								room_id={roomID}
+							/>
 							<ChatBox player_id={player_id} room_id={roomID} />
 						</div>
 					</div>

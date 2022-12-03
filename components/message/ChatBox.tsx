@@ -1,6 +1,4 @@
 import { IconSend } from "@tabler/icons";
-import { Emoji, EmojiStyle } from "emoji-picker-react";
-import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../../hooks/useSocket";
 import {
@@ -9,6 +7,7 @@ import {
 	MESSAGE_EVENTS,
 	SystemMessage,
 } from "../../Types";
+import EmojiReactionBar from "../EmojiBar";
 import OtherPlayerChatBubble from "./OtherPlayerChatBubble";
 import OtherPlayerEmojiReaction from "./OtherPlayerEmojiReact";
 import SelfChatBubble from "./SelfChatBubble";
@@ -87,6 +86,20 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 			socket.on(MESSAGE_EVENTS.MESSAGE_SYSTEM, (data) => {
 				setMessages((oldMessages) => [...oldMessages, data]);
 			});
+
+			socket.on("disconnect", () => {
+				const disconnectedSystemMessage: SystemMessage = {
+					message:
+						"You have been disconnected from the server. The page will refresh in 3 seconds.",
+					type: "system",
+					created_at: new Date(),
+					room_id,
+				};
+				setMessages((oldMessages) => [
+					...oldMessages,
+					disconnectedSystemMessage,
+				]);
+			});
 		}
 	}, [socket]);
 
@@ -112,11 +125,11 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 	};
 
 	return (
-		<div className="w-full">
+		<div className="w-full h-full">
 			{/* Chat box */}
 			<div
 				ref={messagesBoxRefElement}
-				className="h-[300px] bg-black/5 p-3 rounded-xl overflow-auto mb-2"
+				className="h-[300px] md:h-[600px] bg-black/5 p-3 rounded-xl overflow-auto mb-2"
 			>
 				{!messages.length && (
 					<p className="text-center text-gray-500">
@@ -162,7 +175,7 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 
 								{message.type === "system" && (
 									<div className="text-xs flex flex-row justify-center my-5">
-										<div className="bg-black/10 w-fit p-2 rounded-lg">
+										<div className="bg-black/10 w-fit p-2 rounded-lg text-center">
 											<p>{message.message}</p>
 										</div>
 									</div>
@@ -174,63 +187,14 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 			</div>
 
 			{/* Emoji Bar */}
-			<div className="flex flex-wrap justify-center gap-4 my-2 mx-auto w-fit">
-				<motion.button
-					whileTap={{ scale: 0.9 }}
-					onClick={() => handleReaction("1f923")}
-				>
-					<Emoji unified="1f923" emojiStyle={EmojiStyle.APPLE} />
-				</motion.button>
-
-				<motion.button
-					whileTap={{ scale: 0.9 }}
-					onClick={() => handleReaction("1fae3")}
-				>
-					<Emoji unified="1fae3" emojiStyle={EmojiStyle.APPLE} />
-				</motion.button>
-
-				<motion.button
-					whileTap={{ scale: 0.9 }}
-					onClick={() => handleReaction("1f621")}
-				>
-					<Emoji unified="1f621" emojiStyle={EmojiStyle.APPLE} />
-				</motion.button>
-
-				<motion.button
-					whileTap={{ scale: 0.9 }}
-					onClick={() => handleReaction("1f92e")}
-				>
-					<Emoji unified="1f92e" emojiStyle={EmojiStyle.APPLE} />
-				</motion.button>
-
-				<motion.button
-					whileTap={{ scale: 0.9 }}
-					onClick={() => handleReaction("1f44d")}
-				>
-					<Emoji unified="1f44d" emojiStyle={EmojiStyle.APPLE} />
-				</motion.button>
-
-				<motion.button
-					whileTap={{ scale: 0.9 }}
-					onClick={() => handleReaction("1f62d")}
-				>
-					<Emoji unified="1f62d" emojiStyle={EmojiStyle.APPLE} />
-				</motion.button>
-
-				<motion.button
-					whileTap={{ scale: 0.9 }}
-					onClick={() => handleReaction("1f44e")}
-				>
-					<Emoji unified="1f44e" emojiStyle={EmojiStyle.APPLE} />
-				</motion.button>
-			</div>
+			<EmojiReactionBar handleReaction={handleReaction} />
 
 			<form onSubmit={handleMessageSubmit}>
 				<div className="flex gap-2">
 					<input
 						tabIndex={0}
 						placeholder="Type a message..."
-						className="flex-1 h-[10px]"
+						className="flex-1 h-[10px] text-sm"
 						value={inputMessage}
 						onChange={(e) => setInputMessage(e.target.value)}
 					/>

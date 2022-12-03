@@ -92,7 +92,7 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 
 					<p className="font-bold text-sm text-center mb-6 mt-2 space-x-1">
 						<span className="bg-black text-white rounded-lg py-1 px-2">
-							<span className="text-xs">Game</span> v0.1.4
+							<span className="text-xs">Game</span> v0.1.5
 						</span>
 
 						<span className="bg-black text-white rounded-lg py-1 px-2">

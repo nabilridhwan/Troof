@@ -12,7 +12,11 @@ const OtherPlayerEmojiReaction = ({
 		<div className="bg-blue-500 text-white/95 w-fit p-2 rounded-lg rounded-bl-none">
 			<p className="text-xs font-bold ">{message.player.display_name}</p>
 
-			<Emoji unified={message.message} emojiStyle={EmojiStyle.APPLE} />
+			<Emoji
+				unified={message.message}
+				emojiStyle={EmojiStyle.APPLE}
+				size={30}
+			/>
 
 			<div />
 		</div>

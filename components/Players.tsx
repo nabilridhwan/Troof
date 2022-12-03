@@ -35,17 +35,22 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 
 	return (
 		<div className="my-2">
-			<p>Players ({players.length})</p>
-			<div className="bg-black/5 p-3 my-1 rounded-2xl">
+			{/* <p>Players ({players.length})</p> */}
+			<div className="bg-black/5 my-1 rounded-2xl">
 				{players.map((player, index) => (
-					<div className="flex py-1 my-2 w-full" key={index}>
+					<div
+						className="flex px-4 py-3 w-full even:bg-black/5"
+						key={index}
+					>
 						<span
 							className={cx({
-								"font-bold": player.player_id === p.player_id,
 								"flex-1": true,
 							})}
 						>
-							{player.display_name}
+							{player.display_name}{" "}
+							{player.player_id === p.player_id && (
+								<span>(You)</span>
+							)}
 						</span>
 
 						{player.is_party_leader && (
@@ -65,30 +70,33 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 					</div>
 				))}
 
-				{/* Show Force Continue button for party leader */}
-				{p.is_party_leader && (
-					<div>
-						<motion.button
-							whileHover={{ scale: 1.05 }}
-							whileTap={{ scale: 0.9 }}
-							className="btn my-2 bg-orange-500 text-white border-none flex items-center gap-2 text-sm"
-							onClick={handleContinue}
-						>
-							<IconArrowForward size={16} />
-							Force Skip
-						</motion.button>
-					</div>
-				)}
+				{/* Buttons */}
+				<div className="mx-2 py-2">
+					{/* Show Force Continue button for party leader */}
+					{p.is_party_leader && (
+						<div>
+							<motion.button
+								whileHover={{ scale: 1.05 }}
+								whileTap={{ scale: 0.9 }}
+								className="btn my-2 bg-orange-500 text-white border-none flex items-center gap-2 text-sm"
+								onClick={handleContinue}
+							>
+								<IconArrowForward size={16} />
+								Force Skip
+							</motion.button>
+						</div>
+					)}
 
-				<motion.button
-					whileHover={{ scale: 1.05 }}
-					whileTap={{ scale: 0.9 }}
-					className="btn my-2 bg-red-500 text-white border-none flex items-center gap-2 text-sm"
-					onClick={() => removePlayer(p.player_id)}
-				>
-					<IconLogout size={16} />
-					Leave Game
-				</motion.button>
+					<motion.button
+						whileHover={{ scale: 1.05 }}
+						whileTap={{ scale: 0.9 }}
+						className="btn my-2 bg-red-500 text-white border-none flex items-center gap-2 text-sm"
+						onClick={() => removePlayer(p.player_id)}
+					>
+						<IconLogout size={16} />
+						Leave Game
+					</motion.button>
+				</div>
 			</div>
 		</div>
 	);

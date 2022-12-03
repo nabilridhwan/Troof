@@ -1,3 +1,28 @@
+## Version 0.1.5
+
+### What's new
+
+-   Add pleading and heartbroken emoji to reaction bar.
+-   Reactions now will rain on your screen (not joking!). Now you can express your heartfelt emotions and reactions.
+-   The texts inside the Chat box are now smaller, this includes emojis and text.
+-   When disconnected, you'll see a system message in the Chat Box telling you that you're disconnected. The page will automatically refresh in 3 seconds in which it will attempt to reconnect.
+-   **[NEW]** Attempt to have fully randomized questions this time with the chances of getting the same questions lower than usual
+-   **[NEW]** This is an attempt to change all backend services API to a different more production ready domain.
+
+#### Known Issues
+
+-   Some Dares have part of their sentence showing up.
+    -   **[UPDATE]** This will be part of the roadmap, and will be pushed all the way to the back!
+-   If a player disconnects (not from pressing the "leave" button), the game will still consider them as connected.
+    -   A workaround is for the Party Leader to remove them from the game.
+-   Users will be redirected to the home page or an error page if their "game" couldnt be found with no obvious error message" [WIP!]
+
+### Roadmap
+
+-   Allow people to change their names.
+-   Different people/name with have different colors.
+-   No repetitive question [TESTING]
+
 ## Version 0.1.4
 
 ### What's new
