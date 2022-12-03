@@ -1,3 +1,27 @@
+## Version 0.1.6
+
+### What's new
+
+-   Now, when you join an ongoing game, you will be redirected to the game page instead of passing through the lobby page.
+-   Changed colors to be pastel colors.
+-   Optimized font sizes for mobile displays.
+-   In the players section, your name wil be bolded.
+-   Added fancy new icon on the browser tab (new favicon!)
+-   Changed wording of the index page's notice.
+-   **[DEV]** Client side version is managed by package.json (same as services)
+-   Added a new changelog page (this page). You can find the button on the home page 'What's new' button.
+-   Game page
+    -   Changed the crown to the left hand side
+    -   **[DEV]** Removed emoji reaction component in favor of text message. Pass the asEmoji prop to enable the emoji display
+-   Lobby page changes
+    -   Slightly new buttons for the lobby page.
+    -   The room code is now a monospace font for better readability.
+    -   Better spacing.
+    -   An animation will now pop up for new players.
+    -   Changed the icon for Invite Players to be a link
+    -   Changed the design of the Invite Players button
+    -   Added the ability for a user to leave a game while in lobby
+
 ## Version 0.1.5
 
 ### What's new

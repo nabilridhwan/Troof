@@ -342,7 +342,7 @@ export default function GamePage({
 										Action.Waiting_For_Selection && (
 										<>
 											<div className="rnd bdr w-fit px-10 py-5 space-y-4 mx-auto my-3">
-												<h2 className="text-center text-3xl font-semibold">
+												<h2 className="text-center text-xl md:text-3xl font-semibold leading-normal">
 													{text}
 												</h2>
 											</div>
@@ -361,7 +361,7 @@ export default function GamePage({
 													whileTap={{
 														scale: 0.9,
 													}}
-													className="btn mt-2 my-1 t bg-green-400 text-black/80"
+													className="btn mt-2 my-1 t bg-green-300 font-bold"
 													onClick={handleContinue}
 												>
 													Continue

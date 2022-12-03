@@ -1,12 +1,17 @@
-import { IconCrown, IconUserPlus } from "@tabler/icons";
+import {
+	IconArrowForward,
+	IconCrown,
+	IconLink,
+	IconLogout,
+} from "@tabler/icons";
 import cx from "classnames";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { NextPageContext } from "next";
 import Head from "next/head";
 import { ReactNode, useEffect, useState } from "react";
 import Container from "../../components/Container";
 import { useSocket } from "../../hooks/useSocket";
-import { EVENTS, Room, Status } from "../../Types";
+import { EVENTS, Player, Room, Status, TRUTH_OR_DARE_GAME } from "../../Types";
 import { Cookie } from "../../utils/Cookie";
 
 export async function getServerSideProps(context: NextPageContext) {
@@ -47,7 +52,7 @@ export default function GamePage({
 
 	const [inviteButtonText, setInviteButtonText] = useState<ReactNode>(
 		<>
-			<IconUserPlus />
+			<IconLink size={16} />
 			<span>Invite Players</span>
 		</>
 	);
@@ -83,6 +88,15 @@ export default function GamePage({
 			socket.on(EVENTS.GAME_UPDATE, (data: Room) => {
 				console.log("Status change received");
 				setGameStatus(data.status);
+			});
+
+			// Handles if the user successfully left the game
+			socket.on(EVENTS.LEFT_GAME, (playerRemoved: Player) => {
+				console.log(playerRemoved);
+				if (playerRemoved.player_id === player_id) {
+					console.log("I left the game");
+					window.location.href = "/";
+				}
 			});
 
 			socket.on("disconnect", () => {
@@ -131,6 +145,14 @@ export default function GamePage({
 		});
 	};
 
+	const removePlayer = (player_id: string) => {
+		if (!socket) return;
+		socket.emit(TRUTH_OR_DARE_GAME.LEAVE_GAME, {
+			room_id: room_id,
+			player_id: player_id,
+		});
+	};
+
 	const handleCopyRoomCode = () => {
 		navigator.clipboard.writeText(
 			`${window.location.origin}/join/${room_id}`
@@ -145,7 +167,7 @@ export default function GamePage({
 		setTimeout(() => {
 			setInviteButtonText(
 				<>
-					<IconUserPlus />
+					<IconLink size={16} />
 					<span>Invite Players</span>
 				</>
 			);
@@ -161,65 +183,94 @@ export default function GamePage({
 
 			<Container>
 				<main className="h-screen flex flex-col items-center justify-center">
-					<h1>Room Code:</h1>
-					<div className="bdr rnd h-fit my-5 py-7 px-6 flex items-center justify-center">
-						<h1 className="font-Poppins font-black text-6xl">
-							{room_id}
-						</h1>
+					<div className="mb-10 flex flex-col items-center">
+						<h1>Room Code</h1>
+						<div className="bdr rnd h-fit my-5 py-7 px-6 flex items-center justify-center">
+							<h1 className="font-mono font-black text-6xl">
+								{room_id}
+							</h1>
+						</div>
+
+						{!isPartyLeader && (
+							<p className="my-5 italic text-black/50 text-center">
+								Waiting for party leader to start the game...
+							</p>
+						)}
+
+						{/* Invite button */}
+						<motion.button
+							onClick={handleCopyRoomCode}
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.9 }}
+							className="flex gap-2 w-fit px-3 py-2 bg-black/90 font-bold text-white border border-white/70 shadow-md rounded-xl my-2 text-xs"
+						>
+							{inviteButtonText}
+						</motion.button>
 					</div>
 
-					{!isPartyLeader && (
-						<p className="my-5 italic text-black/50 text-center">
-							Waiting for party leader to start the game...
-						</p>
-					)}
+					<p>Players ({players.length}/10)</p>
 
-					<motion.button
-						onClick={handleCopyRoomCode}
-						whileHover={{ scale: 1.05 }}
-						whileTap={{ scale: 0.9 }}
-						className="flex gap-2 w-fit px-2 py-3 bg-black/10 rounded-xl my-2"
-					>
-						{inviteButtonText}
-					</motion.button>
+					<div className="flex flex-wrap justify-center gap-2 my-5">
+						<AnimatePresence>
+							{players &&
+								players.map((player: any) => (
+									<motion.div
+										initial={{ opacity: 0, scale: 0.5 }}
+										animate={{ opacity: 1, scale: 1 }}
+										exit={{ opacity: 0, scale: 0.5 }}
+										key={player.player_id}
+										className={`rnd bdr px-3 py-2 flex ${cx(
+											{
+												"font-bold":
+													player.player_id ===
+													player_id,
+											}
+										)}`}
+									>
+										{player.display_name}
 
-					<div className="flex gap-2">
-						{players &&
-							players.map((player: any) => (
-								<div
-									key={player.player_id}
-									className={`rnd bdr px-3 py-2 flex my-3 ${cx(
-										{
-											"font-bold":
-												player.player_id === player_id,
-										}
-									)}`}
+										{player.is_party_leader && (
+											<IconCrown className="mx-1 text-yellow-500" />
+										)}
+									</motion.div>
+								))}
+						</AnimatePresence>
+					</div>
+
+					<div className="flex flex-wrap items-center justify-center gap-3 mt-32">
+						{isPartyLeader && (
+							<>
+								<motion.button
+									className="disabled:text-black/30 bg-green-300 px-3 rounded-lg py-2 w-fit border-none flex items-center gap-2 text-sm"
+									onClick={setGameToStart}
+									whileHover={{ scale: 1.05 }}
+									whileTap={{ scale: 0.9 }}
+									disabled={
+										gameStatus !== Status.In_Lobby ||
+										players.length < 2
+									}
 								>
-									{player.display_name}
-
-									{player.is_party_leader && (
-										<IconCrown className="mx-1 text-yellow-500" />
+									<IconArrowForward size={16} />
+									Start Game
+									{players.length < 2 && (
+										<span className="text-black/50">
+											(2+ players required)
+										</span>
 									)}
-								</div>
-							))}
-					</div>
+								</motion.button>
+							</>
+						)}
 
-					{isPartyLeader && (
-						<>
-							<motion.button
-								className="btn mt-48"
-								onClick={setGameToStart}
-								whileHover={{ scale: 1.05 }}
-								whileTap={{ scale: 0.9 }}
-								disabled={
-									gameStatus !== Status.In_Lobby ||
-									players.length < 2
-								}
-							>
-								Start Game
-							</motion.button>
-						</>
-					)}
+						<motion.button
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.9 }}
+							className="px-3 rounded-lg py-2 w-fit  bg-red-300 border-none flex items-center gap-2 text-sm"
+							onClick={() => removePlayer(player_id)}
+						>
+							<IconLogout size={16} />
+							Leave Game
+						</motion.button>
+					</div>
 				</main>
 			</Container>
 		</div>

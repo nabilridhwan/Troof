@@ -1,10 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { NextPageContext } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CreateRoomSection from "../components/home/CreateRoomSection";
 import JoinRoomSection from "../components/home/JoinRoomSection";
+import { version as clientVersion } from "../package.json";
 import axiosInstance from "../utils/axiosInstance";
 
 type MainScreenAction = "create" | "join" | "none";
@@ -96,7 +98,8 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 
 					<p className="font-bold text-sm text-center mb-6 mt-2 space-x-1">
 						<span className="bg-black text-white rounded-lg py-1 px-2">
-							<span className="text-xs">Game</span> v0.1.5
+							<span className="text-xs">Game</span> v
+							{clientVersion}
 						</span>
 
 						<span className="bg-black text-white rounded-lg py-1 px-2">
@@ -113,7 +116,7 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 						The truths and dares are 18+. By joining/creating a
 						game,{" "}
 						<span className="font-semibold">
-							you&apos;re responsible for safe play.
+							you&apos;re responsible for your own safety.
 						</span>
 					</p>
 
@@ -183,10 +186,16 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 						)}
 					</AnimatePresence>
 
-					<p className="text-sm mb-10">
+					<p className="text-sm mb-2">
 						Created by{" "}
 						<a href="https://github.nabilridhwan.com">Nabil</a>
 					</p>
+
+					<button className="bg-black/10 rounded-lg px-3 py-1 my-4 text-xs mb-10">
+						<Link href={"/changelog"}>
+							Read what&apos;s new in v{clientVersion}
+						</Link>
+					</button>
 				</div>
 			</main>
 		</div>

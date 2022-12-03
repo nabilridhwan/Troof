@@ -1,6 +1,7 @@
 import { AxiosError } from "axios";
 import { NextPageContext } from "next";
 import Head from "next/head";
+import { Status } from "../../Types";
 import axiosInstance from "../../utils/axiosInstance";
 import { Cookie } from "../../utils/Cookie";
 
@@ -15,12 +16,27 @@ export async function getServerSideProps(context: NextPageContext) {
 			display_name,
 		});
 
-		const { player_id, room_id: room_id_response } = res.data.data;
+		const {
+			player_id,
+			room_id: room_id_response,
+			status: room_status,
+		} = res.data.data;
 
 		// TODO: Set the room ID in the response so that when the user visits the room page, they can rejoin the room
 		// Set player ID in cookie
 		Cookie.setPlayerID(player_id, context.req, context.res);
 		Cookie.setRoomID(room_id_response, context.req, context.res);
+
+		console.log(room_status);
+
+		if (room_status === Status.In_Game) {
+			return {
+				redirect: {
+					destination: `/game/${room_id}`,
+					permanent: true,
+				},
+			};
+		}
 
 		return {
 			redirect: {

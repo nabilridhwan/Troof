@@ -9,9 +9,7 @@ import {
 } from "../../Types";
 import EmojiReactionBar from "../EmojiBar";
 import OtherPlayerChatBubble from "./OtherPlayerChatBubble";
-import OtherPlayerEmojiReaction from "./OtherPlayerEmojiReact";
 import SelfChatBubble from "./SelfChatBubble";
-import SelfEmojiReaction from "./SelfEmojiReact";
 
 interface ChatBoxProps {
 	room_id: string;
@@ -162,12 +160,14 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 								{message.type === "reaction" && (
 									<>
 										{message.player_id === player_id ? (
-											<SelfEmojiReaction
+											<SelfChatBubble
 												message={message}
+												asEmoji
 											/>
 										) : (
-											<OtherPlayerEmojiReaction
+											<OtherPlayerChatBubble
 												message={message}
+												asEmoji
 											/>
 										)}
 									</>
@@ -199,7 +199,7 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 						onChange={(e) => setInputMessage(e.target.value)}
 					/>
 
-					<button className="bg-blue-500 rounded-lg px-4 text-white">
+					<button className="bg-blue-300 rounded-lg px-4">
 						<IconSend size={18} />
 					</button>
 				</div>

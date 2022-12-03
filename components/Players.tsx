@@ -4,6 +4,7 @@ import {
 	IconLogout,
 	IconTrash,
 } from "@tabler/icons";
+
 import cx from "classnames";
 import { motion } from "framer-motion";
 import { useSocket } from "../hooks/useSocket";
@@ -40,12 +41,19 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 				<div className="h-[100px] overflow-auto">
 					{players.map((player, index) => (
 						<div
-							className="flex px-4 py-3 w-full even:bg-black/5"
+							className="flex items-center px-4 py-3 w-full even:bg-black/5"
 							key={index}
 						>
+							{/* Crown */}
+							{player.is_party_leader && (
+								<IconCrown className="mr-1 text-yellow-500" />
+							)}
+
 							<span
 								className={cx({
 									"flex-1": true,
+									"font-bold":
+										player.player_id === p.player_id,
 								})}
 							>
 								{player.display_name}{" "}
@@ -54,18 +62,16 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 								)}
 							</span>
 
-							{player.is_party_leader && (
-								<IconCrown className="mx-1 text-yellow-500" />
-							)}
-
 							{p.is_party_leader &&
 								player.player_id !== p.player_id && (
 									<button
+										className="flex items-center justify-center rounded-lg bg-red-300 px-3 py-2 text-sm gap-1"
 										onClick={() =>
 											removePlayer(player.player_id)
 										}
 									>
-										<IconTrash className="mx-1 text-red-500" />
+										<IconTrash className="" size={18} />
+										Kick
 									</button>
 								)}
 						</div>
@@ -80,7 +86,7 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 							<motion.button
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.9 }}
-								className="btn my-2 bg-orange-500 text-white border-none flex items-center gap-2 text-sm"
+								className="btn my-2 bg-orange-300 border-none flex items-center gap-2 text-sm"
 								onClick={handleContinue}
 							>
 								<IconArrowForward size={16} />
@@ -92,7 +98,7 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 					<motion.button
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.9 }}
-						className="btn my-2 bg-red-500 text-white border-none flex items-center gap-2 text-sm"
+						className="btn my-2 bg-red-300 border-none flex items-center gap-2 text-sm"
 						onClick={() => removePlayer(p.player_id)}
 					>
 						<IconLogout size={16} />
