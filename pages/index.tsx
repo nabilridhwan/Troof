@@ -78,14 +78,18 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 			<main className="text-center space-y-10 w-[90%] lg:w-[40%] mx-auto">
 				<div>
 					<motion.h1
-						initial={{ opacity: 0, fontSize: 0 }}
-						animate={{ opacity: 1, y: 0, fontSize: "7rem" }}
+						initial={{ opacity: 0, fontSize: 0, y: 1 }}
+						animate={{
+							opacity: 1,
+							y: 0,
+							fontSize: "7rem",
+						}}
 						transition={{
-							duration: 0.5,
-							ease: "easeOut",
+							duration: 0.8,
+							ease: "easeInOut",
 							delay: 0.1,
 						}}
-						className="mb-7 font-black font-Playfair"
+						className="my-14 font-black font-Playfair h-[150px] "
 					>
 						Troof!
 					</motion.h1>
@@ -101,32 +105,46 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 						</span>
 					</p>
 
-					<p className="text-lg mb-10">
+					<p className="text-lg mb-5">
 						Synchronized online Truth Or Dare game!
+					</p>
+
+					<p className="text-sm text-black/80">
+						The truths and dares are 18+. By joining/creating a
+						game,{" "}
+						<span className="font-semibold">
+							you&apos;re responsible for safe play.
+						</span>
 					</p>
 
 					<p className="text-red-500">{errorMessage}</p>
 
 					<div className="flex py-5 justify-around">
 						<div
-							className="w-full cursor-pointer"
+							className="w-full cursor-pointer my-2"
 							onClick={() => setMainScreenAction("join")}
 						>
 							<p>Join a Room</p>
 
 							{mainScreenAction === "join" && (
-								<div className="bg-black/30 h-[5px] rounded-full" />
+								<motion.div
+									layoutId="bar"
+									className="bg-black/30 h-[5px] rounded-full my-2"
+								/>
 							)}
 						</div>
 
 						<div
-							className="w-full cursor-pointer"
+							className="w-full cursor-pointer my-2"
 							onClick={() => setMainScreenAction("create")}
 						>
 							<p>Create a Room</p>
 
 							{mainScreenAction === "create" && (
-								<div className="bg-black/30 h-[5px] rounded-full" />
+								<motion.div
+									layoutId="bar"
+									className="bg-black/30 h-[5px] rounded-full my-2"
+								/>
 							)}
 						</div>
 					</div>
@@ -164,6 +182,11 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 							</motion.div>
 						)}
 					</AnimatePresence>
+
+					<p className="text-sm mb-10">
+						Created by{" "}
+						<a href="https://github.nabilridhwan.com">Nabil</a>
+					</p>
 				</div>
 			</main>
 		</div>

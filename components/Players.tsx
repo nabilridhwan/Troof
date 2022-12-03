@@ -37,38 +37,40 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 		<div className="my-2">
 			{/* <p>Players ({players.length})</p> */}
 			<div className="bg-black/5 my-1 rounded-2xl">
-				{players.map((player, index) => (
-					<div
-						className="flex px-4 py-3 w-full even:bg-black/5"
-						key={index}
-					>
-						<span
-							className={cx({
-								"flex-1": true,
-							})}
+				<div className="h-[100px] overflow-auto">
+					{players.map((player, index) => (
+						<div
+							className="flex px-4 py-3 w-full even:bg-black/5"
+							key={index}
 						>
-							{player.display_name}{" "}
-							{player.player_id === p.player_id && (
-								<span>(You)</span>
-							)}
-						</span>
+							<span
+								className={cx({
+									"flex-1": true,
+								})}
+							>
+								{player.display_name}{" "}
+								{player.player_id === p.player_id && (
+									<span>(You)</span>
+								)}
+							</span>
 
-						{player.is_party_leader && (
-							<IconCrown className="mx-1 text-yellow-500" />
-						)}
-
-						{p.is_party_leader &&
-							player.player_id !== p.player_id && (
-								<button
-									onClick={() =>
-										removePlayer(player.player_id)
-									}
-								>
-									<IconTrash className="mx-1 text-red-500" />
-								</button>
+							{player.is_party_leader && (
+								<IconCrown className="mx-1 text-yellow-500" />
 							)}
-					</div>
-				))}
+
+							{p.is_party_leader &&
+								player.player_id !== p.player_id && (
+									<button
+										onClick={() =>
+											removePlayer(player.player_id)
+										}
+									>
+										<IconTrash className="mx-1 text-red-500" />
+									</button>
+								)}
+						</div>
+					))}
+				</div>
 
 				{/* Buttons */}
 				<div className="mx-2 py-2">

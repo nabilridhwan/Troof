@@ -10,7 +10,7 @@ const SelfChatBubble = ({
 	overrideMessageContent: OverrideComponent,
 }: SelfChatBubbleProps) => (
 	<div className="flex flex-row justify-end my-2 text-sm">
-		<div className="bg-gray-50 w-fit p-2 rounded-lg rounded-br-none">
+		<div className="bg-gray-50 w-fit p-2 px-3 rounded-lg rounded-br-none">
 			{OverrideComponent ? (
 				<OverrideComponent />
 			) : (

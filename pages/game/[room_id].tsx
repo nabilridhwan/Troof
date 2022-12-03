@@ -361,7 +361,7 @@ export default function GamePage({
 													whileTap={{
 														scale: 0.9,
 													}}
-													className="btn mt-2 my-1 t bg-green-400 text-black/50"
+													className="btn mt-2 my-1 t bg-green-400 text-black/80"
 													onClick={handleContinue}
 												>
 													Continue
@@ -372,7 +372,7 @@ export default function GamePage({
 							</div>
 						</div>
 
-						<div className="col-span-3 h-full flex flex-col-reverse md:flex-col">
+						<div className="col-span-3 h-full flex flex-col-reverse">
 							<Players
 								player={player}
 								players={players}

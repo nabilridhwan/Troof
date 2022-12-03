@@ -6,6 +6,13 @@
 -   Reactions now will rain on your screen (not joking!). Now you can express your heartfelt emotions and reactions.
 -   The texts inside the Chat box are now smaller, this includes emojis and text.
 -   When disconnected, you'll see a system message in the Chat Box telling you that you're disconnected. The page will automatically refresh in 3 seconds in which it will attempt to reconnect.
+-   Fixed the text inside the "Continue" button is a little light.
+-   Fixed system messages texts are not centered.
+-   Add disclaimer to the home page regarding about the extreme truths and dares.
+-   Add a footer to the home page.
+-   Add an animated of the bar from going to the left to the right when clicking on 'Join' or 'Create'.
+-   Fixed the "Troof" title in the home page animation will push elements down - now it no longer does.
+-   **[NEW]** New layout for desktops.
 -   **[NEW]** Attempt to have fully randomized questions this time with the chances of getting the same questions lower than usual
 -   **[NEW]** This is an attempt to change all backend services API to a different more production ready domain.
 
