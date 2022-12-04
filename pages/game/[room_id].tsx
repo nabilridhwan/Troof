@@ -323,11 +323,18 @@ export default function GamePage({
 														}}
 														className="bg-black text-sm text-white rounded-lg py-1 px-2 flex w-fit justify-center items-center mx-auto gap-1"
 														onClick={
+															action ===
 															Action.Dare
 																? () => {
+																		console.log(
+																			"Re-rolling dare"
+																		);
 																		selectDare();
 																  }
 																: () => {
+																		console.log(
+																			"Re-rolling truth"
+																		);
 																		selectTruth();
 																  }
 														}

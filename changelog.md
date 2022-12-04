@@ -1,14 +1,25 @@
-## Version 0.1.8
+## Version 0.1.9
 
-### What's New (Client)
+### What's New (Client - v0.1.9)
 
--   Added a new manual page with instructions on how to play the game
--   Changed some wordings in the application to make it easier for users to understand
--   Added a new, cool tagline that we're proud of!
+-   Fix a bug where re-rolling will always re-roll a dare (even though you intially selected truth)
+
+### What's new (Server - v0.1.8)
+
+-   More truths and dares (290+ truths and dares)
+-   **[DEV]** Added a simple way to generate truths and dare with a new library: truth_or_dare_generator.
 
 Thank you for using Troof and we hope you enjoy the new features and improvements.
 
 Keep an eye out for future updates and let us know if you have any feedback or suggestions over at my github @nabilridhwan.
+
+## Version 0.1.8
+
+### What's New (Client - v0.1.8)
+
+-   Added a new manual page with instructions on how to play the game
+-   Changed some wordings in the application to make it easier for users to understand
+-   Added a new, cool tagline that we're proud of!
 
 ## Version 0.1.7
 

@@ -70,10 +70,13 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 	return (
 		<div>
 			<Head>
-				<title>Troof! - Synchronized Truth Or Dare game!</title>
+				<title>
+					Troof! - Experience the ultimate social truth or dare game -
+					see, chat, and react together with your friends!
+				</title>
 				<meta
 					name="description"
-					content="Come play a synchronized truth or dare game with your friends!"
+					content="Experience the ultimate social truth or dare game - see, chat, and react together with your friends!"
 				/>
 				<link rel="icon" href="/favicon.ico" />
 			</Head>

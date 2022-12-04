@@ -18,7 +18,7 @@ export default function ManualPage() {
 				</p>
 
 				<p>
-					With Troof, you can chat, react, and choose from over 50+
+					With Troof, you can chat, react, and choose from over 290+
 					truths and dares* to test your limits and challenge your
 					friends.
 				</p>
