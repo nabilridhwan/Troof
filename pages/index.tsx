@@ -1,3 +1,4 @@
+import { IconAlertTriangle } from "@tabler/icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { NextPageContext } from "next";
 import Head from "next/head";
@@ -109,16 +110,26 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 					</p>
 
 					<p className="text-lg mb-5">
-						Synchronized online Truth Or Dare game!
+						Experience the ultimate social truth or dare game - see,
+						chat, and react together with your friends!
 					</p>
 
-					<p className="text-sm text-black/80">
-						The truths and dares are 18+. By joining/creating a
-						game,{" "}
-						<span className="font-semibold">
-							you&apos;re responsible for your own safety.
-						</span>
+					<p className="my-5">
+						First time? Check out{" "}
+						<Link href="/manual" className="text-red-600">
+							How to Play
+						</Link>{" "}
 					</p>
+
+					<div className="text-sm bg-yellow-100 text-yellow-900 border border-yellow-600/50 font-semibold rounded-xl py-4 px-2 flex flex-col items-center my-10">
+						<IconAlertTriangle className="my-1" />
+						<p>
+							This truth or dare game contains mature themes and
+							is intended for adults only. Please exercise caution
+							while playing and only participate if you are of
+							legal age.
+						</p>
+					</div>
 
 					<p className="text-red-500">{errorMessage}</p>
 
