@@ -1,14 +1,17 @@
+import { Dialog, Transition } from "@headlessui/react";
 import {
 	IconArrowForward,
 	IconCrown,
 	IconLogout,
+	IconPencil,
 	IconTrash,
 } from "@tabler/icons";
 
 import cx from "classnames";
 import { motion } from "framer-motion";
-import { useSocket } from "../hooks/useSocket";
-import { Player, TRUTH_OR_DARE_GAME } from "../Types";
+import { Fragment, useContext, useState } from "react";
+import { SocketProviderContext } from "../context/SocketProvider";
+import { EVENTS, Player, TRUTH_OR_DARE_GAME } from "../Types";
 
 interface PlayersProps {
 	players: Player[];
@@ -17,7 +20,10 @@ interface PlayersProps {
 }
 
 const Players = ({ players, player: p, room_id }: PlayersProps) => {
-	const { socket } = useSocket();
+	const socket = useContext(SocketProviderContext);
+
+	let [menuOpen, setMenuOpen] = useState(false);
+	const [newName, setNewName] = useState(p.display_name);
 
 	const removePlayer = (player_id: string) => {
 		if (!socket) return;
@@ -31,6 +37,15 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 		if (!socket) return;
 		socket.emit(TRUTH_OR_DARE_GAME.CONTINUE, {
 			room_id: room_id,
+		});
+	};
+
+	const changeName = () => {
+		if (!socket) return;
+		socket.emit(EVENTS.CHANGE_NAME, {
+			room_id: room_id,
+			player_id: p.player_id,
+			display_name: newName,
 		});
 	};
 
@@ -62,18 +77,32 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 								)}
 							</span>
 
-							{p.is_party_leader &&
-								player.player_id !== p.player_id && (
-									<button
-										className="flex items-center justify-center rounded-lg bg-red-300 px-3 py-2 text-sm gap-1"
-										onClick={() =>
-											removePlayer(player.player_id)
-										}
+							<div className="flex gap-2">
+								{p.is_party_leader &&
+									player.player_id !== p.player_id && (
+										<motion.button
+											whileHover={{ scale: 1.1 }}
+											whileTap={{ scale: 0.9 }}
+											className="aspect-square bg-red-300 text-red-900 p-2 rounded-lg"
+											onClick={() =>
+												removePlayer(player.player_id)
+											}
+										>
+											<IconTrash className="" size={18} />
+										</motion.button>
+									)}
+
+								{player.player_id === p.player_id && (
+									<motion.button
+										whileHover={{ scale: 1.1 }}
+										whileTap={{ scale: 0.9 }}
+										className="aspect-square bg-blue-300 text-blue-900 p-2 rounded-lg"
+										onClick={() => setMenuOpen(true)}
 									>
-										<IconTrash className="" size={18} />
-										Kick
-									</button>
+										<IconPencil size={18} />
+									</motion.button>
 								)}
+							</div>
 						</div>
 					))}
 				</div>
@@ -86,7 +115,7 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 							<motion.button
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.9 }}
-								className="btn my-2 bg-orange-300 border-none flex items-center gap-2 text-sm"
+								className="btn my-2 bg-orange-300 text-orange-900 border-none flex items-center gap-2 text-sm"
 								onClick={handleContinue}
 							>
 								<IconArrowForward size={16} />
@@ -98,7 +127,7 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 					<motion.button
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.9 }}
-						className="btn my-2 bg-red-300 border-none flex items-center gap-2 text-sm"
+						className="btn my-2 bg-red-300 text-red-900 border-none flex items-center gap-2 text-sm"
 						onClick={() => removePlayer(p.player_id)}
 					>
 						<IconLogout size={16} />
@@ -106,6 +135,88 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 					</motion.button>
 				</div>
 			</div>
+
+			<Transition appear show={menuOpen} as={Fragment}>
+				<Dialog
+					as="div"
+					className="relative z-10"
+					onClose={() => setMenuOpen(false)}
+				>
+					<Transition.Child
+						as={Fragment}
+						enter="ease-out duration-300"
+						enterFrom="opacity-0"
+						enterTo="opacity-100"
+						leave="ease-in duration-200"
+						leaveFrom="opacity-100"
+						leaveTo="opacity-0"
+					>
+						<div className="fixed inset-0 bg-black bg-opacity-25" />
+					</Transition.Child>
+
+					<div className="fixed inset-0 overflow-y-auto">
+						<div className="flex min-h-full items-center justify-center p-4 text-center">
+							<Transition.Child
+								as={Fragment}
+								enter="ease-out duration-300"
+								enterFrom="opacity-0 scale-95"
+								enterTo="opacity-100 scale-100"
+								leave="ease-in duration-200"
+								leaveFrom="opacity-100 scale-100"
+								leaveTo="opacity-0 scale-95"
+							>
+								<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-primary border-black/20 p-6 text-left align-middle shadow-xl transition-all">
+									<Dialog.Title
+										as="h3"
+										className="text-lg font-medium leading-6 text-gray-900"
+									>
+										Change Name
+									</Dialog.Title>
+									<div className="mt-2">
+										<p className="text-sm text-gray-500">
+											Enter a new name
+										</p>
+
+										<input
+											type="text"
+											className="w-full border border-gray-300 rounded-lg p-2 mt-2"
+											value={newName}
+											onChange={(e) =>
+												setNewName(e.target.value)
+											}
+										/>
+									</div>
+
+									<div className="mt-4 flex flex-wrap gap-1">
+										<button
+											type="button"
+											className="inline-flex justify-center rounded-md border border-transparent bg-green-300 px-4 py-2 text-sm font-medium text-green-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+											onClick={() => {
+												if (newName.trim() !== "") {
+													changeName();
+													setMenuOpen(false);
+												}
+											}}
+										>
+											Change my name
+										</button>
+
+										<button
+											type="button"
+											className="inline-flex justify-center rounded-md border border-transparent bg-red-300 px-4 py-2 text-sm font-medium text-red-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+											onClick={() => {
+												setMenuOpen(false);
+											}}
+										>
+											Cancel
+										</button>
+									</div>
+								</Dialog.Panel>
+							</Transition.Child>
+						</div>
+					</div>
+				</Dialog>
+			</Transition>
 		</div>
 	);
 };

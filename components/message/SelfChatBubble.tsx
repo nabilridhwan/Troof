@@ -1,13 +1,19 @@
 import { Emoji, EmojiStyle } from "emoji-picker-react";
 import { MessageUpdate } from "../../Types";
+import ProfilePictureFromName from "../ProfilePictureFromName";
 
 interface SelfChatBubbleProps {
+	displayName: string;
 	message: MessageUpdate;
 	asEmoji?: boolean;
 }
 
-const SelfChatBubble = ({ message, asEmoji = false }: SelfChatBubbleProps) => (
-	<div className="flex flex-row justify-end my-2 text-sm">
+const SelfChatBubble = ({
+	displayName,
+	message,
+	asEmoji = false,
+}: SelfChatBubbleProps) => (
+	<div className="flex flex-row justify-end items-end my-2 text-sm gap-2">
 		<div className="bg-gray-100 w-fit p-2 px-3 rounded-lg rounded-br-none">
 			{asEmoji ? (
 				<Emoji
@@ -20,6 +26,8 @@ const SelfChatBubble = ({ message, asEmoji = false }: SelfChatBubbleProps) => (
 			)}
 			<div />
 		</div>
+
+		<ProfilePictureFromName name={displayName} />
 	</div>
 );
 

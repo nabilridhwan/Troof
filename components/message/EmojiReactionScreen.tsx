@@ -1,6 +1,6 @@
 import { Emoji, EmojiStyle } from "emoji-picker-react";
-import { useEffect, useState } from "react";
-import { useSocket } from "../../hooks/useSocket";
+import { useContext, useEffect, useState } from "react";
+import { SocketProviderContext } from "../../context/SocketProvider";
 import { MESSAGE_EVENTS } from "../../Types";
 import Container from "../Container";
 
@@ -16,7 +16,7 @@ interface EmojisState {
 }
 
 const EmojiReactionScreen = ({ room_id }: EmojiReactionScreenProps) => {
-	const { socket } = useSocket();
+	const socket = useContext(SocketProviderContext);
 
 	const [emojis, setEmojis] = useState<EmojisState[]>([]);
 
@@ -51,8 +51,18 @@ const EmojiReactionScreen = ({ room_id }: EmojiReactionScreenProps) => {
 				console.log(finalArray);
 
 				setEmojis((oldEmojis) => [...oldEmojis, ...finalArray]);
+
+				socket.on("disconnect", () => {
+					// socket.disconnect();
+				});
 			});
 		}
+
+		return () => {
+			if (socket) {
+				// socket.disconnect();
+			}
+		};
 	}, [socket, room_id]);
 
 	return (

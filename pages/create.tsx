@@ -33,7 +33,7 @@ export async function getServerSideProps(context: NextPageContext) {
 
 		return {
 			redirect: {
-				destination: `/lobby/${room_id}`,
+				destination: `/game/${room_id}`,
 				permanent: true,
 			},
 		};

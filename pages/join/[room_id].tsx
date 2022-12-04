@@ -1,7 +1,6 @@
 import { AxiosError } from "axios";
 import { NextPageContext } from "next";
 import Head from "next/head";
-import { Status } from "../../Types";
 import axiosInstance from "../../utils/axiosInstance";
 import { Cookie } from "../../utils/Cookie";
 
@@ -29,18 +28,9 @@ export async function getServerSideProps(context: NextPageContext) {
 
 		console.log(room_status);
 
-		if (room_status === Status.In_Game) {
-			return {
-				redirect: {
-					destination: `/game/${room_id}`,
-					permanent: true,
-				},
-			};
-		}
-
 		return {
 			redirect: {
-				destination: `/lobby/${room_id}`,
+				destination: `/game/${room_id}`,
 				permanent: true,
 			},
 		};

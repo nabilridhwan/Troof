@@ -11,13 +11,23 @@ export function useSocket() {
 	const [effectRan, setEffectRan] = useState(false);
 
 	useEffect(() => {
-		if (effectRan) return;
+		console.log("USESOCKET: USEEFFECT RUNNING");
+		if (effectRan || socket) return;
 		clientSocketInitializer();
-	}, [socket]);
+
+		return () => {
+			if (socket) {
+				console.log("USESOCKET: Disconnecting socket");
+				(socket as Socket).disconnect();
+			}
+		};
+	}, [socket, effectRan]);
 
 	const clientSocketInitializer = async () => {
+		console.log("USESOCKET: Client Socket Initializer Ran");
 		const url = process.env.NEXT_PUBLIC_SERVICES_URL!;
-		setSocket(io(url));
+		const s = io(url);
+		setSocket(s);
 		setEffectRan(true);
 	};
 

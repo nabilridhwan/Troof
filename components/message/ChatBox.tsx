@@ -1,6 +1,6 @@
 import { IconSend } from "@tabler/icons";
-import { useEffect, useRef, useState } from "react";
-import { useSocket } from "../../hooks/useSocket";
+import { useContext, useEffect, useRef, useState } from "react";
+import { SocketProviderContext } from "../../context/SocketProvider";
 import {
 	Message,
 	MessageUpdate,
@@ -17,7 +17,7 @@ interface ChatBoxProps {
 }
 
 const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
-	const { socket } = useSocket();
+	const socket = useContext(SocketProviderContext);
 
 	const [messages, setMessages] = useState<(MessageUpdate | SystemMessage)[]>(
 		[]
@@ -148,9 +148,17 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 								{message.type === "message" && (
 									<>
 										{message.player_id === player_id ? (
-											<SelfChatBubble message={message} />
+											<SelfChatBubble
+												displayName={
+													message.player.display_name
+												}
+												message={message}
+											/>
 										) : (
 											<OtherPlayerChatBubble
+												displayName={
+													message.player.display_name
+												}
 												message={message}
 											/>
 										)}
@@ -161,11 +169,17 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 									<>
 										{message.player_id === player_id ? (
 											<SelfChatBubble
+												displayName={
+													message.player.display_name
+												}
 												message={message}
 												asEmoji
 											/>
 										) : (
 											<OtherPlayerChatBubble
+												displayName={
+													message.player.display_name
+												}
 												message={message}
 												asEmoji
 											/>
@@ -199,7 +213,7 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 						onChange={(e) => setInputMessage(e.target.value)}
 					/>
 
-					<button className="bg-blue-300 rounded-lg px-4">
+					<button className="bg-blue-300 text-blue-900 rounded-lg px-4">
 						<IconSend size={18} />
 					</button>
 				</div>

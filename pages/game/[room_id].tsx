@@ -1,12 +1,13 @@
+import { IconArrowNarrowRight, IconDice, IconLink } from "@tabler/icons";
 import { motion } from "framer-motion";
 import { NextPageContext } from "next";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Container from "../../components/Container";
 import ChatBox from "../../components/message/ChatBox";
 import EmojiReactionScreen from "../../components/message/EmojiReactionScreen";
 import Players from "../../components/Players";
-import { useSocket } from "../../hooks/useSocket";
+import { SocketProviderContext } from "../../context/SocketProvider";
 import {
 	Action,
 	EVENTS,
@@ -118,7 +119,7 @@ export default function GamePage({
 		`Room Code: ${room_id}`
 	);
 
-	const { socket } = useSocket();
+	const socket = useContext(SocketProviderContext);
 
 	useEffect(() => {
 		if (socket) {
@@ -170,9 +171,12 @@ export default function GamePage({
 			socket.on(EVENTS.LEFT_GAME, (playerRemoved: Player) => {
 				console.log(playerRemoved);
 				if (playerRemoved.player_id === player.player_id) {
+					console.log("Redirecting to home page");
 					console.log("Left game");
 					window.location.href = "/";
 				}
+
+				// socket.disconnect();
 			});
 
 			socket.on("disconnect", () => {
@@ -271,7 +275,8 @@ export default function GamePage({
 										className="font-bold text-sm text-center my-10 cursor-pointer"
 										onClick={handleCopyRoomCode}
 									>
-										<span className="bg-black text-white rounded-lg py-1 px-2">
+										<span className="flex gap-1 w-fit items-center mx-auto bg-black text-white rounded-lg py-1 px-2">
+											<IconLink size={16} />
 											{roomCodeText}
 										</span>
 									</motion.p>
@@ -279,17 +284,80 @@ export default function GamePage({
 									{/* Current Player Name */}
 									<main className="w-full flex items-center justify-center my-10">
 										<div className="rnd bdr w-fit px-10 py-5">
-											<h1 className="font-Playfair font-black text-5xl text-center">
+											<h1 className="font-Playfair font-black text-5xl text-center break-all">
 												{currentPlayer.display_name}
 											</h1>
 										</div>
 									</main>
 
+									{/* The truth/dare box*/}
+									{action !==
+										Action.Waiting_For_Selection && (
+										<motion.div
+											initial={{
+												opacity: 0,
+												y: -100,
+											}}
+											animate={{
+												opacity: 1,
+												y: 0,
+											}}
+											exit={{
+												opacity: 0,
+												y: 100,
+											}}
+										>
+											<div className="rnd bdr w-fit px-10 py-5 space-y-4 mx-auto my-3">
+												<h2 className="text-center text-xl md:text-3xl font-semibold leading-normal">
+													{text}
+												</h2>
+
+												{player_id ===
+													currentPlayer.player_id && (
+													<motion.button
+														whileHover={{
+															scale: 1.1,
+														}}
+														whileTap={{
+															scale: 0.9,
+														}}
+														className="bg-black text-sm text-white rounded-lg py-1 px-2 flex w-fit justify-center items-center mx-auto gap-1"
+														onClick={
+															Action.Dare
+																? () => {
+																		selectDare();
+																  }
+																: () => {
+																		selectTruth();
+																  }
+														}
+													>
+														<motion.div
+															initial={{
+																opacity: 0,
+															}}
+															animate={{
+																rotate: 360,
+																opacity: 1,
+															}}
+														>
+															<IconDice
+																size={19}
+															/>
+														</motion.div>
+														Re-roll
+													</motion.button>
+												)}
+											</div>
+										</motion.div>
+									)}
+
 									{/* If it is the current player and the action is to wait for a selection, Show the selection truth or dare buttons */}
-									{currentPlayer.player_id === player_id &&
+									{players.length >= 2 &&
+										currentPlayer.player_id === player_id &&
 										action ===
 											Action.Waiting_For_Selection && (
-											<>
+											<motion.div>
 												<p className="text-center">
 													Select One
 												</p>
@@ -323,8 +391,29 @@ export default function GamePage({
 														Dare
 													</motion.button>
 												</div>
-											</>
+											</motion.div>
 										)}
+
+									{players.length < 2 && (
+										<>
+											<p className="text-center italic">
+												Waiting for more players to
+												join. (Min. 2)
+											</p>
+
+											<motion.p
+												whileHover={{ scale: 1.1 }}
+												whileTap={{ scale: 0.9 }}
+												className="font-bold text-sm text-center my-10 cursor-pointer"
+												onClick={handleCopyRoomCode}
+											>
+												<span className="bg-black text-white rounded-lg py-1 px-2 flex w-fit justify-center items-center mx-auto gap-1">
+													<IconLink size={16} />
+													Invite your friends
+												</span>
+											</motion.p>
+										</>
+									)}
 
 									{/* Show this below if the current player is not the player and that the action is waiting for selection */}
 									{currentPlayer.player_id !== player_id &&
@@ -337,34 +426,47 @@ export default function GamePage({
 											</p>
 										)}
 
-									{/* The truth/dare text */}
-									{action !==
-										Action.Waiting_For_Selection && (
-										<>
-											<div className="rnd bdr w-fit px-10 py-5 space-y-4 mx-auto my-3">
-												<h2 className="text-center text-xl md:text-3xl font-semibold leading-normal">
-													{text}
-												</h2>
-											</div>
-										</>
-									)}
-
 									{/* If it is the current player and they're not waiting for selection */}
 									{currentPlayer.player_id === player_id &&
 										action !==
 											Action.Waiting_For_Selection && (
-											<div>
+											<div className="flex justify-center">
 												<motion.button
 													whileHover={{
-														scale: 1.01,
+														scale: 1.1,
 													}}
 													whileTap={{
 														scale: 0.9,
 													}}
-													className="btn mt-2 my-1 t bg-green-300 font-bold"
+													initial={{ scale: 1 }}
+													animate={{
+														scale: 1.1,
+													}}
+													transition={{
+														repeat: Infinity,
+														repeatType: "mirror",
+														duration: 1,
+													}}
+													className="px-5 py-3 rounded-xl mt-2 my-1 t bg-green-300 text-green-900 flex gap-2 items-center text-sm font-semibold"
 													onClick={handleContinue}
 												>
 													Continue
+													<motion.div
+														initial={{ x: 0 }}
+														animate={{
+															x: 10,
+														}}
+														transition={{
+															repeat: Infinity,
+															repeatType:
+																"mirror",
+															duration: 1,
+														}}
+													>
+														<IconArrowNarrowRight
+															size={16}
+														/>
+													</motion.div>
 												</motion.button>
 											</div>
 										)}

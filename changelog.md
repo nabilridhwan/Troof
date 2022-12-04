@@ -1,3 +1,25 @@
+## Version 0.1.7
+
+### What's New (Client)
+
+-   **[DEV]** Code optimisations for socket.
+-   Removed the lobby page. Now you'll head straight for the game page when joining!
+-   Add the option to re-roll a truth/dare (if you can't do the challenge, you can re-roll without skipping your turn)
+-   **[TESTING]** Added the ability to change your name.
+    -   The changes will be applied on the next turn.
+-   New profile picture when in chat (by initials)!
+-   Changed pastel background buttons to have a matching darker text color (instead of black).
+-   New Animations
+    -   Added animation of truths/dares popping into screen.
+    -   Added animation to the continue button to start pulsing.
+
+### What's New (Server)
+
+-   Better logging
+-   Faster Optimisation for Join Game and Room
+-   Change name handler
+-   When getting players in a room, it is now sorted by party leader first
+
 ## Version 0.1.6
 
 ### What's new
