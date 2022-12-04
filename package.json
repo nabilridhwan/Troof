@@ -1,6 +1,6 @@
 {
 	"name": "gamenight",
-	"version": "0.1.9",
+	"version": "0.1.10",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
@@ -34,6 +34,7 @@
 		"next": "13.0.4",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
+		"react-spinners": "^0.13.7",
 		"socket.io": "^4.5.4",
 		"socket.io-client": "^4.5.4",
 		"typescript": "4.9.3"

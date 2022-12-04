@@ -1,3 +1,16 @@
+## Version 0.1.10
+
+### What's New (Client - v0.1.10)
+
+-   Fixed an issue where users are able to skip multiple players by constantly clicking on the "Continue" button
+-   Fixed an issue where users are able to select multiple truths/dares by constantly clicking on the "Truth/Dare" button
+-   Fixed an issue where users are able to re-roll many times by constantly clicking on the "Truth/Dare" button
+-   Fixed an issue where the game doesnt correctly reflect if it has started or not (since removing the lobby page)
+
+### What's New (Server v0.1.9)
+
+-   Now messages sent will be cleaned, you can say extreme bad words anymore, it will be replaced with an asterisk (\*)
+
 ## Version 0.1.9
 
 ### What's New (Client - v0.1.9)

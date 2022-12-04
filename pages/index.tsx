@@ -127,10 +127,9 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 					<div className="text-sm bg-yellow-100 text-yellow-900 border border-yellow-600/50 font-semibold rounded-xl py-4 px-2 flex flex-col items-center my-10">
 						<IconAlertTriangle className="my-1" />
 						<p>
-							This truth or dare game contains mature themes and
-							is intended for adults only. Please exercise caution
-							while playing and only participate if you are of
-							legal age.
+							This game contains mature themes and is intended for
+							adults only. Please exercise caution while playing
+							and only participate if you are of legal age.
 						</p>
 					</div>
 

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { NextPageContext } from "next";
 import Head from "next/head";
 import { useContext, useEffect, useState } from "react";
+import { PropagateLoader } from "react-spinners";
 import Container from "../../components/Container";
 import ChatBox from "../../components/message/ChatBox";
 import EmojiReactionScreen from "../../components/message/EmojiReactionScreen";
@@ -119,6 +120,9 @@ export default function GamePage({
 		`Room Code: ${room_id}`
 	);
 
+	// This state below is for the loading state, everytime a person clicks continue, it will be set to true
+	const [isLoadingState, setLoadingState] = useState<boolean>(true);
+
 	const socket = useContext(SocketProviderContext);
 
 	useEffect(() => {
@@ -149,6 +153,8 @@ export default function GamePage({
 					setCurrentPlayer(player);
 					setText("");
 					setAction(log.action as Action);
+
+					setLoadingState(false);
 				}
 			);
 
@@ -164,6 +170,8 @@ export default function GamePage({
 						(log.action as Action) ??
 							(Action.Waiting_For_Selection as Action)
 					);
+
+					setLoadingState(false);
 				}
 			);
 
@@ -198,6 +206,30 @@ export default function GamePage({
 		}
 	}, [socket, room_id, player_id]);
 
+	useEffect(() => {
+		if (!socket) return;
+
+		if (players.length >= 2) {
+			setGameStatus(Status.In_Game);
+
+			console.log("There are 2 or more players, starting game");
+			socket.emit(EVENTS.START_GAME, {
+				room_id,
+			});
+		} else {
+			setGameStatus(Status.In_Lobby);
+			setGameStatus(Status.In_Game);
+
+			console.log(
+				"There is less than 2 players, waiting for more. Changing status to in lobby"
+			);
+			socket.emit(EVENTS.GAME_UPDATE, {
+				room_id,
+				status: Status.In_Lobby,
+			});
+		}
+	}, [players, room_id, socket]);
+
 	const inLobbyGame = () => {
 		if (!socket) return;
 		socket.emit(EVENTS.GAME_UPDATE, {
@@ -209,6 +241,8 @@ export default function GamePage({
 	const selectTruth = () => {
 		console.log("Selecting truth");
 		console.log(!!socket);
+
+		setLoadingState(true);
 		if (!socket) return;
 		console.log("Emitting to server to select truth");
 		socket.emit(TRUTH_OR_DARE_GAME.SELECT_TRUTH, {
@@ -219,6 +253,7 @@ export default function GamePage({
 
 	const selectDare = () => {
 		if (!socket) return;
+		setLoadingState(true);
 		socket.emit(TRUTH_OR_DARE_GAME.SELECT_DARE, {
 			room_id: room_id,
 			player_id: player_id,
@@ -227,6 +262,7 @@ export default function GamePage({
 
 	const handleContinue = () => {
 		if (!socket) return;
+		setLoadingState(true);
 		socket.emit(TRUTH_OR_DARE_GAME.CONTINUE, {
 			room_id: room_id,
 		});
@@ -321,7 +357,10 @@ export default function GamePage({
 														whileTap={{
 															scale: 0.9,
 														}}
-														className="bg-black text-sm text-white rounded-lg py-1 px-2 flex w-fit justify-center items-center mx-auto gap-1"
+														className="bg-black text-sm text-white rounded-lg py-1 px-2 flex w-fit justify-center items-center mx-auto gap-1 disabled:text-opacity-50"
+														disabled={
+															isLoadingState
+														}
 														onClick={
 															action ===
 															Action.Dare
@@ -378,7 +417,10 @@ export default function GamePage({
 														whileTap={{
 															scale: 0.9,
 														}}
-														className="btn-huge w-[120px] aspect-square"
+														className="btn-huge w-[120px] aspect-square disabled:text-opacity-50"
+														disabled={
+															isLoadingState
+														}
 														onClick={selectTruth}
 													>
 														Truth
@@ -392,7 +434,10 @@ export default function GamePage({
 														whileTap={{
 															scale: 0.9,
 														}}
-														className="btn-huge w-[120px] aspect-square"
+														className="btn-huge w-[120px] aspect-square disabled:text-opacity-50"
+														disabled={
+															isLoadingState
+														}
 														onClick={selectDare}
 													>
 														Dare
@@ -439,9 +484,6 @@ export default function GamePage({
 											Action.Waiting_For_Selection && (
 											<div className="flex justify-center">
 												<motion.button
-													whileHover={{
-														scale: 1.1,
-													}}
 													whileTap={{
 														scale: 0.9,
 													}}
@@ -454,8 +496,9 @@ export default function GamePage({
 														repeatType: "mirror",
 														duration: 1,
 													}}
-													className="px-5 py-3 rounded-xl mt-2 my-1 t bg-green-300 text-green-900 flex gap-2 items-center text-sm font-semibold"
+													className="px-5 py-3 rounded-xl mt-2 my-1 t bg-green-300 text-green-900 flex gap-2 items-center text-sm font-semibold disabled:text-opacity-50"
 													onClick={handleContinue}
+													disabled={isLoadingState}
 												>
 													Continue
 													<motion.div
@@ -477,6 +520,15 @@ export default function GamePage({
 												</motion.button>
 											</div>
 										)}
+
+									<div className="flex items-center justify-center h-[50px]">
+										<PropagateLoader
+											loading={isLoadingState}
+											color={"black"}
+											className="bg-red-500 my-10"
+											size={10}
+										/>
+									</div>
 								</div>
 							</div>
 						</div>
