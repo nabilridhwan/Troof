@@ -9,7 +9,6 @@ interface EmojiReactionScreenProps {
 }
 
 interface EmojisState {
-	batch: string;
 	emoji: string;
 	positionX: number;
 	delay: number;
@@ -46,7 +45,6 @@ const EmojiReactionScreen = ({ room_id }: EmojiReactionScreenProps) => {
 
 				const finalArray = Array.from({ length: numberOfEmojis }).map(
 					(_, index) => ({
-						batch: data.created_at + data.player_id + data.message,
 						emoji: data.message,
 						positionX: Math.floor(
 							Math.random() * window.innerWidth
