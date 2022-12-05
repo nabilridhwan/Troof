@@ -158,6 +158,10 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 					name="description"
 					content="Experience the ultimate social truth or dare game - see, chat, and react together with your friends!"
 				/>
+
+				{/* Og image */}
+				<meta property="og:image" content={`/troof_promo_new.png`} />
+
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
