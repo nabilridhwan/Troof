@@ -1,17 +1,15 @@
-import { Dialog, Transition } from "@headlessui/react";
 import {
 	IconArrowForward,
 	IconCrown,
 	IconLogout,
-	IconPencil,
 	IconTrash,
 } from "@tabler/icons";
 
 import cx from "classnames";
 import { motion } from "framer-motion";
-import { Fragment, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { SocketProviderContext } from "../context/SocketProvider";
-import { EVENTS, Player, TRUTH_OR_DARE_GAME } from "../Types";
+import { Player, TRUTH_OR_DARE_GAME } from "../Types";
 
 interface PlayersProps {
 	players: Player[];
@@ -41,13 +39,14 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 	};
 
 	const changeName = () => {
-		if (!socket) return;
-		socket.emit(EVENTS.CHANGE_NAME, {
-			room_id: room_id,
-			player_id: p.player_id,
-			display_name: p.display_name,
-			new_name: newName,
-		});
+		console.log("The changing name function is retracted back.");
+		// if (!socket) return;
+		// socket.emit(EVENTS.CHANGE_NAME, {
+		// 	room_id: room_id,
+		// 	player_id: p.player_id,
+		// 	display_name: p.display_name,
+		// 	new_name: newName,
+		// });
 	};
 
 	return (
@@ -93,7 +92,7 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 										</motion.button>
 									)}
 
-								{player.player_id === p.player_id && (
+								{/* {player.player_id === p.player_id && (
 									<motion.button
 										whileHover={{ scale: 1.1 }}
 										whileTap={{ scale: 0.9 }}
@@ -102,7 +101,7 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 									>
 										<IconPencil size={18} />
 									</motion.button>
-								)}
+								)} */}
 							</div>
 						</div>
 					))}
@@ -138,7 +137,7 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 				</div>
 			</div>
 
-			<Transition appear show={menuOpen} as={Fragment}>
+			{/* <Transition appear show={menuOpen} as={Fragment}>
 				<Dialog
 					as="div"
 					className="relative z-10"
@@ -218,7 +217,7 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 						</div>
 					</div>
 				</Dialog>
-			</Transition>
+			</Transition> */}
 		</div>
 	);
 };

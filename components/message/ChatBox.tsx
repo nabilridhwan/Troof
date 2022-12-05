@@ -238,7 +238,8 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 							>
 								{message.type === "message" && (
 									<>
-										{message.player_id === player_id ? (
+										{message.display_name ===
+										display_name ? (
 											<SelfChatBubble
 												displayName={
 													message.display_name
@@ -258,7 +259,8 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 
 								{message.type === "reaction" && (
 									<>
-										{message.player_id === player_id ? (
+										{message.display_name ===
+										display_name ? (
 											<SelfChatBubble
 												displayName={
 													message.display_name

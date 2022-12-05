@@ -15,6 +15,10 @@ This changelog looks different because it includes changes from the previous thr
     -   To help mobile users such that automatically zooming in on the left hand side of the screen and manually zooming out.
 -   Fixed an issue where players can join a game with no name at all.
 
+#### Breaking change
+
+-   Due to the discovery of some bugs, the ability to change names is not available in this release.
+
 ### Server
 
 #### v0.2.2
