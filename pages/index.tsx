@@ -57,7 +57,7 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 		useState<boolean>(false);
 
 	const handleJoinGameButtonClick = () => {
-		if (roomIDInput.trim()) {
+		if (displayName.trim().length > 0 && roomIDInput.trim().length > 0) {
 			// Redirect to the join page
 			window.location.href = `/join/${roomIDInput}?display_name=${displayName}`;
 			setClickedAlready(true);
@@ -65,7 +65,7 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 	};
 
 	const handleCreateRoomButtonClick = () => {
-		if (displayName.trim()) {
+		if (displayName.trim().length > 0) {
 			// Redirect to the create page
 			window.location.href = "/create?display_name=" + displayName;
 			setClickedAlready(true);

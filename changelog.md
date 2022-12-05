@@ -1,3 +1,36 @@
+## Version 0.2.2 - Client and 0.2.2, 0.2.3 and 0.2.4 - Server
+
+This changelog looks different because it includes changes from the previous three iterations (for server). 😅
+
+### Client
+
+#### v0.2.2
+
+-   Now, every new message and reaction passed through socket.io will pass the display name. This is to reduce the workload of the server
+    -   Known Issue: When you change your name, you have to refresh the page so that the new name will display in your message
+-   You can now see when other players are typing
+-   In addition so system message for new truths and dares, the system message will now include the actual truth/dare in the system message.
+    -   This is to give mobile users context while they interact with the chat.
+-   Increase the width of the chat input box to be full width
+    -   To help mobile users such that automatically zooming in on the left hand side of the screen and manually zooming out.
+-   Fixed an issue where players can join a game with no name at all.
+
+### Server
+
+#### v0.2.2
+
+-   Add more truths and dares (Now is up to 527)
+
+#### v0.2.3
+
+-   More random truths and dares will be picked.
+
+#### v0.2.4
+
+-   Support for new message style (pushing display name instead of player id).
+-   Support for user typing broadcast.
+-   Display of system message for truths and dares picked
+
 ## Version 0.2.1
 
 In this coming versions, I have fixed a lot of bugs and improved user experience. The addition of selecting any emojis gives users more fun and interactivity 😀.

@@ -533,7 +533,11 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 							players={players}
 							room_id={roomID}
 						/>
-						<ChatBox player_id={player_id} room_id={roomID} />
+						<ChatBox
+							player_id={player_id}
+							room_id={roomID}
+							display_name={player.display_name}
+						/>
 					</div>
 				</div>
 			</div>
