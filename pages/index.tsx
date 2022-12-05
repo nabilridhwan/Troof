@@ -160,7 +160,10 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 				/>
 
 				{/* Og image */}
-				<meta property="og:image" content={`/troof_promo_new.png`} />
+				<meta
+					property="og:image"
+					content={`https://troof.nabilridhwan.com/troof_promo_new.png`}
+				/>
 
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
