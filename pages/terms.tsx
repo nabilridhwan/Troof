@@ -17,9 +17,9 @@ export default function PrivacyPolicyPage() {
 					<h1>Terms Of Service</h1>
 					<p>
 						By accessing and using our game, you agree to be bound
-						by the following terms and conditions (the "Terms of
-						Service" or "TOS"). If you do not agree to these terms,
-						do not use our game.
+						by the following terms and conditions (the &quot;Terms
+						of Service&quot; or &quot;TOS&quot;). If you do not
+						agree to these terms, do not use our game.
 					</p>
 
 					<h3>1. Rights and Responsibilities.</h3>
