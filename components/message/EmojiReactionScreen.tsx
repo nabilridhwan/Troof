@@ -13,12 +13,19 @@ interface EmojisState {
 	emoji: string;
 	positionX: number;
 	delay: number;
+	size: number;
 }
+
+const numberOfEmojis = 30;
 
 const EmojiReactionScreen = ({ room_id }: EmojiReactionScreenProps) => {
 	const socket = useContext(SocketProviderContext);
 
 	const [emojis, setEmojis] = useState<EmojisState[]>([]);
+
+	// const [emojisWithFinishedAnimations, setEmojisWithFinishedAnimations] =
+	useState(0);
+	// const [totalEmojisOnScreen, setTotalEmojisOnScreen] = useState(0);
 
 	useEffect(() => {
 		if (socket) {
@@ -37,16 +44,20 @@ const EmojiReactionScreen = ({ room_id }: EmojiReactionScreenProps) => {
 
 				console.log(window.innerWidth);
 
-				const finalArray = Array.from({ length: 15 }).map(
+				const finalArray = Array.from({ length: numberOfEmojis }).map(
 					(_, index) => ({
 						batch: data.created_at + data.player_id + data.message,
 						emoji: data.message,
 						positionX: Math.floor(
 							Math.random() * window.innerWidth
 						),
-						delay: Math.random() * 1000,
+						delay: Math.random() * 2000,
+
+						size: Math.floor(Math.random() * 10) + 30,
 					})
 				);
+
+				// setTotalEmojisOnScreen((prev) => prev + numberOfEmojis);
 
 				console.log(finalArray);
 
@@ -67,14 +78,17 @@ const EmojiReactionScreen = ({ room_id }: EmojiReactionScreenProps) => {
 
 	return (
 		<div
+			id="emoji-reaction-screen"
 			className="fixed w-screen h-screen bg-transparent top-0 left-0 overflow-hidden pointer-events-none"
-			onAnimationEndCapture={() => console.log("Finally completed")}
 		>
 			<Container>
 				{emojis.map((emoji, index) => (
 					<div
+						onAnimationEnd={() => {
+							console.log("Emoji animation ended");
+						}}
 						key={index}
-						className={`animate-drop absolute top-0 overflow-hidden pointer-events-none`}
+						className={`z-50 animate-drop absolute top-0 overflow-hidden pointer-events-none`}
 						style={{
 							opacity: 0,
 							animationDelay: `${emoji.delay}ms`,
@@ -84,7 +98,7 @@ const EmojiReactionScreen = ({ room_id }: EmojiReactionScreenProps) => {
 						<Emoji
 							unified={emoji.emoji}
 							emojiStyle={EmojiStyle.APPLE}
-							size={Math.floor(Math.random() * 10) + 30}
+							size={emoji.size}
 						/>
 					</div>
 				))}

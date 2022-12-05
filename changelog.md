@@ -1,3 +1,35 @@
+## Version 0.2.0
+
+In this coming versions, I have fixed a lot of bugs and improved user experience. The addition of selecting any emojis gives users more fun and interactivity 😀.
+
+**NOTE!** The current version of the game is 0.2.0, but we may change the version to 1.0.0 in the future if we feel that the game is stable enough for a full release. If this happens, we will provide an updated changelog or release notes to reflect the version change.
+
+### What's new (Client - v0.2.0)
+
+-   Added terms of service and privacy policy to outline the rights of users and our rights.
+-   Disabled the censoring of messages in chat. This is because it is the user's responsibility to exercise caution.
+-   Allows you to pick your own emojis to react to.
+-   Now the Emoji bar shows your most frequently used emojis.
+-   **[DEV]** Now the socket provider wraps the game page and inner components can use the socket.
+    -   This decreases the amount of socket connection tremendously.
+-   Changed the "Force Skip" button color.
+-   Fixed: Disable the "Force Skip" button if there is only 1 player in the room.
+-   There is a system message whenever a player changes their name.
+-   Changed room code input and also anywhere that shows the room code to be a monospace font.
+    -   This is so that it is easier for users to read.
+-   Limit the room code input to only 6 characters.
+-   Fixed an issue that users can create/join a room many times by spamming the create/join button. This is now fixed. Everytime you press the button, it will disable the button.
+-   Fixed: User's text message can overflow the chatbox and requires the user to scroll horizontally. This is now fixed.
+-   If you accidentally left the game, you can return to the home page, it will ask if you need to re-join.
+    -   This is to fix the fact that players will re-join the room under a different player.
+
+### What's new (Server - v0.2.0)
+
+-   Get room API route
+-   Support for system message to show when a user change name
+-   Removed profanity filter
+-   Bumped version to v0.2.0 match game version to avoid confusion
+
 ## Version 0.1.10
 
 ### What's New (Client - v0.1.10)

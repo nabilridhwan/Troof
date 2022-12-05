@@ -45,7 +45,8 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 		socket.emit(EVENTS.CHANGE_NAME, {
 			room_id: room_id,
 			player_id: p.player_id,
-			display_name: newName,
+			display_name: p.display_name,
+			new_name: newName,
 		});
 	};
 
@@ -113,9 +114,10 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 					{p.is_party_leader && (
 						<div>
 							<motion.button
+								disabled={players.length < 2}
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.9 }}
-								className="btn my-2 bg-orange-300 text-orange-900 border-none flex items-center gap-2 text-sm"
+								className="btn disabled:opacity-70 my-2 bg-teal-300 text-teal-900 border-none flex items-center gap-2 text-sm"
 								onClick={handleContinue}
 							>
 								<IconArrowForward size={16} />

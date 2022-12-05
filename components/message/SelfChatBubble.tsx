@@ -13,8 +13,8 @@ const SelfChatBubble = ({
 	message,
 	asEmoji = false,
 }: SelfChatBubbleProps) => (
-	<div className="flex flex-row justify-end items-end my-2 text-sm gap-2">
-		<div className="bg-gray-100 w-fit p-2 px-3 rounded-lg rounded-br-none">
+	<div className=" w-full flex flex-row justify-end items-end my-2 text-sm gap-2">
+		<div className="bg-gray-100 max-w-[80%]  p-2 px-3 rounded-lg rounded-br-none">
 			{asEmoji ? (
 				<Emoji
 					unified={message.message}
@@ -22,7 +22,7 @@ const SelfChatBubble = ({
 					size={30}
 				/>
 			) : (
-				<p>{message.message}</p>
+				<p className="break-words">{message.message}</p>
 			)}
 			<div />
 		</div>

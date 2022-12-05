@@ -6,10 +6,12 @@ interface JoinRoomInterface {
 	setRoomIDInput: (roomIDInput: string) => void;
 	setDisplayName: (displayName: string) => void;
 	handleOnClick: () => void;
+	disabled: boolean;
 }
 
 const JoinRoomSection = ({
 	displayName,
+	disabled,
 	setDisplayName,
 	roomIDInput,
 	setRoomIDInput,
@@ -28,12 +30,13 @@ const JoinRoomSection = ({
 		/>
 
 		<motion.input
+			maxLength={6}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
 			type="text"
 			placeholder="Room Code"
-			className="input-huge my-2 text-center"
+			className="input-huge my-2 text-center font-mono"
 			value={roomIDInput}
 			onChange={(e) => setRoomIDInput(e.target.value.toUpperCase())}
 		/>
@@ -54,7 +57,8 @@ const JoinRoomSection = ({
 					ease: "easeOut",
 				},
 			}}
-			className="btn-huge m-10"
+			disabled={disabled}
+			className="disabled:opacity-50 btn-huge m-10"
 			onClick={handleOnClick}
 		>
 			Join Room

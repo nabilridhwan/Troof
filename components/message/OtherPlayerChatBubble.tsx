@@ -15,7 +15,7 @@ const OtherPlayerChatBubble = ({
 }: OtherPlayerChatBubbleProps) => (
 	<div className="flex flex-row justify-start items-end my-2 text-sm gap-2">
 		<ProfilePictureFromName name={displayName} />
-		<div className="bg-blue-300 text-blue-900  w-fit p-2 px-3 rounded-lg rounded-bl-none">
+		<div className="bg-blue-300 text-blue-900 max-w-[80%] p-2 px-3 rounded-lg rounded-bl-none">
 			<p className="text-xs font-semibold mb-1">
 				{message.player.display_name}
 			</p>
@@ -27,7 +27,7 @@ const OtherPlayerChatBubble = ({
 					size={30}
 				/>
 			) : (
-				<p>{message.message}</p>
+				<p className="break-words">{message.message}</p>
 			)}
 
 			<div />

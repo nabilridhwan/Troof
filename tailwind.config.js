@@ -16,7 +16,7 @@ module.exports = {
 			},
 
 			animation: {
-				drop: "drop 3s ease-in forwards",
+				drop: "drop 2s ease-in forwards",
 			},
 
 			keyframes: {
@@ -26,7 +26,11 @@ module.exports = {
 						opacity: 0,
 					},
 
-					"50%": {
+					"30%": {
+						opacity: 1,
+					},
+
+					"80%": {
 						opacity: 1,
 					},
 

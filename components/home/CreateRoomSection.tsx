@@ -4,10 +4,12 @@ interface CreateRoomSectionProps {
 	displayName: string;
 	setDisplayName: (displayName: string) => void;
 	handleOnClick: () => void;
+	disabled: boolean;
 }
 
 const CreateRoomSection = ({
 	displayName,
+	disabled,
 	setDisplayName,
 	handleOnClick,
 }: CreateRoomSectionProps) => (
@@ -18,7 +20,7 @@ const CreateRoomSection = ({
 			exit={{ opacity: 0 }}
 			type="text"
 			placeholder="Display Name"
-			className="input-huge my-10 text-center"
+			className="input-huge my-2 text-center"
 			value={displayName}
 			onChange={(e) => setDisplayName(e.target.value)}
 		/>
@@ -39,7 +41,8 @@ const CreateRoomSection = ({
 					ease: "easeOut",
 				},
 			}}
-			className="btn-huge m-10"
+			disabled={disabled}
+			className="disabled:opacity-50 btn-huge m-10"
 			onClick={handleOnClick}
 		>
 			Create Room

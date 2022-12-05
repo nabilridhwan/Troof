@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { NextPageContext } from "next";
 import Head from "next/head";
-import axiosInstance from "../../utils/axiosInstance";
+import { joinRoom } from "../../services/joinRoom";
 import { Cookie } from "../../utils/Cookie";
 
 // Export getServerSideProps to get the query string
@@ -10,16 +10,17 @@ export async function getServerSideProps(context: NextPageContext) {
 	const { room_id, display_name } = context.query;
 
 	try {
-		const res = await axiosInstance.post("/api/room/join", {
-			room_id,
-			display_name,
-		});
+		const res = await joinRoom(room_id as string, display_name as string);
 
 		const {
-			player_id,
-			room_id: room_id_response,
-			status: room_status,
-		} = res.data.data;
+			data: {
+				data: {
+					player_id,
+					room_id: room_id_response,
+					status: room_status,
+				},
+			},
+		} = res;
 
 		// TODO: Set the room ID in the response so that when the user visits the room page, they can rejoin the room
 		// Set player ID in cookie

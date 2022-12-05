@@ -11,7 +11,7 @@ enum CookieKeys {
 }
 
 export namespace Cookie {
-	export function setPlayerID(player_id: string, req: Req, res: Res) {
+	export function setPlayerID(player_id: string, req?: Req, res?: Res) {
 		setCookie(CookieKeys.PlayerId, player_id, {
 			req,
 			res,
@@ -19,7 +19,7 @@ export namespace Cookie {
 		return;
 	}
 
-	export function getPlayerID(req: Req, res: Res): string | null {
+	export function getPlayerID(req?: Req, res?: Res): string | null {
 		const c = getCookie(CookieKeys.PlayerId, {
 			req,
 			res,
@@ -32,7 +32,7 @@ export namespace Cookie {
 		return c.toString();
 	}
 
-	export function setRoomID(room_id: string, req: Req, res: Res) {
+	export function setRoomID(room_id: string, req?: Req, res?: Res) {
 		setCookie(CookieKeys.RoomId, room_id, {
 			req,
 			res,
@@ -40,7 +40,7 @@ export namespace Cookie {
 		return;
 	}
 
-	export function getRoomId(req: Req, res: Res): string | null {
+	export function getRoomId(req?: Req, res?: Res): string | null {
 		const c = getCookie(CookieKeys.RoomId, {
 			req,
 			res,
