@@ -19,7 +19,7 @@ const ExistingGameSection = ({ onClose }: { onClose: () => void }) => {
 
 	return (
 		<motion.div className="my-10">
-			<div className="text-sm bg-blue-100 text-blue-900 border border-blue-600/50 font-semibold rounded-xl py-4 px-2 flex flex-col items-center my-10">
+			<div className="text-sm bg-white/70 text-black/90 border border-black/20 font-semibold rounded-xl py-4 px-5 flex flex-col items-center my-10 shadow-lg">
 				<IconQuestionMark className="my-1" />
 				<p className="font-bold mb-3">Accidentally left the game?</p>
 				<p>
@@ -30,14 +30,14 @@ const ExistingGameSection = ({ onClose }: { onClose: () => void }) => {
 				<div className="mt-5 w-full">
 					<button
 						onClick={joinGame}
-						className="btn my-1 bg-green-100 text-green-900 border-green-600/50"
+						className="btn my-1 bg-green-200 text-green-900 border-green-600/50"
 					>
 						Return to Game
 					</button>
 
 					<button
 						onClick={onClose}
-						className="btn my-1 bg-red-100 text-red-900 border-red-600/50"
+						className="btn my-1 bg-red-200 text-red-900 border-red-600/50"
 					>
 						It&apos;s intentional!
 					</button>

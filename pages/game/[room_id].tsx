@@ -188,6 +188,8 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 				if (playerRemoved.player_id === player.player_id) {
 					console.log("Redirecting to home page");
 					console.log("Left game");
+					// Removing cookies
+					Cookie.removePlayerID();
 					window.location.href = "/";
 				}
 

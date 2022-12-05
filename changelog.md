@@ -1,3 +1,21 @@
+## Version 0.2.1
+
+In this coming versions, I have fixed a lot of bugs and improved user experience. The addition of selecting any emojis gives users more fun and interactivity 😀.
+
+**NOTE!** The current version of the game is 0.2.1, but we may change the version to 1.0.0 in the future if we feel that the game is stable enough for a full release. If this happens, we will provide an updated changelog or release notes to reflect the version change.
+
+### What's new (Client - v0.2.1)
+
+-   Changed color of re-join game dialog
+-   Now, when joining a room, you can read the previous messages left.
+    -   This is to help players who re-join and are given no context to the chat
+
+### What's new (Server - v0.2.1)
+
+-   Proper destroying and deletion of games
+-   Add support for chat
+    -   Some system message and all user messages is saved to database
+
 ## Version 0.2.0
 
 In this coming versions, I have fixed a lot of bugs and improved user experience. The addition of selecting any emojis gives users more fun and interactivity 😀.

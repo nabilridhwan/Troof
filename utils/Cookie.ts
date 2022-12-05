@@ -1,4 +1,4 @@
-import { getCookie, setCookie } from "cookies-next";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { IncomingMessage, ServerResponse } from "http";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -51,5 +51,13 @@ export namespace Cookie {
 		}
 
 		return c.toString();
+	}
+
+	export function removePlayerID(req?: Req, res?: Res) {
+		deleteCookie(CookieKeys.PlayerId, {
+			req,
+			res,
+		});
+		return;
 	}
 }

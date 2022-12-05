@@ -73,6 +73,12 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 				room_id,
 			});
 
+			socket.on(MESSAGE_EVENTS.LATEST_MESSAGES, (data) => {
+				// We reverse the array because we want the latest messages to be at the bottom
+				// However the server sends the latest messages at the top
+				setMessages([...data.reverse()]);
+			});
+
 			socket.on(MESSAGE_EVENTS.MESSAGE_NEW, (data) => {
 				setMessages((oldMessages) => [...oldMessages, data]);
 			});
@@ -102,6 +108,8 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 	}, [socket]);
 
 	useEffect(() => {
+		console.log("Messages");
+		console.log(messages);
 		if (messagesBoxRefElement.current && lastMessageElementRef.current) {
 			messagesBoxRefElement.current.scrollBy({
 				top: 100000,
@@ -150,14 +158,14 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 										{message.player_id === player_id ? (
 											<SelfChatBubble
 												displayName={
-													message.player.display_name
+													message.display_name
 												}
 												message={message}
 											/>
 										) : (
 											<OtherPlayerChatBubble
 												displayName={
-													message.player.display_name
+													message.display_name
 												}
 												message={message}
 											/>
@@ -170,7 +178,7 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 										{message.player_id === player_id ? (
 											<SelfChatBubble
 												displayName={
-													message.player.display_name
+													message.display_name
 												}
 												message={message}
 												asEmoji
@@ -178,7 +186,7 @@ const ChatBox = ({ room_id, player_id }: ChatBoxProps) => {
 										) : (
 											<OtherPlayerChatBubble
 												displayName={
-													message.player.display_name
+													message.display_name
 												}
 												message={message}
 												asEmoji
