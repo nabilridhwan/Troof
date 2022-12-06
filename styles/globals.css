@@ -25,7 +25,7 @@ html {
 }
 
 input {
-	@apply block w-full rounded-xl py-5 px-3 bg-primary border-2 border-black/30 outline-none focus:bg-primary/10 focus:border-black;
+	@apply block w-full rounded-xl py-5 px-3 bg-primary border-2 border-black/30 outline-none focus:bg-primary/10 focus:border-black/50;
 }
 
 .t {

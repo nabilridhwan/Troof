@@ -22,20 +22,16 @@ module.exports = {
 			keyframes: {
 				drop: {
 					"0%": {
-						transform: "translateY(0)",
+						marginTop: 0,
 						opacity: 0,
 					},
 
-					"30%": {
-						opacity: 1,
-					},
-
-					"80%": {
+					"50%": {
 						opacity: 1,
 					},
 
 					"100%": {
-						transform: "translateY(100vh)",
+						marginTop: "calc(100vh + 40%)",
 						opacity: 0,
 					},
 				},

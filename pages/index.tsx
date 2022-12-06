@@ -8,7 +8,7 @@ import CautionSection from "../components/home/CautionSection";
 import CreateRoomSection from "../components/home/CreateRoomSection";
 import ExistingGameSection from "../components/home/ExistingGameSection";
 import JoinRoomSection from "../components/home/JoinRoomSection";
-import { version as clientVersion } from "../package.json";
+import pkgjson from "../package.json";
 import getPlayer from "../services/getPlayer";
 import getRoom from "../services/getRoom";
 import { Player } from "../Types";
@@ -190,7 +190,7 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 					<p className="font-bold text-sm text-center mb-6 mt-2 space-x-1">
 						<span className="bg-black text-white rounded-lg py-1 px-2">
 							<span className="text-xs">Game</span> v
-							{clientVersion}
+							{pkgjson.version}
 						</span>
 
 						<span className="bg-black text-white rounded-lg py-1 px-2">
@@ -331,7 +331,7 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 
 					<button className="bg-black/10 rounded-lg px-3 py-1 my-4 text-xs mb-10">
 						<Link href={"/changelog"}>
-							Read what&apos;s new in v{clientVersion}
+							Read what&apos;s new in v{pkgjson.version}
 						</Link>
 					</button>
 				</div>

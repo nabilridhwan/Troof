@@ -50,6 +50,7 @@ interface EmojiReactionBarProps {
 }
 
 const EmojiReactionBar = ({ handleReaction }: EmojiReactionBarProps) => {
+	const [disabled, setDisabled] = useState(false);
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
 	const [emojiBar, setEmojiBar] = useState<EmojiInBar>(OriginalEmojiBar);
@@ -82,6 +83,14 @@ const EmojiReactionBar = ({ handleReaction }: EmojiReactionBarProps) => {
 		updateEmojiBar();
 	}, []);
 
+	const handleOnClick = (emoji: string) => {
+		setDisabled(true);
+		handleReaction(emoji);
+		setTimeout(() => {
+			setDisabled(false);
+		}, 1500);
+	};
+
 	return (
 		<div className="relative flex flex-wrap justify-center gap-4 my-2 mx-auto w-fit">
 			{Object.values(emojiBar).map((emoji, index) => (
@@ -89,7 +98,9 @@ const EmojiReactionBar = ({ handleReaction }: EmojiReactionBarProps) => {
 					key={index}
 					whileTap={{ scale: 0.9 }}
 					whileHover={{ scale: 1.1 }}
-					onClick={() => handleReaction(emoji.unified)}
+					disabled={disabled}
+					className="disabled:opacity-50 disabled:cursor-not-allowed"
+					onClick={() => handleOnClick(emoji.unified)}
 				>
 					<Emoji
 						unified={emoji.unified}

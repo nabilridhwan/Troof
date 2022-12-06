@@ -1,14 +1,29 @@
+## Version 0.3.1
+
+### What's new (Client - v0.3.1)
+
+-   We are currently limiting the rate at which users can give reactions to 1.5 seconds per reaction. This is to prevent spamming and ensure a smooth experience for everyone. Thank you for your understanding.
+-   Changed the design of the chat box section. Gifs and extra emojis button can be found beside the chat box!
+-   Fixed an issue where the "emoji rain" effect for reaction does not really do well on mobile.
+-   Changed input boxes font size.
+    -   This fixes the issue of mobile players needing to zoom in on the input. Read more [here](https://stackoverflow.com/questions/2989263/disable-auto-zoom-in-input-text-tag-safari-on-iphone)
+-   Fixed warning on named imports of package.json
+
+### What's new (Server)
+
+-   None
+
 ## Version 0.3.0
 
-This release is a little unusual, and things may break as a result. If you encounter any issues while playing the game, please submit an issue ticket at Trello's GitHub Issues (https://github.com/nabilridhwan/trello/issues) or contact me on GitHub (@nabilridhwan). We apologize for any inconvenience and appreciate your understanding.
+This release is a little unusual, and things may break as a result. If you encounter any issues while playing the game, please submit an issue ticket at Troof's GitHub Issues (https://github.com/nabilridhwan/troof/issues) or contact me on GitHub (@nabilridhwan). We apologize for any inconvenience and appreciate your understanding.
 
 ### What's new (Client - v0.3.0)
 
 -   **[NEW]** In this update, we are excited to introduce the ability for players to send gifs using the gif picker! We are thrilled to be able to offer this new feature, and we hope that it will enhance the player experience and make the game even more fun and engaging.
--   **[NEW]** Now you can format text like how you'd normally do in WhatsApp
-    -   `_underscore_` to italicize
-    -   `*asterisk*` to bold
-    -   `~tildas~` to strikethrough
+-   **[NEW]** Now you can format text like how you'd normally do in WhatsApp.
+    -   `_underscore_` to _italicize_
+    -   `*asterisk*` to _bold_
+    -   `~tildes~` to ~~strikethrough~~
 -   Added the ability to send links/image links in the chat and it will display as links and images.
 -   We have added a caution page to our game. The home page warning now links to this new caution page, which highlights player safety and rights as a user and a player. We encourage all players to visit the caution page and familiarize themselves with the information and resources provided.
 

@@ -15,7 +15,7 @@ interface EmojisState {
 	size: number;
 }
 
-const numberOfEmojis = 30;
+const numberOfEmojis = 20;
 
 const EmojiReactionScreen = ({ room_id }: EmojiReactionScreenProps) => {
 	const socket = useContext(SocketProviderContext);
@@ -82,9 +82,6 @@ const EmojiReactionScreen = ({ room_id }: EmojiReactionScreenProps) => {
 			<Container>
 				{emojis.map((emoji, index) => (
 					<div
-						onAnimationEnd={() => {
-							console.log("Emoji animation ended");
-						}}
 						key={index}
 						className={`z-50 animate-drop absolute top-0 overflow-hidden pointer-events-none`}
 						style={{

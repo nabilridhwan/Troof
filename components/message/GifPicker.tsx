@@ -82,8 +82,8 @@ const GifPicker = ({ onSelectGif }: GifSelectorProps) => {
 	}, [searchQuery]);
 
 	return (
-		<div className="w-full bg-white rounded-xl p-2 border border-black/20 shadow-lg text-sm">
-			<p className="font-bold">GIF Selector</p>
+		<div className="w-full bg-white rounded-xl p-2 border border-black/20 shadow-lg">
+			<p className="font-black">GIF</p>
 
 			<form onSubmit={handleGifSearch}>
 				<div className="flex my-2 gap-2">
@@ -99,6 +99,16 @@ const GifPicker = ({ onSelectGif }: GifSelectorProps) => {
 					</button>
 				</div>
 			</form>
+
+			{/* <p className="mt-3 my-0.5 text-sm">Recent Searches</p>
+			<div className="flex text-sm">
+				<motion.button className="bg-red-200 text-red-900 p-1.5 px-3 pr-10 rounded-lg relative flex items-center">
+					Bugcatllljosjafojafo
+					<button className="bg-red-300 p-1 rounded-lg right-1.5 absolute">
+						<IconTrash size={15} />
+					</button>
+				</motion.button>
+			</div> */}
 
 			{/* Show 'Search for gifs by typing in the input box above' when there is no gifs */}
 			{!gifsData.length && (
@@ -116,20 +126,20 @@ const GifPicker = ({ onSelectGif }: GifSelectorProps) => {
 			{!loading && gifsData.length > 0 && (
 				<motion.div
 					layout
-					className="content-start grid grid-cols-2 flex-wrap max-h-[400px] overflow-auto gap-2 grid-flow-dense rounded-xl shadow-md"
+					className="grid grid-cols-2 flex-wrap max-h-[350px] overflow-auto gap-2 grid-flow-dense rounded-xl"
 				>
 					{gifsData.map((gif, index) => (
 						<motion.div
 							key={index}
 							whileTap={{ scale: 0.9 }}
 							onClick={() => handleGifClick(gif)}
-							className=" h-fit rounded-xl border-black"
+							className=" rounded-xl border-black"
 						>
 							<picture className="w-full h-full">
 								<img
 									src={gif.images.original.url}
 									alt=""
-									className="w-fit object-cover rounded-xl"
+									className="w-fit object-contain rounded-xl h-full border shadow-sm"
 								/>
 							</picture>
 						</motion.div>

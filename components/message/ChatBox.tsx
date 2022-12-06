@@ -341,25 +341,17 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 			<EmojiReactionBar handleReaction={handleReaction} />
 
 			{/* Emoji button and gif button */}
-			<div className="grid grid-cols-2 gap-2">
+			<div className="">
 				<div className="relative">
-					<motion.button
-						whileTap={{ scale: 0.9 }}
-						whileHover={{ scale: 1.05 }}
-						onClick={() => {
-							setShowGifPicker(false);
-							setShowEmojiPicker(!showEmojiPicker);
-						}}
-						className="w-full my-2 py-3 bg-yellow-300 text-yellow-900 rounded-lg px-4 flex items-center gap-2 text-center justify-center border border-yellow-900/20"
-					>
-						<IconMoodHappy size={16} className="text-black/50" />
-					</motion.button>
-
 					{showEmojiPicker && (
 						<>
 							<div className="absolute bottom-14 -left-3 z-30">
 								<EmojiPicker
 									lazyLoadEmojis={true}
+									previewConfig={{
+										showPreview: false,
+									}}
+									skinTonesDisabled={true}
 									suggestedEmojisMode={SuggestionMode.RECENT}
 									onEmojiClick={(
 										emojiData: EmojiClickData
@@ -374,19 +366,8 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 					)}
 				</div>
 
+				{/* Gif picker */}
 				<div className="relative">
-					<motion.button
-						whileTap={{ scale: 0.9 }}
-						whileHover={{ scale: 1.05 }}
-						onClick={() => {
-							setShowEmojiPicker(false);
-							setShowGifPicker(!showGifPicker);
-						}}
-						className="w-full my-2 py-3 bg-purple-300 text-purple-900 rounded-lg px-4 flex items-center gap-2 text-center justify-center border border-purple-900/20"
-					>
-						<p className="text-xs font-black">GIF</p>
-					</motion.button>
-
 					<AnimatePresence>
 						{showGifPicker && (
 							<motion.div
@@ -416,23 +397,54 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 
 			<form onSubmit={handleMessageSubmit}>
 				<div className="flex gap-2">
-					<input
-						ref={inputElementRef}
-						onFocus={handleFocus}
-						onBlur={handleBlur}
-						tabIndex={0}
-						placeholder="Type a message..."
-						className="h-[10px] text-sm flex-1"
-						value={inputMessage}
-						onChange={handleTyping}
-					/>
+					{/* Gif and Emoji buttons */}
 
-					<button
-						type="submit"
-						className="py-3 bg-blue-300 text-blue-900 rounded-lg px-4 flex items-center gap-2"
+					<motion.button
+						type="button"
+						whileTap={{ scale: 0.9 }}
+						whileHover={{ scale: 1.05 }}
+						onClick={() => {
+							setShowGifPicker(false);
+							setShowEmojiPicker(!showEmojiPicker);
+						}}
+						className="my-2 p-2 flex items-center gap-2 text-center justify-center text-black/60"
 					>
-						<IconSend size={18} />
-					</button>
+						<IconMoodHappy size={20} className="text-black/50" />
+					</motion.button>
+
+					<motion.button
+						type="button"
+						whileTap={{ scale: 0.9 }}
+						whileHover={{ scale: 1.05 }}
+						onClick={() => {
+							setShowEmojiPicker(false);
+							setShowGifPicker(!showGifPicker);
+						}}
+						className="my-2 p-2 flex items-center gap-2 text-center justify-center text-black/60"
+					>
+						<p className="text-sm font-black">GIF</p>
+					</motion.button>
+
+					<div className="relative gap-3 flex items-center justify-center flex-1">
+						<input
+							ref={inputElementRef}
+							onFocus={handleFocus}
+							onBlur={handleBlur}
+							tabIndex={0}
+							placeholder="Type a message..."
+							className="h-[15px]"
+							value={inputMessage}
+							onChange={handleTyping}
+						/>
+
+						<button
+							type="submit"
+							disabled={inputMessage.length === 0}
+							className="disabled:opacity-50 bg-primary absolute right-0 mr-1 p-2.5 rounded-lg flex items-center gap-2 text-center justify-center"
+						>
+							<IconSend size={18} />
+						</button>
+					</div>
 				</div>
 			</form>
 		</div>
