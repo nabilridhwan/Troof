@@ -1,8 +1,9 @@
 import { GiphyFetch } from "@giphy/js-fetch-api";
 import { IGif } from "@giphy/js-types";
-import { IconFidgetSpinner, IconSearch } from "@tabler/icons";
+import { IconSearch } from "@tabler/icons";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { BarLoader } from "react-spinners";
 
 // use @giphy/js-fetch-api to fetch gifs, instantiate with your api key
 const gf = new GiphyFetch("aB4fpoNK0G1zbgEyasDKxiV63QxM4DqI");
@@ -107,17 +108,15 @@ const GifPicker = ({ onSelectGif }: GifSelectorProps) => {
 			)}
 
 			{/* Show loading spinner */}
-			{loading && (
-				<div className="flex justify-center items-center my-5">
-					<IconFidgetSpinner />
-				</div>
-			)}
+			<div className="flex justify-center items-center my-5">
+				<BarLoader color="#6B46C1" loading={loading} width={100} />
+			</div>
 
 			{/* Where all the gifs are */}
 			{!loading && gifsData.length > 0 && (
 				<motion.div
 					layout
-					className="inline-flex content-start flex-wrap max-h-[400px] overflow-auto gap-2 grid-flow-dense rounded-xl shadow-md"
+					className="content-start grid grid-cols-2 flex-wrap max-h-[400px] overflow-auto gap-2 grid-flow-dense rounded-xl shadow-md"
 				>
 					{gifsData.map((gif, index) => (
 						<motion.div
