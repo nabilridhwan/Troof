@@ -1,5 +1,6 @@
 import { Emoji, EmojiStyle } from "emoji-picker-react";
 import { MessageUpdate } from "../../Types";
+import { RegexHelper } from "../../utils/regexHelpers";
 import ProfilePictureFromName from "../ProfilePictureFromName";
 
 interface SelfChatBubbleProps {
@@ -22,7 +23,14 @@ const SelfChatBubble = ({
 					size={30}
 				/>
 			) : (
-				<p className="break-words">{message.message}</p>
+				<p
+					className="break-words"
+					dangerouslySetInnerHTML={{
+						__html: RegexHelper.globalReplaceLinksAndImages(
+							message.message
+						),
+					}}
+				/>
 			)}
 			<div />
 		</div>

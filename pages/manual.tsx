@@ -1,6 +1,6 @@
-import { IconAlertTriangle } from "@tabler/icons";
 import Link from "next/link";
 import Container from "../components/Container";
+import CautionSection from "../components/home/CautionSection";
 
 export default function ManualPage() {
 	return (
@@ -32,13 +32,9 @@ export default function ManualPage() {
 				<i>* More truths and dares will be added in a later stage</i>
 
 				<h3>Instructions</h3>
-				<div className="text-sm bg-yellow-100 text-yellow-900 border border-yellow-600/50 font-semibold rounded-xl py-4 px-2 flex flex-col items-center text-center">
-					<IconAlertTriangle className="my-1" />
-					<p>
-						The game contains mature themes and is intended for
-						adults only. Please exercise caution while playing and
-						only participate if you are of legal age.
-					</p>
+
+				<div className="text-center">
+					<CautionSection />
 				</div>
 
 				<h4>Creating/Joining a room</h4>

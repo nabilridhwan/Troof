@@ -1,10 +1,4 @@
-import { IconDots } from "@tabler/icons";
-import EmojiPicker, {
-	Emoji,
-	EmojiClickData,
-	EmojiStyle,
-	SuggestionMode,
-} from "emoji-picker-react";
+import { Emoji, EmojiStyle } from "emoji-picker-react";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
@@ -104,30 +98,6 @@ const EmojiReactionBar = ({ handleReaction }: EmojiReactionBarProps) => {
 					/>
 				</motion.button>
 			))}
-
-			<motion.button
-				whileTap={{ scale: 0.9 }}
-				whileHover={{ scale: 1.1 }}
-				className="aspect-square border border-black/10 rounded-lg p-0.5"
-				onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-			>
-				<IconDots size={20} />
-			</motion.button>
-
-			{showEmojiPicker && (
-				<div className="absolute top-10">
-					<EmojiPicker
-						lazyLoadEmojis={true}
-						suggestedEmojisMode={SuggestionMode.RECENT}
-						onEmojiClick={(emojiData: EmojiClickData) => {
-							handleReaction(emojiData.unified);
-							setShowEmojiPicker(false);
-							updateEmojiBar();
-						}}
-						emojiStyle={EmojiStyle.APPLE}
-					/>
-				</div>
-			)}
 		</div>
 	);
 };

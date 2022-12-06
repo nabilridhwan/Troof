@@ -25,9 +25,17 @@ html {
 }
 
 input {
-	@apply block w-full rounded-lg py-5 px-3 bg-primary border-2 border-black/30 outline-none focus:bg-primary/10 focus:border-black;
+	@apply block w-full rounded-xl py-5 px-3 bg-primary border-2 border-black/30 outline-none focus:bg-primary/10 focus:border-black;
 }
 
 .t {
 	@apply transition-all duration-300 ease-out;
+}
+
+a {
+	@apply underline;
+}
+
+.chatbox img {
+	@apply rounded-lg;
 }

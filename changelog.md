@@ -1,3 +1,26 @@
+## Version 0.3.0
+
+This release is a little unusual, and things may break as a result. If you encounter any issues while playing the game, please submit an issue ticket at Trello's GitHub Issues (https://github.com/nabilridhwan/trello/issues) or contact me on GitHub (@nabilridhwan). We apologize for any inconvenience and appreciate your understanding.
+
+### What's new (Client - v0.3.0)
+
+-   **[NEW]** In this update, we are excited to introduce the ability for players to send gifs using the gif picker! We are thrilled to be able to offer this new feature, and we hope that it will enhance the player experience and make the game even more fun and engaging.
+-   **[NEW]** Now you can format text like how you'd normally do in WhatsApp
+    -   `_underscore_` to italicize
+    -   `*asterisk*` to bold
+    -   `~tildas~` to strikethrough
+-   Added the ability to send links/image links in the chat and it will display as links and images.
+-   We have added a caution page to our game. The home page warning now links to this new caution page, which highlights player safety and rights as a user and a player. We encourage all players to visit the caution page and familiarize themselves with the information and resources provided.
+
+#### Known issues
+
+-   When opening the GIF picker and then you click on the emoji button, the GIF Picker closing animation will stutter. This is by the cause of react-emoji-picker. And we'll look into it.
+-   Removed the feature of emoji bar showing recent/frequent emojis. We'll find a workaround for this in the future.
+
+### What's new (Server)
+
+-   Nothing changed.
+
 ## Version 0.2.2 - Client and 0.2.2, 0.2.3 and 0.2.4 - Server
 
 This changelog looks different because it includes changes from the previous three iterations (for server). 😅

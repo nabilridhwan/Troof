@@ -1,4 +1,9 @@
-import { IconSend } from "@tabler/icons";
+import { IconMoodHappy, IconSend } from "@tabler/icons";
+import EmojiPicker, {
+	EmojiClickData,
+	EmojiStyle,
+	SuggestionMode,
+} from "emoji-picker-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useContext, useEffect, useRef, useState } from "react";
 import { SocketProviderContext } from "../../context/SocketProvider";
@@ -9,6 +14,7 @@ import {
 	SystemMessage,
 } from "../../Types";
 import EmojiReactionBar from "../EmojiBar";
+import GifPicker from "./GifPicker";
 import OtherPlayerChatBubble from "./OtherPlayerChatBubble";
 import SelfChatBubble from "./SelfChatBubble";
 
@@ -27,6 +33,9 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 
 	const [inputFocused, setInputFocused] = useState(false);
 
+	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+	const [showGifPicker, setShowGifPicker] = useState(false);
+
 	const [messages, setMessages] = useState<(MessageUpdate | SystemMessage)[]>(
 		[]
 	);
@@ -38,14 +47,12 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 	const messagesBoxRefElement = useRef<HTMLDivElement>(null);
 	const lastMessageElementRef = useRef<HTMLDivElement>(null);
 
-	const sendMessage = (messageType: Message["type"]) => {
-		setInputMessage("");
-
+	const sendMessage = (content: string) => {
 		const newMessageObject: Message = {
 			room_id,
 			display_name,
-			message: inputMessage,
-			type: messageType,
+			message: content,
+			type: "message",
 			created_at: new Date(),
 		};
 
@@ -62,6 +69,8 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 			// Emit to socket
 			socket.emit(MESSAGE_EVENTS.MESSAGE_NEW, newMessageObject);
 		}
+
+		setInputMessage("");
 	};
 
 	const sendReaction = (emoji: string) => {
@@ -152,14 +161,14 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 		console.log(messages);
 		if (messagesBoxRefElement.current && lastMessageElementRef.current) {
 			messagesBoxRefElement.current.scrollBy({
-				top: 100000,
+				top: lastMessageElementRef.current.offsetTop,
 				behavior: "smooth",
 			});
 		}
 	}, [messages]);
 
-	const handleMessageSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
+	const handleMessageSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
+		if (e) e.preventDefault();
 
 		// if (inputElementRef.current) {
 		// 	// blur the input
@@ -167,7 +176,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 		// }
 
 		if (inputMessage.length > 0) {
-			sendMessage("message");
+			sendMessage(inputMessage);
 		}
 	};
 
@@ -207,14 +216,22 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 
 	const handleFocus = () => {
 		setInputFocused(true);
+		setShowEmojiPicker(false);
+		setShowGifPicker(false);
 	};
 
 	const handleBlur = () => {
 		setInputFocused(false);
 	};
 
+	const handleSelectGif = (url: string) => {
+		console.log(url);
+		sendMessage(url);
+		setShowGifPicker(false);
+	};
+
 	return (
-		<div className="w-full h-full">
+		<div className="w-full h-full chatbox">
 			{/* Chat box */}
 			<div
 				ref={messagesBoxRefElement}
@@ -323,22 +340,98 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 			{/* Emoji Bar */}
 			<EmojiReactionBar handleReaction={handleReaction} />
 
+			{/* Emoji button and gif button */}
+			<div className="grid grid-cols-2 gap-2">
+				<div className="relative">
+					<motion.button
+						whileTap={{ scale: 0.9 }}
+						whileHover={{ scale: 1.05 }}
+						onClick={() => {
+							setShowGifPicker(false);
+							setShowEmojiPicker(!showEmojiPicker);
+						}}
+						className="w-full my-2 py-3 bg-yellow-300 text-yellow-900 rounded-lg px-4 flex items-center gap-2 text-center justify-center border border-yellow-900/20"
+					>
+						<IconMoodHappy size={16} className="text-black/50" />
+					</motion.button>
+
+					{showEmojiPicker && (
+						<>
+							<div className="absolute bottom-14 -left-3 z-30">
+								<EmojiPicker
+									lazyLoadEmojis={true}
+									suggestedEmojisMode={SuggestionMode.RECENT}
+									onEmojiClick={(
+										emojiData: EmojiClickData
+									) => {
+										handleReaction(emojiData.unified);
+										setShowEmojiPicker(false);
+									}}
+									emojiStyle={EmojiStyle.APPLE}
+								/>
+							</div>
+						</>
+					)}
+				</div>
+
+				<div className="relative">
+					<motion.button
+						whileTap={{ scale: 0.9 }}
+						whileHover={{ scale: 1.05 }}
+						onClick={() => {
+							setShowEmojiPicker(false);
+							setShowGifPicker(!showGifPicker);
+						}}
+						className="w-full my-2 py-3 bg-purple-300 text-purple-900 rounded-lg px-4 flex items-center gap-2 text-center justify-center border border-purple-900/20"
+					>
+						<p className="text-xs font-black">GIF</p>
+					</motion.button>
+
+					<AnimatePresence>
+						{showGifPicker && (
+							<motion.div
+								initial={{ opacity: 0, y: 10 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={{ opacity: 0, y: 10 }}
+								transition={{ duration: 0.2, ease: "easeOut" }}
+								className="my-2 absolute w-[350px] bottom-14 right-0 z-30"
+							>
+								<GifPicker onSelectGif={handleSelectGif} />
+							</motion.div>
+						)}
+					</AnimatePresence>
+				</div>
+			</div>
+
+			{/* ! Overlay such that when the user clicks it, it will close both emoji and gif picker */}
+			{/* {(showEmojiPicker || showGifPicker) && (
+				<div
+					onClick={() => {
+						setShowEmojiPicker(false);
+						setShowGifPicker(false);
+					}}
+					className="fixed top-0 left-0 w-screen h-screen bg-transparent pointer-events-auto"
+				/>
+			)} */}
+
 			<form onSubmit={handleMessageSubmit}>
-				<div className="flex-col flex gap-2">
+				<div className="flex gap-2">
 					<input
 						ref={inputElementRef}
 						onFocus={handleFocus}
 						onBlur={handleBlur}
 						tabIndex={0}
 						placeholder="Type a message..."
-						className="h-[10px] text-sm"
+						className="h-[10px] text-sm flex-1"
 						value={inputMessage}
 						onChange={handleTyping}
 					/>
 
-					<button className="flex-1 py-3 bg-blue-300 text-blue-900 rounded-lg px-4 flex items-center gap-2">
+					<button
+						type="submit"
+						className="py-3 bg-blue-300 text-blue-900 rounded-lg px-4 flex items-center gap-2"
+					>
 						<IconSend size={18} />
-						Send
 					</button>
 				</div>
 			</form>

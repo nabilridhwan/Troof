@@ -1,10 +1,10 @@
-import { IconAlertTriangle } from "@tabler/icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { NextPageContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import CautionSection from "../components/home/CautionSection";
 import CreateRoomSection from "../components/home/CreateRoomSection";
 import ExistingGameSection from "../components/home/ExistingGameSection";
 import JoinRoomSection from "../components/home/JoinRoomSection";
@@ -211,14 +211,7 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 						</Link>{" "}
 					</p>
 
-					<div className="text-sm bg-yellow-100 text-yellow-900 border border-yellow-600/50 font-semibold rounded-xl py-4 px-2 flex flex-col items-center my-10">
-						<IconAlertTriangle className="my-1" />
-						<p>
-							This game contains mature themes and is intended for
-							adults only. Please exercise caution while playing
-							and only participate if you are of legal age.
-						</p>
-					</div>
+					<CautionSection />
 
 					<p className="text-red-500">{errorMessage}</p>
 
