@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Container from "../components/Container";
-import CautionSection from "../components/home/CautionSection";
 
 export default function ManualPage() {
 	return (
@@ -32,10 +31,6 @@ export default function ManualPage() {
 				<i>* More truths and dares will be added in a later stage</i>
 
 				<h3>Instructions</h3>
-
-				<div className="text-center">
-					<CautionSection />
-				</div>
 
 				<h4>Creating/Joining a room</h4>
 				<ol>
