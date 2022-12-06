@@ -1,3 +1,25 @@
+## Version 0.3.2
+
+We are pleased to announce that our servers are finally receiving updates after 2 client updates. These updates will include the implementation of a new, cryptographically secure random number generator that will be used to select truths or dares and minor fixes.
+
+### What's new (Client - v0.3.2)
+
+-   Adopted new Room IDs. Now we use 4 words separated by dashes (-)
+    -   An example of this is `sit-steam-two-tin`
+    -   It increases our possible games to 116,985,856 from 42,875
+-   Now, desktop users can click on enter after entering display name/room code from the home screen.
+    -   Previously, you'd have to click the button only
+-   Updated system message. When a user selects a truth/dare, the system will broadcasst 2 different system messages. 1 for 'X selected Y' and the other is the truth/dare itself.
+-   Fine tuned raining emojis' animations and also increased emojis from 20 > 30.
+-   Added a limit to display names. They can now be max of 20 characters.
+
+### What's new (Server - v0.2.5)
+
+-   Implemented cryptographically secure random number generator for selecting truths and dares
+-   Support for new Room IDs.
+-   When games are over, they are not deleted but in fact changed to status of "game_over".
+-   Updated the system message.
+
 ## Version 0.3.1
 
 ### What's new (Client - v0.3.1)

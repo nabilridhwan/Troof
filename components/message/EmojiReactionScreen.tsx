@@ -15,7 +15,7 @@ interface EmojisState {
 	size: number;
 }
 
-const numberOfEmojis = 20;
+const numberOfEmojis = 30;
 
 const EmojiReactionScreen = ({ room_id }: EmojiReactionScreenProps) => {
 	const socket = useContext(SocketProviderContext);

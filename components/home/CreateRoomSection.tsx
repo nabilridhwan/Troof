@@ -13,8 +13,15 @@ const CreateRoomSection = ({
 	setDisplayName,
 	handleOnClick,
 }: CreateRoomSectionProps) => (
-	<>
+	<form
+		onSubmit={(e) => {
+			e.preventDefault();
+			handleOnClick();
+		}}
+	>
+		<p className="text-xs text-right">{displayName.length}/20</p>
 		<motion.input
+			maxLength={20}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
@@ -47,7 +54,7 @@ const CreateRoomSection = ({
 		>
 			Create Room
 		</motion.button>
-	</>
+	</form>
 );
 
 export default CreateRoomSection;

@@ -31,7 +31,7 @@ module.exports = {
 					},
 
 					"100%": {
-						marginTop: "calc(100vh + 40%)",
+						marginTop: "calc(100vh + 20%)",
 						opacity: 0,
 					},
 				},

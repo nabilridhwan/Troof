@@ -17,8 +17,15 @@ const JoinRoomSection = ({
 	setRoomIDInput,
 	handleOnClick,
 }: JoinRoomInterface) => (
-	<>
+	<form
+		onSubmit={(e) => {
+			e.preventDefault();
+			handleOnClick();
+		}}
+	>
+		<p className="text-xs text-right">{displayName.length}/20</p>
 		<motion.input
+			maxLength={20}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
@@ -30,15 +37,15 @@ const JoinRoomSection = ({
 		/>
 
 		<motion.input
-			maxLength={6}
+			maxLength={4 * 4 + 3}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
 			type="text"
 			placeholder="Room Code"
-			className="input-huge my-2 text-center font-mono"
+			className="input-huge my-2 text-center font-mono "
 			value={roomIDInput}
-			onChange={(e) => setRoomIDInput(e.target.value.toUpperCase())}
+			onChange={(e) => setRoomIDInput(e.target.value.toLowerCase())}
 		/>
 
 		<motion.button
@@ -63,7 +70,7 @@ const JoinRoomSection = ({
 		>
 			Join Room
 		</motion.button>
-	</>
+	</form>
 );
 
 export default JoinRoomSection;
