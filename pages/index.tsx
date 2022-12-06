@@ -15,6 +15,9 @@ import { Player } from "../Types";
 import axiosInstance from "../utils/axiosInstance";
 import { Cookie } from "../utils/Cookie";
 
+import Image from "next/image";
+import troofPromoImage from "../public/troof_promo_new.png";
+
 type MainScreenAction = "create" | "join" | "existing_game" | "none";
 
 export async function getServerSideProps(context: NextPageContext) {
@@ -46,6 +49,8 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 
 	const [roomIDInput, setRoomIDInput] = useState<string>(room_id as string);
 	const [displayName, setDisplayName] = useState<string>("");
+
+	const [showCautions, setShowCautions] = useState<boolean>(false);
 
 	// This state changes when the person presses the "Join" or "Create" button
 	const [clickedAlready, setClickedAlready] = useState<boolean>(false);
@@ -83,6 +88,10 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 	useEffect(() => {
 		console.log(Cookie.getPlayerID());
 		console.log(Cookie.getRoomId());
+		const show = !!localStorage.getItem("cautionDismissed");
+		console.log("Show caution?", show);
+
+		setShowCautions(!show);
 	}, []);
 
 	const getPlayerFromAPI = async (player_id: string) => {
@@ -170,48 +179,66 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 
 			<main className="text-center space-y-10 w-[90%] lg:w-[40%] mx-auto">
 				<div>
-					<motion.h1
-						initial={{ opacity: 0, fontSize: 0, y: 1 }}
-						animate={{
-							opacity: 1,
-							y: 0,
-							fontSize: "7rem",
-						}}
-						transition={{
-							duration: 0.8,
-							ease: "easeInOut",
-							delay: 0.1,
-						}}
-						className="my-14 font-black font-Playfair h-[150px] "
-					>
-						Troof!
-					</motion.h1>
+					<div className="grid lg:grid-cols-2 my-10">
+						<div className="lg:text-left">
+							<motion.h1
+								initial={{ opacity: 0, fontSize: 0, y: 1 }}
+								animate={{
+									opacity: 1,
+									y: 0,
+									fontSize: "7rem",
+								}}
+								transition={{
+									duration: 0.8,
+									ease: "easeInOut",
+									delay: 0.1,
+								}}
+								className="my-14 font-black font-Playfair h-[150px] "
+							>
+								Troof!
+							</motion.h1>
 
-					<p className="font-bold text-sm text-center mb-6 mt-2 space-x-1">
-						<span className="bg-black text-white rounded-lg py-1 px-2">
-							<span className="text-xs">Game</span> v
-							{pkgjson.version}
-						</span>
+							<p className="font-bold text-sm text-center lg:text-left mb-6 mt-2 space-x-1">
+								<span className="bg-black text-white rounded-lg py-1 px-2">
+									<span className="text-xs">Game</span> v
+									{pkgjson.version}
+								</span>
 
-						<span className="bg-black text-white rounded-lg py-1 px-2">
-							<span className="text-xs">Server</span>{" "}
-							{serverVersion}
-						</span>
-					</p>
+								<span className="bg-black text-white rounded-lg py-1 px-2">
+									<span className="text-xs">Server</span>{" "}
+									{serverVersion}
+								</span>
+							</p>
 
-					<p className="text-lg mb-5">
-						Experience the ultimate social truth or dare game - see,
-						chat, and react together with your friends!
-					</p>
+							<p className="text-lg mb-5">
+								Experience the ultimate social truth or dare
+								game - see, chat, and react together with your
+								friends!
+							</p>
 
-					<p className="my-5">
-						First time? Check out{" "}
-						<Link href="/manual" className="text-red-600">
-							How to Play
-						</Link>{" "}
-					</p>
+							<p className="my-5">
+								First time? Check out{" "}
+								<Link href="/manual" className="text-red-600">
+									How to Play
+								</Link>{" "}
+							</p>
+						</div>
 
-					<CautionSection />
+						<div className="flex items-center justify-center">
+							<Image
+								quality={100}
+								height={900}
+								src={troofPromoImage}
+								alt="Troof promo image"
+							/>
+						</div>
+					</div>
+
+					{showCautions && (
+						<CautionSection
+							onClose={() => setShowCautions(false)}
+						/>
+					)}
 
 					<p className="text-red-500">{errorMessage}</p>
 
@@ -305,7 +332,7 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 						)}
 					</AnimatePresence>
 
-					<p className="mb-10">
+					<p className="mb-10 text-sm">
 						By clicking &quot;Create Room&quot;, &quot;Join
 						Room&quot; or &quot;Return to Game&quot;, you agree to
 						the{" "}
@@ -319,7 +346,7 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 						.
 					</p>
 
-					<p className="text-sm mb-2">
+					{/* <p className="text-sm mb-2">
 						Created by{" "}
 						<Link
 							className="text-red-600"
@@ -327,13 +354,55 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 						>
 							Nabil
 						</Link>
-					</p>
+					</p> */}
 
-					<button className="bg-black/10 rounded-lg px-3 py-1 my-4 text-xs mb-10">
-						<Link href={"/changelog"}>
+					<button className="bg-lime-100 text-lime-900 rounded-lg px-4 py-2 my-4 text-xs mb-10 border border-lime-900/20">
+						<Link href={"/changelog"} className="no-underline">
 							Read what&apos;s new in v{pkgjson.version}
 						</Link>
 					</button>
+
+					{/* Contains all the links to caution, terms of service, privacy and my github page */}
+					<footer className="flex flex-wrap my-5 text-xs gap-2 justify-center">
+						<div className="">
+							<Link href="/caution" className="text-gray-500">
+								Caution
+							</Link>
+						</div>
+
+						<div className="">
+							<Link href="/terms" className="text-gray-500">
+								Terms of Service
+							</Link>
+						</div>
+
+						<div className="">
+							<Link href="/privacy" className="text-gray-500">
+								Privacy Policy
+							</Link>
+						</div>
+
+						<div className="">
+							<Link href="/manual" className="text-gray-500">
+								Game Manual
+							</Link>
+						</div>
+
+						<div className="">
+							<Link href="/changelog" className="text-gray-500">
+								Changelog
+							</Link>
+						</div>
+
+						<div className="">
+							<Link
+								className="text-gray-500"
+								href={"https://github.nabilridhwan.com"}
+							>
+								Made with &lt;3 by Nabil
+							</Link>
+						</div>
+					</footer>
 				</div>
 			</main>
 		</div>

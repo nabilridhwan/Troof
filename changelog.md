@@ -12,6 +12,10 @@ We are pleased to announce that our servers are finally receiving updates after 
 -   Updated system message. When a user selects a truth/dare, the system will broadcasst 2 different system messages. 1 for 'X selected Y' and the other is the truth/dare itself.
 -   Fine tuned raining emojis' animations and also increased emojis from 20 > 30.
 -   Added a limit to display names. They can now be max of 20 characters.
+-   Changed the layout of the home page to include image of Troof gameplay.
+-   We've added the ability to dismiss the mature content warning box. By dismissing the warning, you are acknowledging that you have read and understood the contents of the warning. To access the links that are behind the warning, please head to the bottom of the home page.
+-   Changed the color of the What's new button on the home page
+-   Added footer links to all pages
 
 ### What's new (Server - v0.2.5)
 
