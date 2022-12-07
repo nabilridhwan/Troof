@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { Action, Status } from "@troof/config";
+import { Action, Status } from "../../../packages/socket/dist";
 import prisma from "../database/prisma";
 import Sequence from "./sequence";
 

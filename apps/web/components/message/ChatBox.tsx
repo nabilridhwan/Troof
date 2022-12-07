@@ -4,7 +4,7 @@ import {
 	MessageUpdatedFromServer,
 	MESSAGE_EVENTS,
 	SystemMessage,
-} from "@troof/config";
+} from "@troof/socket";
 import EmojiPicker, {
 	Emoji,
 	EmojiClickData,

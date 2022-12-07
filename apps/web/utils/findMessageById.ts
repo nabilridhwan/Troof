@@ -1,4 +1,4 @@
-import { MessageUpdatedFromServer } from "@troof/config";
+import { MessageUpdatedFromServer } from "@troof/socket";
 
 const findMessageById = (id: string, messages: MessageUpdatedFromServer[]) => {
 	return messages.find((message) => message.id === id);

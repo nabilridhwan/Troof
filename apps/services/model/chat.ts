@@ -1,4 +1,7 @@
-import { MessageUpdatedFromServer, SystemMessage } from "@troof/config";
+import {
+	MessageUpdatedFromServer,
+	SystemMessage,
+} from "../../../packages/socket/dist";
 import prisma from "../database/prisma";
 
 const ChatModel = {

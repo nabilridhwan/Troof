@@ -3,9 +3,9 @@ import http from "http";
 import { Server } from "socket.io";
 import { version } from "./package.json";
 
-import { ServerToClientEvents } from "@troof/config";
 import cors from "cors";
 import * as dotenv from "dotenv";
+import { ServerToClientEvents } from "../../packages/socket/dist";
 import SuccessResponse from "./responses/SuccessResponse";
 import playerRouter from "./routers/playerRouter";
 import roomRouter from "./routers/roomRouter";

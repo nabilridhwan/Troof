@@ -1,3 +1,4 @@
+import { Server, Socket } from "socket.io";
 import {
 	Action,
 	EVENTS,
@@ -7,8 +8,7 @@ import {
 	Status,
 	SystemMessage,
 	TRUTH_OR_DARE_GAME,
-} from "@troof/config";
-import { Server, Socket } from "socket.io";
+} from "../../../packages/socket/dist";
 import prisma from "../database/prisma";
 import ChatModel from "../model/chat";
 import PlayerModel from "../model/player";

@@ -48,7 +48,7 @@ export interface PlayerIDObject {
 export interface PlayerDisplayNameObject {
     display_name: string;
 }
-export declare type DisconnectedRoomObject = RoomIDObject & PlayerIDObject;
+export type DisconnectedRoomObject = RoomIDObject & PlayerIDObject;
 export interface StatusChangeObject extends RoomIDObject {
     status: Status;
 }
@@ -71,7 +71,7 @@ export interface Log {
     data: string;
     created_at: Date;
 }
-declare type MessageTypes = "message" | "answer" | "reaction" | "system" | "reply";
+type MessageTypes = "message" | "answer" | "reaction" | "system" | "reply";
 export interface BaseNewMessage extends PlayerDisplayNameObject, RoomIDObject {
     message: string;
     type: MessageTypes | string;

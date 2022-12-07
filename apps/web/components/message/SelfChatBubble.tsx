@@ -1,4 +1,4 @@
-import { MessageUpdatedFromServer } from "@troof/config";
+import { MessageUpdatedFromServer } from "@troof/socket";
 import { Emoji, EmojiStyle } from "emoji-picker-react";
 import { motion } from "framer-motion";
 import { RegexHelper } from "../../utils/regexHelpers";

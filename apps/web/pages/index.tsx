@@ -1,4 +1,4 @@
-import { Player } from "@troof/config";
+import { Player } from "@troof/socket";
 import { AnimatePresence, motion } from "framer-motion";
 import { NextPageContext } from "next";
 import Head from "next/head";

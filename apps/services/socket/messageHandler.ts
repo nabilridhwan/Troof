@@ -4,7 +4,7 @@ import {
 	MESSAGE_EVENTS,
 	PlayerIDObject,
 	RoomIDObject,
-} from "@troof/config";
+} from "../../../packages/socket/dist";
 
 import { Server, Socket } from "socket.io";
 import ChatModel from "../model/chat";

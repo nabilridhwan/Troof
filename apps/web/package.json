@@ -9,7 +9,7 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
-		"@troof/config": "*",
+		"@troof/socket": "*",
 		"@giphy/js-fetch-api": "^4.6.0",
 		"@headlessui/react": "^1.7.4",
 		"@prisma/client": "^4.6.1",

@@ -13,7 +13,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"@troof/database": "*",
-		"@troof/config": "*",
+		"@troof/socket": "*",
 		"@types/bad-words": "^3.0.1",
 		"@types/random-seed": "^0.3.3",
 		"bad-words": "^3.0.4",

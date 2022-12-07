@@ -1,6 +1,6 @@
-import { Status } from "@troof/config";
 import type { Request, Response } from "express";
 import { z, ZodError, ZodIssue } from "zod";
+import { Status } from "../../../packages/socket/dist";
 import PlayerModel from "../model/player";
 import RoomModel from "../model/room";
 import BadRequest from "../responses/BadRequest";

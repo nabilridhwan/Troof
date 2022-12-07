@@ -6,7 +6,7 @@ import {
 	Player,
 	Status,
 	TRUTH_OR_DARE_GAME,
-} from "@troof/config";
+} from "@troof/socket";
 import classNames from "classnames";
 import { motion } from "framer-motion";
 import { NextPageContext } from "next";

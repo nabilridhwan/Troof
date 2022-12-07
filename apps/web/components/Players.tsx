@@ -5,7 +5,7 @@ import {
 	IconTrash,
 } from "@tabler/icons";
 
-import { Player, TRUTH_OR_DARE_GAME } from "@troof/config";
+import { Player, TRUTH_OR_DARE_GAME } from "@troof/socket";
 import cx from "classnames";
 import { motion } from "framer-motion";
 import { useContext, useState } from "react";

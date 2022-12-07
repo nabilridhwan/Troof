@@ -1,4 +1,4 @@
-import { MESSAGE_EVENTS } from "@troof/config";
+import { MESSAGE_EVENTS } from "@troof/socket";
 import { Emoji, EmojiStyle } from "emoji-picker-react";
 import { useContext, useEffect, useState } from "react";
 import { SocketProviderContext } from "../../context/SocketProvider";

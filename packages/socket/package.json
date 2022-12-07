@@ -1,9 +1,13 @@
 {
-	"name": "@troof/config",
+	"name": "@troof/socket",
 	"version": "1.0.0",
 	"license": "MIT",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc -w"
+	},
 	"dependencies": {
 		"typescript": "latest"
 	}
