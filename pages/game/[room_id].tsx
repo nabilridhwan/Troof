@@ -1,4 +1,5 @@
 import { IconArrowNarrowRight, IconDice, IconLink } from "@tabler/icons";
+import classNames from "classnames";
 import { motion } from "framer-motion";
 import { NextPageContext } from "next";
 import Head from "next/head";
@@ -306,9 +307,17 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 
 			<EmojiReactionScreen room_id={room_id} />
 
-			<div className="my-5 lg:h-[93vh]">
-				<div className="lg:grid lg:grid-cols-12 gap-10">
-					<div className="col-span-9">
+			<div className="h-screen py-10">
+				<div className="lg:grid lg:grid-cols-12 gap-10 h-full items-center justify-center">
+					<div className="col-span-2 lg:h-full">
+						<Players
+							player={player}
+							players={players}
+							room_id={roomID}
+						/>
+					</div>
+
+					<div className="col-span-7 lg:h-full">
 						<div className="w-full h-full flex items-center justify-center">
 							{/* Main items */}
 							<div className=" my-2 flex-1">
@@ -327,11 +336,21 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 
 								{/* Current Player Name */}
 								<main className="w-full flex items-center justify-center my-10">
-									<div className="rnd bdr w-fit px-10 py-5">
+									<motion.div
+										className={`rnd bdr w-fit px-10 py-5 ${classNames(
+											{
+												"animate-zoom":
+													currentPlayer.player_id ===
+														player_id &&
+													action ===
+														Action.Waiting_For_Selection,
+											}
+										)}`}
+									>
 										<h1 className="font-Playfair font-black text-5xl text-center break-all">
 											{currentPlayer.display_name}
 										</h1>
-									</div>
+									</motion.div>
 								</main>
 
 								{/* The truth/dare box*/}
@@ -527,12 +546,7 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 						</div>
 					</div>
 
-					<div className="col-span-3 h-full flex flex-col-reverse">
-						<Players
-							player={player}
-							players={players}
-							room_id={roomID}
-						/>
+					<div className="col-span-3 lg:h-full">
 						<ChatBox
 							player_id={player_id}
 							room_id={roomID}

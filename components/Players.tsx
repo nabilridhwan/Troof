@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import { useContext, useState } from "react";
 import { SocketProviderContext } from "../context/SocketProvider";
 import { Player, TRUTH_OR_DARE_GAME } from "../Types";
+import ProfilePictureFromName from "./ProfilePictureFromName";
 
 interface PlayersProps {
 	players: Player[];
@@ -50,23 +51,27 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 	};
 
 	return (
-		<div className="my-2">
+		<div className="my-2 w-full max-h-full">
 			{/* <p>Players ({players.length})</p> */}
-			<div className="bg-black/5 my-1 rounded-2xl">
-				<div className="h-[100px] overflow-auto">
+
+			<p>Players</p>
+			<div className="bg-white/30 border border-black/10 my-1 rounded-2xl h-full">
+				<div className="max-h-full overflow-y-auto">
 					{players.map((player, index) => (
 						<div
-							className="flex items-center px-4 py-3 w-full even:bg-black/5"
+							className="flex items-center px-4 py-5 w-full even:bg-black/5"
 							key={index}
 						>
-							{/* Crown */}
-							{player.is_party_leader && (
-								<IconCrown className="mr-1 text-yellow-500" />
-							)}
+							<div className="mr-2">
+								<ProfilePictureFromName
+									name={player.display_name}
+								/>
+							</div>
 
 							<span
 								className={cx({
 									"flex-1": true,
+									"break-all": true,
 									"font-bold":
 										player.player_id === p.player_id,
 								})}
@@ -76,6 +81,11 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 									<span>(You)</span>
 								)}
 							</span>
+
+							{/* Crown */}
+							{player.is_party_leader && (
+								<IconCrown className="mr-1 text-yellow-500" />
+							)}
 
 							<div className="flex gap-2">
 								{p.is_party_leader &&

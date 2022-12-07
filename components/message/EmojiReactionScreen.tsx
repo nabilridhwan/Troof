@@ -77,7 +77,7 @@ const EmojiReactionScreen = ({ room_id }: EmojiReactionScreenProps) => {
 	return (
 		<div
 			id="emoji-reaction-screen"
-			className="fixed w-screen h-screen bg-transparent top-0 left-0 overflow-hidden pointer-events-none"
+			className="fixed w-screen h-screen bg-transparent top-0 left-0 overflow-hidden pointer-events-none z-50"
 		>
 			<Container>
 				{emojis.map((emoji, index) => (

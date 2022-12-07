@@ -17,9 +17,22 @@ module.exports = {
 
 			animation: {
 				drop: "drop 2s ease-in forwards",
+				zoom: "zoom 3s ease-in-out infinite",
 			},
 
 			keyframes: {
+				zoom: {
+					"0%": {
+						transform: "scale(1)",
+					},
+					"50%": {
+						transform: "scale(1.2)",
+					},
+					"100%": {
+						transform: "scale(1)",
+					},
+				},
+
 				drop: {
 					"0%": {
 						marginTop: 0,

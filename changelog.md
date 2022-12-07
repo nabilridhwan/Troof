@@ -1,3 +1,17 @@
+## Version 0.3.3
+
+### What's new (Client - v0.3.3)
+
+-   Changed layout of game screen.
+-   Increase width of the home screen in desktop.
+-   Add new Promo image on the home screen.
+-   Added a pulse effect when it is your turn in the game.
+-   Fixed: The reaction raining emojis go behind the message box. Now it is fixed.
+
+### What's new (Server - v0.2.6)
+
+-   Fixed a bug where the API requires you to have minimum 20 characters for your display name. It should've been maximum instead.
+
 ## Version 0.3.2
 
 We are pleased to announce that our servers are finally receiving updates after 2 client updates. These updates will include the implementation of a new, cryptographically secure random number generator that will be used to select truths or dares and minor fixes.

@@ -15,8 +15,9 @@ import { Player } from "../Types";
 import axiosInstance from "../utils/axiosInstance";
 import { Cookie } from "../utils/Cookie";
 
+import { IconDeviceGamepad, IconServer } from "@tabler/icons";
 import Image from "next/image";
-import troofPromoImage from "../public/troof_promo_new.png";
+import troofPromoImage from "../public/troof_promo_new_new.png";
 
 type MainScreenAction = "create" | "join" | "existing_game" | "none";
 
@@ -177,7 +178,7 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<main className="text-center space-y-10 w-[90%] lg:w-[40%] mx-auto">
+			<main className="text-center w-[90%] lg:w-[55%] mx-auto">
 				<div>
 					<div className="grid lg:grid-cols-2 my-10">
 						<div className="lg:text-left">
@@ -186,29 +187,17 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 								animate={{
 									opacity: 1,
 									y: 0,
-									fontSize: "7rem",
+									fontSize: "6.5rem",
 								}}
 								transition={{
 									duration: 0.8,
 									ease: "easeInOut",
 									delay: 0.1,
 								}}
-								className="my-14 font-black font-Playfair h-[150px] "
+								className="my-10 font-black font-Playfair h-[150px] "
 							>
 								Troof!
 							</motion.h1>
-
-							<p className="font-bold text-sm text-center lg:text-left mb-6 mt-2 space-x-1">
-								<span className="bg-black text-white rounded-lg py-1 px-2">
-									<span className="text-xs">Game</span> v
-									{pkgjson.version}
-								</span>
-
-								<span className="bg-black text-white rounded-lg py-1 px-2">
-									<span className="text-xs">Server</span>{" "}
-									{serverVersion}
-								</span>
-							</p>
 
 							<p className="text-lg mb-5">
 								Experience the ultimate social truth or dare
@@ -356,13 +345,41 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 						</Link>
 					</p> */}
 
-					<button className="bg-lime-100 text-lime-900 rounded-lg px-4 py-2 my-4 text-xs mb-10 border border-lime-900/20">
+					{/* <button className="bg-lime-100 text-lime-900 rounded-lg px-4 py-2 my-4 text-xs mb-10 border border-lime-900/20">
 						<Link href={"/changelog"} className="no-underline">
 							Read what&apos;s new in v{pkgjson.version}
 						</Link>
-					</button>
+					</button> */}
 
 					{/* Contains all the links to caution, terms of service, privacy and my github page */}
+
+					{/* Versions */}
+
+					<div className="my-10">
+						<p className="text-sm">Version</p>
+						<p className="font-semibold text-xs text-center  mb-6 mt-2 space-x-1.5 flex justify-center">
+							<span
+								title="Game Version"
+								className="flex bg-gray-800 text-gray-200 rounded-lg py-1 px-2 gap-1 items-center"
+							>
+								<span className="text-xs">
+									<IconDeviceGamepad size={20} />
+								</span>{" "}
+								v{pkgjson.version}
+							</span>
+
+							<span
+								title="Server Version"
+								className="flex bg-gray-800 text-gray-200 rounded-lg py-1 px-2 gap-1 items-center"
+							>
+								<span className="text-xs">
+									<IconServer size={20} />
+								</span>{" "}
+								{serverVersion}
+							</span>
+						</p>
+					</div>
+
 					<footer className="flex flex-wrap my-5 text-xs gap-2 justify-center">
 						<div className="">
 							<Link href="/caution" className="text-gray-500">
@@ -390,7 +407,7 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 
 						<div className="">
 							<Link href="/changelog" className="text-gray-500">
-								Changelog
+								What&apos; new?
 							</Link>
 						</div>
 

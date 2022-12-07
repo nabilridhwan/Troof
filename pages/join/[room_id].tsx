@@ -40,6 +40,7 @@ export async function getServerSideProps(context: NextPageContext) {
 			const { status } = error.response!;
 
 			console.log(status);
+			console.log(JSON.stringify(error.response?.data.data));
 
 			if (status === 404) {
 				return {

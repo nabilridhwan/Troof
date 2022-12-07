@@ -7,7 +7,7 @@ export default function ManualPage() {
 			<div className="prose my-5 mx-auto">
 				<Link href="/">Go home</Link>
 
-				<h2>Welcome to the holy grail game manual!</h2>
+				<h2>The handbook of troof!</h2>
 
 				<h3>What is Troof?</h3>
 				<p>
@@ -17,7 +17,7 @@ export default function ManualPage() {
 				</p>
 
 				<p>
-					With Troof, you can chat, react, and choose from over 290+
+					With Troof, you can chat, react, and act upon from over 570+
 					truths and dares* to test your limits and challenge your
 					friends.
 				</p>
@@ -29,6 +29,45 @@ export default function ManualPage() {
 				</p>
 
 				<i>* More truths and dares will be added in a later stage</i>
+
+				<h3>Game Values</h3>
+
+				<ol>
+					<li>
+						Discuss the game with the other players and come to a
+						consensus on what the rules will be.
+					</li>
+
+					<li>
+						Clearly communicate the rules to everyone before the
+						game begins.
+					</li>
+
+					<li>
+						Make sure everyone understands and agrees to the rules.
+					</li>
+
+					<li>
+						Remind players of the rules throughout the game to
+						ensure they are being followed.
+					</li>
+
+					<li>
+						Be flexible and willing to adjust the rules if necessary
+						to ensure that everyone is having a good time and that
+						the game is fair and enjoyable for all.
+					</li>
+
+					<li>
+						Respect each other&apos;s boundaries. if someone does
+						not want to do a truth or dare, do not pressure them.
+					</li>
+
+					<li>
+						Have fun! the goal of the game is to have a good time
+						and enjoy each other&apos;s company.
+					</li>
+				</ol>
 
 				<h3>Instructions</h3>
 
