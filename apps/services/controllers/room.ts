@@ -1,4 +1,4 @@
-import { generateRoomID } from "@troof/helpers/dist";
+import { generateRoomID } from "@troof/helpers";
 import { Status } from "@troof/socket";
 import type { Request, Response } from "express";
 import { z, ZodError, ZodIssue } from "zod";
