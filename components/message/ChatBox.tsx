@@ -253,7 +253,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 		setShowGifPicker(false);
 	};
 
-	const handleReply = (message_id: number) => {
+	const handleReply = (message_id: string) => {
 		const m = findMessageById(
 			message_id,
 			messages as MessageUpdatedFromServer[]

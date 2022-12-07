@@ -9,7 +9,7 @@ interface OtherPlayerChatBubbleProps {
 	message: MessageUpdatedFromServer;
 	asEmoji?: boolean;
 	asReply?: boolean;
-	onReply: (id: number) => void;
+	onReply: (id: string) => void;
 	replyMessage?: MessageUpdatedFromServer;
 }
 
