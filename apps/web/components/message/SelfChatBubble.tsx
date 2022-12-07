@@ -1,7 +1,7 @@
+import { RegexHelper } from "@troof/helpers";
 import { MessageUpdatedFromServer } from "@troof/socket";
 import { Emoji, EmojiStyle } from "emoji-picker-react";
 import { motion } from "framer-motion";
-import { RegexHelper } from "../../utils/regexHelpers";
 import ProfilePictureFromName from "../ProfilePictureFromName";
 
 interface SelfChatBubbleProps {

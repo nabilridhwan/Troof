@@ -1,6 +1,5 @@
+import { getContrastYIQ, stringToColor } from "@troof/helpers";
 import { useState } from "react";
-import getContrastYIQ from "../utils/getContrastYIQ";
-import stringToColor from "../utils/stringToColor";
 
 interface ProfilePictureFromNameProps {
 	name: string;

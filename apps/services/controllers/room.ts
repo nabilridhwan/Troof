@@ -1,12 +1,12 @@
+import { generateRoomID } from "@troof/helpers/dist";
+import { Status } from "@troof/socket";
 import type { Request, Response } from "express";
 import { z, ZodError, ZodIssue } from "zod";
-import { Status } from "../../../packages/socket/dist";
 import PlayerModel from "../model/player";
 import RoomModel from "../model/room";
 import BadRequest from "../responses/BadRequest";
 import NotFoundResponse from "../responses/NotFoundResponse";
 import SuccessResponse from "../responses/SuccessResponse";
-import { generateRoomID } from "../utils/generators";
 
 const GetRoomSchema = z.object({
 	room_id: z.string(),
@@ -99,6 +99,19 @@ const Room = {
 		if (!room) {
 			return new NotFoundResponse(
 				"Room does not exist",
+				{}
+			).handleResponse(req, res);
+		}
+
+		console.log();
+
+		const { player_id: playerCount } =
+			await RoomModel.getNumberOfPeopleInRoom(room_id);
+
+		if (playerCount >= 1) {
+			// Tell the users that the room is full
+			return new NotFoundResponse(
+				"Room is full. Maximum of 8 players allowed.",
 				{}
 			).handleResponse(req, res);
 		}

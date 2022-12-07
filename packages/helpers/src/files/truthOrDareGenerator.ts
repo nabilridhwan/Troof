@@ -1,8 +1,8 @@
 // https://github.com/ark-maker-bot/better-tord/blob/main/index.js
 
 // Read file from truth or dare generator
-import all_dares from "../truth_or_dare_generator/output/all_dares.json";
-import all_truths from "../truth_or_dare_generator/output/all_truths.json";
+import all_dares from "@troof/truth-or-dare-generator/output/all_dares.json";
+import all_truths from "@troof/truth-or-dare-generator/output/all_truths.json";
 
 import { randomInRange } from "make-random";
 

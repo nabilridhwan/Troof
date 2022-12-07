@@ -4,6 +4,8 @@ import Head from "next/head";
 import { joinRoom } from "../../services/joinRoom";
 import { Cookie } from "../../utils/Cookie";
 
+import { BadRequest, NotFoundResponse } from "@troof/responses";
+
 // Export getServerSideProps to get the query string
 export async function getServerSideProps(context: NextPageContext) {
 	// get room_id from params
@@ -36,8 +38,11 @@ export async function getServerSideProps(context: NextPageContext) {
 			},
 		};
 	} catch (error) {
-		if (error instanceof AxiosError) {
-			const { status } = error.response!;
+		if (error instanceof AxiosError<BadRequest | NotFoundResponse>) {
+			const {
+				status,
+				data: { message },
+			} = error.response!;
 
 			console.log(status);
 			console.log(JSON.stringify(error.response?.data.data));
@@ -45,7 +50,7 @@ export async function getServerSideProps(context: NextPageContext) {
 			if (status === 404) {
 				return {
 					redirect: {
-						destination: `/?error=room_not_found`,
+						destination: `/?error=${message}`,
 						permanent: true,
 					},
 				};

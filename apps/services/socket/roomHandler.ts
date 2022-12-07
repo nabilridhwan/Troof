@@ -1,4 +1,3 @@
-import { Server, Socket } from "socket.io";
 import {
 	ClientToServerEvents,
 	DisconnectedRoomObject,
@@ -10,7 +9,8 @@ import {
 	Status,
 	StatusChangeObject,
 	SystemMessage,
-} from "../../../packages/socket/dist";
+} from "@troof/socket";
+import { Server, Socket } from "socket.io";
 import ChatModel from "../model/chat";
 import PlayerModel from "../model/player";
 import RoomModel from "../model/room";

@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { Action, Status } from "../../../packages/socket/dist";
+import { Action, Status } from "@troof/socket";
 import prisma from "../database/prisma";
 import Sequence from "./sequence";
 
@@ -12,6 +12,20 @@ const RoomModel = {
 				room_id: roomId,
 			},
 		});
+	},
+
+	getNumberOfPeopleInRoom: async (roomId: string) => {
+		const players = await prisma.player.aggregate({
+			where: {
+				game_room_id: roomId,
+			},
+
+			_count: {
+				player_id: true,
+			},
+		});
+
+		return players._count;
 	},
 
 	getRoom: async (selectObject: Prisma.gameWhereInput) => {

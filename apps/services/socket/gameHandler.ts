@@ -1,4 +1,4 @@
-import { Server, Socket } from "socket.io";
+import { get_dare, get_truth } from "@troof/helpers";
 import {
 	Action,
 	EVENTS,
@@ -8,13 +8,13 @@ import {
 	Status,
 	SystemMessage,
 	TRUTH_OR_DARE_GAME,
-} from "../../../packages/socket/dist";
+} from "@troof/socket";
+import { Server, Socket } from "socket.io";
 import prisma from "../database/prisma";
 import ChatModel from "../model/chat";
 import PlayerModel from "../model/player";
 import RoomModel from "../model/room";
 import Sequence from "../model/sequence";
-import { get_dare, get_truth } from "../utils/truthOrDareGenerator";
 
 const gameHandler = (io: Server, socket: Socket) => {
 	console.log("Registered game handler");
