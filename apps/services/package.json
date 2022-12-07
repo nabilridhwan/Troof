@@ -1,6 +1,6 @@
 {
-	"name": "services",
-	"version": "0.2.8",
+	"name": "service",
+	"version": "0.2.9",
 	"description": "",
 	"main": "index.ts",
 	"private": true,

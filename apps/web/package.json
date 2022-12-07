@@ -1,6 +1,6 @@
 {
-	"name": "troof",
-	"version": "0.3.5",
+	"name": "web",
+	"version": "0.3.6",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",

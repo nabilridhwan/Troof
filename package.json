@@ -10,6 +10,11 @@
 		"packages/*",
 		"apps/*"
 	],
+	"scripts": {
+		"start:service": "turbo run start --scope=service",
+		"start:troof": "turbo run build start --scope=web",
+		"dev": "turbo run dev"
+	},
 	"devDependencies": {
 		"turbo": "^1.6.3"
 	}

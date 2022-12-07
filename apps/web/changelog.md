@@ -1,3 +1,9 @@
+## Version 0.3.6 and 0.2.9
+
+### What's new
+
+We're excited to announce that nothing changed except for the fact that we adopt TurboRepo. If you're seeing the application on these versions, you're seeing the latest one
+
 ## Version 0.3.5 and 0.2.8
 
 ### What's new (Client - 0.3.5 and Server - 0.2.8)
