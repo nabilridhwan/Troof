@@ -13,6 +13,7 @@
 	"scripts": {
 		"start:service": "turbo run start --scope=service",
 		"start:troof": "turbo run build start --scope=web",
+		"build:troof": "turbo run build --scope=web",
 		"dev": "turbo run dev"
 	},
 	"devDependencies": {
