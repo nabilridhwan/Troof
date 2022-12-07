@@ -1,0 +1,49 @@
+{
+	"name": "services",
+	"version": "0.2.8",
+	"description": "",
+	"main": "index.ts",
+	"private": true,
+	"scripts": {
+		"start": "ts-node index.ts",
+		"dev": "nodemon index.ts"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@troof/config": "*",
+		"@prisma/client": "^4.7.0",
+		"@types/bad-words": "^3.0.1",
+		"@types/random-seed": "^0.3.3",
+		"bad-words": "^3.0.4",
+		"cors": "^2.8.5",
+		"dotenv": "^16.0.3",
+		"express": "^4.18.2",
+		"make-random": "^3.0.2",
+		"nanoid": "3.3.4",
+		"rand-seed": "^1.0.2",
+		"random-seed": "^0.3.0",
+		"random-words": "^1.2.0",
+		"socket.io": "^4.5.4",
+		"ts-node": "^10.9.1",
+		"uuid": "^9.0.0",
+		"xkpasswd": "^1.0.5",
+		"zod": "^3.19.1"
+	},
+	"devDependencies": {
+		"@types/dotenv": "^8.2.0",
+		"@types/express": "^4.17.14",
+		"@types/nanoid": "^3.0.0",
+		"@types/uuid": "^9.0.0",
+		"@typescript-eslint/eslint-plugin": "^5.0.0",
+		"eslint": "^8.0.1",
+		"eslint-config-standard-with-typescript": "^23.0.0",
+		"eslint-plugin-import": "^2.25.2",
+		"eslint-plugin-n": "^15.0.0",
+		"eslint-plugin-promise": "^6.0.0",
+		"nodemon": "^2.0.20",
+		"prisma": "^4.7.0",
+		"typescript": "*"
+	}
+}
