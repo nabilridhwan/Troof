@@ -2,7 +2,9 @@
 
 ### What's new (Client - 0.3.5 and Server - 0.2.8)
 
--   To provide the best possible experience for our users, we have implemented an alternative method for handling messages in the Troof chat. Initially, the chat table in the database used an integer primary key, which introduced a delay when sending and receiving messages. Additionally, using an integer as the primary key has an upper limit, which could potentially be reached in the future. However, by using a varchar field with UUID v4 as the primary key, we can generate a unique identifier for each message on the client side and immediately broadcast it back to the user. This allows for instant messaging and enables us to reply to messages instantly without any delays. Plus, using a varchar field with UUID v4 as the primary key removes the potential for reaching an upper limit in the future. Both the frontend and backend added support for these types.
+-   We fixed the issue of messages not replying instantly.
+
+    -   To provide the best possible experience for our users, we have implemented an alternative method for handling messages in the Troof chat. Initially, the chat table in the database used an integer primary key, which introduced a delay when sending and receiving messages. Additionally, using an integer as the primary key has an upper limit, which could potentially be reached in the future. However, by using a varchar field with UUID v4 as the primary key, we can generate a unique identifier for each message on the client side and immediately broadcast it back to the user. This allows for instant messaging and enables us to reply to messages instantly without any delays. Plus, using a varchar field with UUID v4 as the primary key removes the potential for reaching an upper limit in the future. Both the frontend and backend added support for these types.
 
 -   In the future, we will limit games to only have 8 players max.
 
