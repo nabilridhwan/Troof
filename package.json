@@ -1,6 +1,6 @@
 {
 	"name": "gamenight",
-	"version": "0.3.3",
+	"version": "0.3.4",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
@@ -15,6 +15,7 @@
 		"@reacticons/ionicons": "^6.0.4",
 		"@supabase/supabase-js": "^2.1.1",
 		"@tabler/icons": "^1.113.0",
+		"@tailwindcss/line-clamp": "^0.4.2",
 		"@tailwindcss/typography": "^0.5.8",
 		"@types/lodash.debounce": "^4.0.7",
 		"@types/markdown-it": "^12.2.3",

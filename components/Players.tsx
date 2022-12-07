@@ -54,7 +54,6 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 		<div className="my-2 w-full max-h-full">
 			{/* <p>Players ({players.length})</p> */}
 
-			<p>Players</p>
 			<div className="bg-white/30 border border-black/10 my-1 rounded-2xl h-full">
 				<div className="max-h-full overflow-y-auto">
 					{players.map((player, index) => (

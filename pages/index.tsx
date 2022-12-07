@@ -92,6 +92,12 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 		const show = !!localStorage.getItem("cautionDismissed");
 		console.log("Show caution?", show);
 
+		const displayName = localStorage.getItem("displayName");
+
+		if (displayName) {
+			setDisplayName(displayName);
+		}
+
 		setShowCautions(!show);
 	}, []);
 
@@ -407,7 +413,7 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 
 						<div className="">
 							<Link href="/changelog" className="text-gray-500">
-								What&apos; new?
+								What&apos;s new?
 							</Link>
 						</div>
 

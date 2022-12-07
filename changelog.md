@@ -1,3 +1,19 @@
+## Version 0.3.4
+
+### What's new (Client - 0.3.4)
+
+-   The next time you join a game, we will pre-fill your previously used name because we remember :)
+-   Changed layout of the game page for desktop to better fit laptop screens.
+-   Fixed typos
+-   Added the ability to reply to other people's messages
+    -   This is somewhat a new features, may be unstable.
+    -   **With this feature introduced, messages sent now has a delay depending on how fast the server responds back!** - We will try to see how this can be optimized in the future!
+
+### What's new (Server - 0.2.7)
+
+-   Support for new text messages type (overhaul of types).
+-   Support for message reply.
+
 ## Version 0.3.3
 
 ### What's new (Client - v0.3.3)

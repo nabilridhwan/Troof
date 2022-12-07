@@ -1,18 +1,20 @@
-import { IconMoodHappy, IconSend } from "@tabler/icons";
+import { IconMessage, IconMoodHappy, IconSend, IconX } from "@tabler/icons";
 import EmojiPicker, {
+	Emoji,
 	EmojiClickData,
 	EmojiStyle,
 	SuggestionMode,
 } from "emoji-picker-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { useContext, useEffect, useRef, useState } from "react";
 import { SocketProviderContext } from "../../context/SocketProvider";
 import {
-	Message,
-	MessageUpdate,
+	BaseNewMessage,
+	MessageUpdatedFromServer,
 	MESSAGE_EVENTS,
 	SystemMessage,
 } from "../../Types";
+import findMessageById from "../../utils/findMessageById";
 import EmojiReactionBar from "../EmojiBar";
 import GifPicker from "./GifPicker";
 import OtherPlayerChatBubble from "./OtherPlayerChatBubble";
@@ -28,6 +30,9 @@ let typingTimeout: NodeJS.Timeout;
 let doneTypingTimeout: NodeJS.Timeout;
 
 const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
+	const [replyToMessage, setReplyToMessage] =
+		useState<MessageUpdatedFromServer | null>(null);
+
 	const socket = useContext(SocketProviderContext);
 	const inputElementRef = useRef<HTMLInputElement>(null);
 
@@ -36,9 +41,9 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 	const [showGifPicker, setShowGifPicker] = useState(false);
 
-	const [messages, setMessages] = useState<(MessageUpdate | SystemMessage)[]>(
-		[]
-	);
+	const [messages, setMessages] = useState<
+		(MessageUpdatedFromServer | SystemMessage)[]
+	>([]);
 	const [inputMessage, setInputMessage] = useState("");
 
 	const [peopleTyping, setPeopleTyping] = useState<string[]>([]);
@@ -48,13 +53,18 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 	const lastMessageElementRef = useRef<HTMLDivElement>(null);
 
 	const sendMessage = (content: string) => {
-		const newMessageObject: Message = {
+		console.log("Reply to: ", replyToMessage ? replyToMessage.id : "null");
+		const newMessageObject: BaseNewMessage = {
 			room_id,
 			display_name,
+			reply_to: replyToMessage ? replyToMessage.id : null,
 			message: content,
 			type: "message",
 			created_at: new Date(),
 		};
+
+		console.log(`Sending message to server:`);
+		console.log(newMessageObject);
 
 		if (socket) {
 			// Stop typing
@@ -71,14 +81,21 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 		}
 
 		setInputMessage("");
+
+		setReplyToMessage(null);
 	};
 
 	const sendReaction = (emoji: string) => {
+		console.log(
+			"Reaction to: ",
+			replyToMessage ? replyToMessage.id : "null"
+		);
 		setInputMessage("");
 
-		const newMessageObject: Message = {
+		const newMessageObject: BaseNewMessage = {
 			room_id,
 			display_name,
+			reply_to: replyToMessage ? replyToMessage.id : null,
 			message: emoji,
 			type: "reaction",
 			created_at: new Date(),
@@ -90,6 +107,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 			// Emit to socket
 			socket.emit(MESSAGE_EVENTS.MESSAGE_REACTION, newMessageObject);
 		}
+		setReplyToMessage(null);
 	};
 
 	useEffect(() => {
@@ -123,6 +141,8 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 					message:
 						"You have been disconnected from the server. The page will refresh in 3 seconds.",
 					type: "system",
+					display_name: "",
+					reply_to: null,
 					created_at: new Date(),
 					room_id,
 				};
@@ -178,6 +198,9 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 		if (inputMessage.length > 0) {
 			sendMessage(inputMessage);
 		}
+
+		setInputFocused(false);
+		setInputMessage("");
 	};
 
 	const handleReaction = (emoji: string) => {
@@ -230,12 +253,29 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 		setShowGifPicker(false);
 	};
 
+	const handleReply = (message_id: number) => {
+		const m = findMessageById(
+			message_id,
+			messages as MessageUpdatedFromServer[]
+		);
+
+		if (!m) return;
+
+		console.log(m);
+
+		setReplyToMessage(m);
+
+		if (inputElementRef.current) {
+			inputElementRef.current.focus();
+		}
+	};
+
 	return (
 		<div className="w-full h-full chatbox">
 			{/* Chat box */}
 			<div
 				ref={messagesBoxRefElement}
-				className="h-[300px] lg:min-h-[85%] relative bg-black/5 p-3 rounded-xl overflow-auto mb-2 border border-black/10"
+				className="h-[300px] lg:min-h-[85%] relative bg-black/5 p-2 rounded-xl overflow-auto mb-2 border border-black/10"
 			>
 				{!messages.length && (
 					<p className="text-center text-gray-500">
@@ -243,7 +283,10 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 					</p>
 				)}
 				{messages.map(
-					(message: MessageUpdate | SystemMessage, index) => {
+					(
+						message: MessageUpdatedFromServer | SystemMessage,
+						index
+					) => {
 						return (
 							<div
 								key={index}
@@ -258,6 +301,16 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 										{message.display_name ===
 										display_name ? (
 											<SelfChatBubble
+												onReply={handleReply}
+												asReply={!!message.reply_to}
+												replyMessage={
+													!!message.reply_to
+														? findMessageById(
+																message.reply_to,
+																messages as MessageUpdatedFromServer[]
+														  )
+														: undefined
+												}
 												displayName={
 													message.display_name
 												}
@@ -265,6 +318,16 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 											/>
 										) : (
 											<OtherPlayerChatBubble
+												onReply={handleReply}
+												asReply={!!message.reply_to}
+												replyMessage={
+													!!message.reply_to
+														? findMessageById(
+																message.reply_to,
+																messages as MessageUpdatedFromServer[]
+														  )
+														: undefined
+												}
 												displayName={
 													message.display_name
 												}
@@ -279,19 +342,43 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 										{message.display_name ===
 										display_name ? (
 											<SelfChatBubble
+												asEmoji={
+													message.type === "reaction"
+												}
+												onReply={handleReply}
+												asReply={!!message.reply_to}
+												replyMessage={
+													!!message.reply_to
+														? findMessageById(
+																message.reply_to,
+																messages as MessageUpdatedFromServer[]
+														  )
+														: undefined
+												}
 												displayName={
 													message.display_name
 												}
 												message={message}
-												asEmoji
 											/>
 										) : (
 											<OtherPlayerChatBubble
+												asEmoji={
+													message.type === "reaction"
+												}
+												onReply={handleReply}
+												asReply={!!message.reply_to}
+												replyMessage={
+													!!message.reply_to
+														? findMessageById(
+																message.reply_to,
+																messages as MessageUpdatedFromServer[]
+														  )
+														: undefined
+												}
 												displayName={
 													message.display_name
 												}
 												message={message}
-												asEmoji
 											/>
 										)}
 									</>
@@ -395,58 +482,110 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 				/>
 			)} */}
 
-			<form onSubmit={handleMessageSubmit}>
-				<div className="flex gap-2">
-					{/* Gif and Emoji buttons */}
-
-					<motion.button
-						type="button"
-						whileTap={{ scale: 0.9 }}
-						whileHover={{ scale: 1.05 }}
-						onClick={() => {
-							setShowGifPicker(false);
-							setShowEmojiPicker(!showEmojiPicker);
-						}}
-						className="my-2 p-2 flex items-center gap-2 text-center justify-center text-black/60"
-					>
-						<IconMoodHappy size={20} className="text-black/50" />
-					</motion.button>
-
-					<motion.button
-						type="button"
-						whileTap={{ scale: 0.9 }}
-						whileHover={{ scale: 1.05 }}
-						onClick={() => {
-							setShowEmojiPicker(false);
-							setShowGifPicker(!showGifPicker);
-						}}
-						className="my-2 p-2 flex items-center gap-2 text-center justify-center text-black/60"
-					>
-						<p className="text-sm font-black">GIF</p>
-					</motion.button>
-
-					<div className="relative gap-3 flex items-center justify-center flex-1">
-						<input
-							ref={inputElementRef}
-							onFocus={handleFocus}
-							onBlur={handleBlur}
-							tabIndex={0}
-							placeholder="Type a message..."
-							className="h-[15px]"
-							value={inputMessage}
-							onChange={handleTyping}
-						/>
-
-						<button
-							type="submit"
-							disabled={inputMessage.length === 0}
-							className="disabled:opacity-50 bg-primary absolute right-0 mr-1 p-2.5 rounded-lg flex items-center gap-2 text-center justify-center"
+			<LayoutGroup>
+				{/* Reply message  */}
+				<AnimatePresence mode="popLayout">
+					{replyToMessage && (
+						<motion.div
+							initial={{ opacity: 0, y: -10 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: -10 }}
+							className=" bg-black/5 border relative border-black/10 rounded-lg p-2 px-3 items-center space-y-1 my-1 w-full"
 						>
-							<IconSend size={18} />
-						</button>
+							<div className="items-center gap-2 text-xs">
+								<div className="flex gap-1 opacity-60">
+									<IconMessage size={16} />
+									<p>
+										Replying to{" "}
+										<span className="text-black/70 font-bold">
+											{replyToMessage.display_name}
+										</span>
+										...
+									</p>
+								</div>
+
+								{replyToMessage.type === "reaction" ? (
+									<Emoji
+										unified={replyToMessage.message}
+										emojiStyle={EmojiStyle.APPLE}
+										size={20}
+									/>
+								) : (
+									<p
+										className="line-clamp-1"
+										title={replyToMessage.message}
+									>
+										{replyToMessage.message}
+									</p>
+								)}
+							</div>
+
+							<button
+								className="absolute right-1 top-1"
+								onClick={() => setReplyToMessage(null)}
+							>
+								<IconX size={18} />
+							</button>
+						</motion.div>
+					)}
+				</AnimatePresence>
+
+				<motion.form layout="size" onSubmit={handleMessageSubmit}>
+					<div className="flex gap-2">
+						{/* Gif and Emoji buttons */}
+
+						<motion.button
+							type="button"
+							whileTap={{ scale: 0.9 }}
+							whileHover={{ scale: 1.05 }}
+							onClick={() => {
+								setShowGifPicker(false);
+								setShowEmojiPicker(!showEmojiPicker);
+							}}
+							className="my-2 p-2 flex items-center gap-2 text-center justify-center text-black/60"
+						>
+							<IconMoodHappy
+								size={20}
+								className="text-black/50"
+							/>
+						</motion.button>
+
+						<motion.button
+							type="button"
+							whileTap={{ scale: 0.9 }}
+							whileHover={{ scale: 1.05 }}
+							onClick={() => {
+								setShowEmojiPicker(false);
+								setShowGifPicker(!showGifPicker);
+							}}
+							className="my-2 p-2 flex items-center gap-2 text-center justify-center text-black/60"
+						>
+							<p className="text-sm font-black">GIF</p>
+						</motion.button>
+
+						<div className="relative gap-3 flex items-center justify-center flex-1">
+							<input
+								ref={inputElementRef}
+								onFocus={handleFocus}
+								onBlur={handleBlur}
+								tabIndex={0}
+								placeholder="Type a message..."
+								className="h-[15px]"
+								value={inputMessage}
+								onChange={handleTyping}
+							/>
+
+							<button
+								type="submit"
+								disabled={inputMessage.length === 0}
+								className="disabled:opacity-50 bg-primary absolute right-0 mr-1 p-2.5 rounded-lg flex items-center gap-2 text-center justify-center"
+							>
+								<IconSend size={18} />
+							</button>
+						</div>
 					</div>
-				</div>
-			</form>
+				</motion.form>
+			</LayoutGroup>
 		</div>
 	);
 };

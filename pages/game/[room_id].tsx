@@ -134,6 +134,8 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 	const socket = useContext(SocketProviderContext);
 
 	useEffect(() => {
+		localStorage.setItem("displayName", player.display_name);
+
 		if (socket) {
 			console.log("Emitting joined truth or dare game");
 
@@ -307,9 +309,12 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 
 			<EmojiReactionScreen room_id={room_id} />
 
-			<div className="h-screen py-10">
-				<div className="lg:grid lg:grid-cols-12 gap-10 h-full items-center justify-center">
-					<div className="col-span-2 lg:h-full">
+			<div className="h-screen py-10 ">
+				<div className="lg:grid lg:grid-cols-4 gap-10 h-full items-center justify-center">
+					<div className="col-span-1 lg:h-full lg:border border-black/10 rounded-2xl px-1">
+						<h2 className="font-bold text-lg my-5 text-center">
+							Players
+						</h2>
 						<Players
 							player={player}
 							players={players}
@@ -317,7 +322,7 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 						/>
 					</div>
 
-					<div className="col-span-7 lg:h-full">
+					<div className="col-span-2 lg:h-full lg:border border-black/10 rounded-2xl lg:px-10">
 						<div className="w-full h-full flex items-center justify-center">
 							{/* Main items */}
 							<div className=" my-2 flex-1">
@@ -546,7 +551,7 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 						</div>
 					</div>
 
-					<div className="col-span-3 lg:h-full">
+					<div className="col-span-1 lg:h-full">
 						<ChatBox
 							player_id={player_id}
 							room_id={roomID}

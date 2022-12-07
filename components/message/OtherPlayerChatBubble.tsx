@@ -1,23 +1,73 @@
 import { Emoji, EmojiStyle } from "emoji-picker-react";
-import { MessageUpdate } from "../../Types";
+import { motion } from "framer-motion";
+import { MessageUpdatedFromServer } from "../../Types";
 import { RegexHelper } from "../../utils/regexHelpers";
 import ProfilePictureFromName from "../ProfilePictureFromName";
 
 interface OtherPlayerChatBubbleProps {
 	displayName: string;
-	message: MessageUpdate;
+	message: MessageUpdatedFromServer;
 	asEmoji?: boolean;
+	asReply?: boolean;
+	onReply: (id: number) => void;
+	replyMessage?: MessageUpdatedFromServer;
 }
 
 const OtherPlayerChatBubble = ({
 	displayName,
 	message,
 	asEmoji = false,
+	asReply = false,
+	onReply,
+	replyMessage,
 }: OtherPlayerChatBubbleProps) => (
-	<div className="flex flex-row justify-start items-end my-2 text-sm gap-2">
+	<motion.div className="flex flex-row justify-start items-end my-2 text-sm gap-2">
 		<ProfilePictureFromName name={displayName} />
-		<div className="bg-blue-300 text-blue-900 max-w-[80%] p-2 px-3 rounded-lg rounded-bl-none">
+		<motion.div
+			onClick={() => onReply(message.id)}
+			whileHover={{ scale: 1.05 }}
+			whileTap={{ scale: 0.95 }}
+			className="bg-blue-300 text-blue-900 max-w-[80%] p-2 px-3 rounded-lg rounded-bl-none cursor-pointer"
+		>
 			<p className="text-xs font-semibold mb-1">{message.display_name}</p>
+
+			{/* This is a message that needs reply */}
+			{asReply && (
+				<div className="mb-1">
+					{replyMessage ? (
+						<>
+							<div className="bg-gray-200 rounded-lg p-2">
+								<p className="text-xs font-semibold mb-1">
+									{replyMessage?.display_name}
+								</p>
+
+								{replyMessage.type === "reaction" ? (
+									<Emoji
+										unified={replyMessage.message}
+										emojiStyle={EmojiStyle.APPLE}
+										size={20}
+									/>
+								) : (
+									<p
+										className="break-words"
+										dangerouslySetInnerHTML={{
+											__html: RegexHelper.globalReplaceLinksAndImages(
+												replyMessage!.message
+											),
+										}}
+									/>
+								)}
+							</div>
+						</>
+					) : (
+						<div className="bg-gray-200 rounded-lg p-2">
+							<p className="break-words italic text-xs">
+								Couldn&apos;t find the message
+							</p>
+						</div>
+					)}
+				</div>
+			)}
 
 			{asEmoji ? (
 				<Emoji
@@ -35,10 +85,9 @@ const OtherPlayerChatBubble = ({
 					}}
 				/>
 			)}
-
 			<div />
-		</div>
-	</div>
+		</motion.div>
+	</motion.div>
 );
 
 export default OtherPlayerChatBubble;
