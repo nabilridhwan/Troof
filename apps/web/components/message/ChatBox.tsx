@@ -139,7 +139,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 			socket.on("disconnect", () => {
 				const disconnectedSystemMessage: SystemMessage = {
 					message:
-						"You have been disconnected from the server. The page will refresh in 3 seconds.",
+						"You have been disconnected from the server. This page will refresh.",
 					type: "system",
 					display_name: "",
 					reply_to: null,
