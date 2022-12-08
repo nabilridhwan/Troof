@@ -24,9 +24,15 @@ const OtherPlayerChatBubble = ({
 	<motion.div className="flex flex-row justify-start items-end my-2 text-sm gap-2">
 		<ProfilePictureFromName name={displayName} />
 		<motion.div
-			onClick={() => onReply(message.id)}
+			onDoubleClick={() => onReply(message.id)}
 			whileHover={{ scale: 1.05 }}
-			whileTap={{ scale: 0.95 }}
+			whileTap={{
+				scale: [0.95, 1],
+				transition: {
+					duration: 0.2,
+					ease: "easeIn",
+				},
+			}}
 			className="bg-blue-300 text-blue-900 max-w-[80%] p-2 px-3 rounded-lg rounded-bl-none cursor-pointer"
 		>
 			<p className="text-xs font-semibold mb-1">{message.display_name}</p>

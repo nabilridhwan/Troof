@@ -23,9 +23,15 @@ const SelfChatBubble = ({
 }: SelfChatBubbleProps) => (
 	<motion.div className=" max-w-full flex flex-row justify-end items-end my-2 text-sm gap-2 relative">
 		<motion.div
-			onClick={() => onReply(message.id)}
+			onDoubleClick={() => onReply(message.id)}
 			whileHover={{ scale: 1.05 }}
-			whileTap={{ scale: 0.95 }}
+			whileTap={{
+				scale: [0.95, 1],
+				transition: {
+					duration: 0.2,
+					ease: "easeIn",
+				},
+			}}
 			className="bg-gray-100 max-w-[80%]  p-2 px-3 rounded-lg rounded-br-none cursor-pointer"
 		>
 			{/* This is a message that needs reply */}
