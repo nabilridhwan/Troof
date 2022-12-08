@@ -11,7 +11,6 @@
 		"apps/*"
 	],
 	"scripts": {
-		"postinstall": "husky install",
 		"start:services": "turbo run start --scope=services",
 		"start:troof": "turbo run start --scope=web",
 		"start:all": "turbo run start",
