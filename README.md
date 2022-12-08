@@ -1,4 +1,33 @@
-# Troof!
+<center>
+  <img src="./docs/troof_promo_new_new.png" width=500 />
+</center>
+
+<h1 align="center">Troof</h1>
+
+<h3 align="center">
+  Experience the ultimate social truth or dare game - see, chat, and react together with up to 8 friends!
+</h3>
+
+<hr>
+
+## Powered by
+
+![](https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![](https://img.shields.io/badge/Socket.io-010101?&style=for-the-badge&logo=Socket.io&logoColor=white)
+![](https://img.shields.io/badge/Supabase-181818?style=for-the-badge&logo=supabase&logoColor=white)
+![](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![](htts://img.shields.io/badge/Railway-131415?style=for-the-badge&logo=railway&logoColor=white)
+
+<hr>
+
+## Deployment Status
+
+![Deployment Status](https://img.shields.io/github/deployments/nabilridhwan/troof/production?label=deployment)
+
+<hr>
+
+## Turborepo/monorepo
 
 > We have moved to a monorepo for our project, which is a version control repository that contains all of the code for our project in a single location. This is different from the traditional approach, where each application or package would have its own separate repository.
 
@@ -10,9 +39,10 @@
     -   web # Frontend web (Next.js)
 -   packages
     -   api # API utils (Axios)
+    -  config # Shared config of tailwind, postcss, prettier and many more.
     -   database # Database utils (Prisma)
+    -   gifpicker # Gif picker component (React, powered by Tenor)
     -   helpers # Helper functions used both in backend and frontend
-    -  prettier-config # Shared Prettier config
     -   responses # Response utils (Express.js)
     -   socket # Socket utils types (Socket.io) and events that are used in both backend and frontend
     -   truth-or-dare # Separate package for data cleansing truth and dares
