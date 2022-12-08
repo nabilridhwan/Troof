@@ -125,7 +125,7 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 								disabled={players.length < 2}
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.9 }}
-								className="btn disabled:opacity-70 my-2 bg-teal-300 text-teal-900 border-none flex items-center gap-2 text-sm"
+								className="btn disabled:opacity-70 my-2 bg-amber-300 text-amber-900 border-none flex items-center gap-2 text-sm"
 								onClick={handleContinue}
 							>
 								<IconArrowForward size={16} />
