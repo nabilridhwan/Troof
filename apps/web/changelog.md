@@ -1,15 +1,24 @@
 ## Client - 0.3.7 and Server - 0.2.10
 
+Going forward, we will strive to provide more thorough changelogs. To start, we will include a 'What's New' section for any packages that are critical to our base services and website. 😁✌️
+
 ### What's new (Client)
 
 -   From now on, the game will be limited to 8 players max.
 -   Now the Players' section in the game show the number of players in the game. Like this: `Players (2/8)`
 -   Now, you'll see a proper error message when you encounter an error while joining/creating a game.
+-   Better error handling when the user doesn't have a connection.
+-   Changed the 'disconnected' text in the chat box.
 -   Testing out a new feature where if you're disconnected via mobile, you'll be refreshed in 1.5 seconds instead of normal 3. But for other reasons of disconnection, it'll take 2.5 seconds.
 
 ### What's new (Server)
 
--   Add support
+-   Add support for player limit in games.
+-   Add `hpp` and `helmet` for security of server.
+
+### What's new (Packages)
+
+-   Add new regex helper method to extract room code from URL.
 
 ## Version 0.3.6 and 0.2.9
 
