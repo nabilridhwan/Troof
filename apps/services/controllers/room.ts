@@ -105,12 +105,11 @@ const Room = {
 			).handleResponse(req, res);
 		}
 
-		console.log();
-
 		const { player_id: playerCount } =
 			await RoomModel.getNumberOfPeopleInRoom(room_id);
 
-		if (playerCount >= 1) {
+		// Limit the number of players
+		if (playerCount >= 8) {
 			// Tell the users that the room is full
 			return new NotFoundResponse(
 				"Room is full. Maximum of 8 players allowed.",
