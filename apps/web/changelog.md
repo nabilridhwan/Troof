@@ -1,3 +1,16 @@
+## Client - 0.3.7 and Server - 0.2.10
+
+### What's new (Client)
+
+-   From now on, the game will be limited to 8 players max.
+-   Now the Players' section in the game show the number of players in the game. Like this: `Players (2/8)`
+-   Now, you'll see a proper error message when you encounter an error while joining/creating a game.
+-   Testing out a new feature where if you're disconnected via mobile, you'll be refreshed in 1.5 seconds instead of normal 3. But for other reasons of disconnection, it'll take 2.5 seconds.
+
+### What's new (Server)
+
+-   Add support
+
 ## Version 0.3.6 and 0.2.9
 
 ### What's new
