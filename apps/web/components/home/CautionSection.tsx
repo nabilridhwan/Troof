@@ -1,3 +1,5 @@
+/** @format */
+
 import { IconAlertTriangle, IconX } from "@tabler/icons";
 import Link from "next/link";
 
@@ -12,9 +14,9 @@ export default function CautionSection({ onClose }: CautionSectionProps) {
 	};
 
 	return (
-		<div className="relative text-sm bg-yellow-100 text-yellow-900 border border-yellow-600/50 font-semibold rounded-xl py-4 px-2 flex flex-col items-center my-10 gap-2">
+		<div className="relative my-10 flex flex-col items-center gap-2 rounded-xl border border-yellow-600/50 bg-yellow-100 py-4 px-2 text-sm font-semibold text-yellow-900">
 			<button
-				className="p-1 aspect-square rounded-lg absolute right-2 top-2"
+				className="absolute right-2 top-2 aspect-square rounded-lg p-1"
 				onClick={handleClick}
 			>
 				<IconX size={18} />
@@ -25,12 +27,12 @@ export default function CautionSection({ onClose }: CautionSectionProps) {
 			<h4 className="font-bold">Caution</h4>
 
 			<p>
-				This game contains mature themes and is intended for adults
-				only. Please exercise caution while playing and only participate
-				if you are of legal age.
+				This game contains mature themes and is intended for adults only. Please
+				exercise caution while playing and only participate if you are of legal
+				age.
 			</p>
 
-			<p className="text-xs mt-2">
+			<p className="mt-2 text-xs">
 				Read more <Link href="/caution">here.</Link>
 			</p>
 		</div>

@@ -13,6 +13,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@troof/prettier-config": "*",
 		"@troof/database": "*",
 		"@troof/helpers": "*",
 		"@troof/responses": "*",

@@ -1,3 +1,5 @@
+/** @format */
+
 import { motion } from "framer-motion";
 
 interface JoinRoomInterface {
@@ -23,7 +25,7 @@ const JoinRoomSection = ({
 			handleOnClick();
 		}}
 	>
-		<p className="text-xs text-right">{displayName.length}/20</p>
+		<p className="text-right text-xs">{displayName.length}/20</p>
 		<motion.input
 			maxLength={20}
 			initial={{ opacity: 0 }}
@@ -65,7 +67,7 @@ const JoinRoomSection = ({
 				},
 			}}
 			disabled={disabled}
-			className="disabled:opacity-50 btn-huge m-10"
+			className="btn-huge m-10 disabled:opacity-50"
 			onClick={handleOnClick}
 		>
 			Join Room

@@ -1,3 +1,5 @@
+/** @format */
+
 import { getPlayer, getRoom } from "@troof/api";
 import { Player } from "@troof/socket";
 import { AnimatePresence, motion } from "framer-motion";
@@ -38,8 +40,7 @@ export default function Home() {
 	const [mainScreenAction, setMainScreenAction] =
 		useState<MainScreenAction>("join");
 
-	const [existingGameExists, setExistingGameExists] =
-		useState<boolean>(false);
+	const [existingGameExists, setExistingGameExists] = useState<boolean>(false);
 
 	const [serverVersion, setServerVersion] = useState<string>("");
 	const [serverError, setServerError] = useState<string>("");
@@ -127,25 +128,18 @@ export default function Home() {
 				const playerPromise = getPlayerFromAPI(playerIDFromCookies);
 				const roomPromise = getRoomFromAPI(roomIDFromCookies);
 
-				await Promise.all([playerPromise, roomPromise]).then(
-					(values) => {
-						const [player, room] = values;
-						console.log(
-							"Player from API: ",
-							!!player,
-							"Room from API: ",
-							!!room
-						);
+				await Promise.all([playerPromise, roomPromise]).then((values) => {
+					const [player, room] = values;
+					console.log("Player from API: ", !!player, "Room from API: ", !!room);
 
-						if (player && room) {
-							console.log("The room and player is still valid");
-							setExistingGameExists(true);
-							setShowExistingGameModal(true);
-							// Redirect to the game page
-							// window.location.href = `/game/${roomIDFromCookies}`;
-						}
+					if (player && room) {
+						console.log("The room and player is still valid");
+						setExistingGameExists(true);
+						setShowExistingGameModal(true);
+						// Redirect to the game page
+						// window.location.href = `/game/${roomIDFromCookies}`;
 					}
-				);
+				});
 			}
 		})();
 	}, []);
@@ -154,8 +148,8 @@ export default function Home() {
 		<div>
 			<Head>
 				<title>
-					Troof! - Experience the ultimate social truth or dare game -
-					see, chat, and react together with your friends!
+					Troof! - Experience the ultimate social truth or dare game - see,
+					chat, and react together with your friends!
 				</title>
 				<meta
 					name="description"
@@ -171,9 +165,9 @@ export default function Home() {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<main className="text-center w-[90%] lg:w-[55%] mx-auto">
+			<main className="mx-auto w-[90%] text-center lg:w-[55%]">
 				<div>
-					<div className="grid lg:grid-cols-2 my-10 gap-10">
+					<div className="my-10 grid gap-10 lg:grid-cols-2">
 						<div className="lg:text-left">
 							<motion.h1
 								initial={{ opacity: 0, fontSize: 0, y: 1 }}
@@ -187,15 +181,14 @@ export default function Home() {
 									ease: "easeInOut",
 									delay: 0.1,
 								}}
-								className="my-10 font-black font-Playfair h-[150px] "
+								className="my-10 h-[150px] font-Playfair font-black "
 							>
 								Troof!
 							</motion.h1>
 
-							<p className="text-lg mb-5">
-								Experience the ultimate social truth or dare
-								game - see, chat, and react together with up to
-								8 friends!
+							<p className="mb-5 text-lg">
+								Experience the ultimate social truth or dare game - see, chat,
+								and react together with up to 8 friends!
 							</p>
 
 							<p className="my-5">
@@ -217,18 +210,16 @@ export default function Home() {
 					</div>
 
 					{showCautions && (
-						<CautionSection
-							onClose={() => setShowCautions(false)}
-						/>
+						<CautionSection onClose={() => setShowCautions(false)} />
 					)}
 
 					<p className="text-red-500">{errorMessage}</p>
 
 					<ServerErrorSection />
 
-					<div className="flex py-5 justify-around flex-wrap">
+					<div className="flex flex-wrap justify-around py-5">
 						<div
-							className="flex-1 cursor-pointer my-2"
+							className="my-2 flex-1 cursor-pointer"
 							onClick={() => setMainScreenAction("join")}
 						>
 							<p>Join a Room</p>
@@ -236,13 +227,13 @@ export default function Home() {
 							{mainScreenAction === "join" && (
 								<motion.div
 									layoutId="bar"
-									className="bg-black/30 h-[5px] rounded-full my-2"
+									className="my-2 h-[5px] rounded-full bg-black/30"
 								/>
 							)}
 						</div>
 
 						<div
-							className="flex-1 cursor-pointer my-2"
+							className="my-2 flex-1 cursor-pointer"
 							onClick={() => setMainScreenAction("create")}
 						>
 							<p>Create a Room</p>
@@ -250,7 +241,7 @@ export default function Home() {
 							{mainScreenAction === "create" && (
 								<motion.div
 									layoutId="bar"
-									className="bg-black/30 h-[5px] rounded-full my-2"
+									className="my-2 h-[5px] rounded-full bg-black/30"
 								/>
 							)}
 						</div>
@@ -303,9 +294,8 @@ export default function Home() {
 					/>
 
 					<p className="mb-10 text-sm">
-						By clicking &quot;Create Room&quot;, &quot;Join
-						Room&quot; or &quot;Return to Game&quot;, you agree to
-						the{" "}
+						By clicking &quot;Create Room&quot;, &quot;Join Room&quot; or
+						&quot;Return to Game&quot;, you agree to the{" "}
 						<Link href="/terms" className="text-red-600">
 							Terms of Service
 						</Link>{" "}
@@ -325,7 +315,7 @@ export default function Home() {
 						<VersionSection />
 					</div>
 
-					<footer className="flex flex-wrap my-5 text-xs gap-2 justify-center">
+					<footer className="my-5 flex flex-wrap justify-center gap-2 text-xs">
 						<div className="">
 							<Link href="/caution" className="text-gray-500">
 								Caution

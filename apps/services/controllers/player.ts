@@ -1,3 +1,5 @@
+/** @format */
+
 import { NotFoundResponse, SuccessResponse } from "@troof/responses";
 import type { Request, Response } from "express";
 import prisma from "../database/prisma";
@@ -22,10 +24,7 @@ const Player = {
 			);
 		}
 
-		return new SuccessResponse("Player found", player).handleResponse(
-			req,
-			res
-		);
+		return new SuccessResponse("Player found", player).handleResponse(req, res);
 	},
 };
 

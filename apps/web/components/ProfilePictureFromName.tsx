@@ -1,3 +1,5 @@
+/** @format */
+
 import { getContrastYIQ, stringToColor } from "@troof/helpers";
 import { useState } from "react";
 
@@ -22,9 +24,9 @@ const ProfilePictureFromName = ({
 
 	return (
 		<div
-			className="rounded-full aspect-square w-7 h-7
-        flex items-center justify-center text-white text-xs
-        capitalize border border-white border-opacity-20"
+			className="flex aspect-square h-7 w-7
+        items-center justify-center rounded-full border border-white
+        border-opacity-20 text-xs capitalize text-white"
 			style={{
 				backgroundColor: stringToColor(name),
 				color: getContrastYIQ(stringToColor(name)),

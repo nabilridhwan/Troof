@@ -1,3 +1,5 @@
+/** @format */
+
 import { joinRoom } from "@troof/api";
 import { BadRequest, NotFoundResponse } from "@troof/responses";
 import { AxiosError, isAxiosError } from "axios";
@@ -15,11 +17,7 @@ export async function getServerSideProps(context: NextPageContext) {
 
 		const {
 			data: {
-				data: {
-					player_id,
-					room_id: room_id_response,
-					status: room_status,
-				},
+				data: { player_id, room_id: room_id_response, status: room_status },
 			},
 		} = res;
 

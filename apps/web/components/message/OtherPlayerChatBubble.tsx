@@ -1,3 +1,5 @@
+/** @format */
+
 import { RegexHelper } from "@troof/helpers";
 import { MessageUpdatedFromServer } from "@troof/socket";
 import { Emoji, EmojiStyle } from "emoji-picker-react";
@@ -21,7 +23,7 @@ const OtherPlayerChatBubble = ({
 	onReply,
 	replyMessage,
 }: OtherPlayerChatBubbleProps) => (
-	<motion.div className="flex flex-row justify-start items-end my-2 text-sm gap-2">
+	<motion.div className="my-2 flex flex-row items-end justify-start gap-2 text-sm">
 		<ProfilePictureFromName name={displayName} />
 		<motion.div
 			onDoubleClick={() => onReply(message.id)}
@@ -33,17 +35,17 @@ const OtherPlayerChatBubble = ({
 					ease: "easeIn",
 				},
 			}}
-			className="bg-blue-300 text-blue-900 max-w-[80%] p-2 px-3 rounded-lg rounded-bl-none cursor-pointer"
+			className="max-w-[80%] cursor-pointer rounded-lg rounded-bl-none bg-blue-300 p-2 px-3 text-blue-900"
 		>
-			<p className="text-xs font-semibold mb-1">{message.display_name}</p>
+			<p className="mb-1 text-xs font-semibold">{message.display_name}</p>
 
 			{/* This is a message that needs reply */}
 			{asReply && (
 				<div className="mb-1">
 					{replyMessage ? (
 						<>
-							<div className="bg-gray-200 rounded-lg p-2">
-								<p className="text-xs font-semibold mb-1">
+							<div className="rounded-lg bg-gray-200 p-2">
+								<p className="mb-1 text-xs font-semibold">
 									{replyMessage?.display_name}
 								</p>
 
@@ -66,8 +68,8 @@ const OtherPlayerChatBubble = ({
 							</div>
 						</>
 					) : (
-						<div className="bg-gray-200 rounded-lg p-2">
-							<p className="break-words italic text-xs">
+						<div className="rounded-lg bg-gray-200 p-2">
+							<p className="break-words text-xs italic">
 								Couldn&apos;t find the message
 							</p>
 						</div>
@@ -85,9 +87,7 @@ const OtherPlayerChatBubble = ({
 				<p
 					className="break-words"
 					dangerouslySetInnerHTML={{
-						__html: RegexHelper.globalReplaceLinksAndImages(
-							message.message
-						),
+						__html: RegexHelper.globalReplaceLinksAndImages(message.message),
 					}}
 				/>
 			)}

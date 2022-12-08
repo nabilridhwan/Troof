@@ -1,3 +1,5 @@
+/** @format */
+
 import { IconArrowNarrowRight, IconDice, IconLink } from "@tabler/icons";
 import { getPlayer } from "@troof/api";
 import { BadRequest, NotFoundResponse } from "@troof/responses";
@@ -188,18 +190,15 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 				setGameStatus(data.status);
 			});
 
-			socket.on(
-				TRUTH_OR_DARE_GAME.CONTINUE,
-				(log: Log, player: Player) => {
-					console.log("Continue game received");
-					console.log(log, player);
-					setCurrentPlayer(player);
-					setText("");
-					setAction(log.action as Action);
+			socket.on(TRUTH_OR_DARE_GAME.CONTINUE, (log: Log, player: Player) => {
+				console.log("Continue game received");
+				console.log(log, player);
+				setCurrentPlayer(player);
+				setText("");
+				setAction(log.action as Action);
 
-					setLoadingState(false);
-				}
-			);
+				setLoadingState(false);
+			});
 
 			socket.on(
 				TRUTH_OR_DARE_GAME.INCOMING_DATA,
@@ -210,8 +209,7 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 					setText(log.data);
 					setCurrentPlayer(player ?? {});
 					setAction(
-						(log.action as Action) ??
-							(Action.Waiting_For_Selection as Action)
+						(log.action as Action) ?? (Action.Waiting_For_Selection as Action)
 					);
 
 					setLoadingState(false);
@@ -333,9 +331,7 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 	};
 
 	const handleCopyRoomCode = () => {
-		navigator.clipboard.writeText(
-			`${window.location.origin}/join/${room_id}`
-		);
+		navigator.clipboard.writeText(`${window.location.origin}/join/${room_id}`);
 
 		// Show Copied! for a second
 		setRoomCodeText("Copied!");
@@ -354,49 +350,41 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 			<EmojiReactionScreen room_id={room_id} />
 
 			<div className="h-screen py-10 ">
-				<div className="lg:grid lg:grid-cols-4 gap-10 h-full items-center justify-center">
-					<div className="col-span-1 lg:h-full lg:border border-black/10 rounded-2xl px-1">
-						<h2 className={`font-bold text-lg my-5 text-center`}>
+				<div className="h-full items-center justify-center gap-10 lg:grid lg:grid-cols-4">
+					<div className="col-span-1 rounded-2xl border-black/10 px-1 lg:h-full lg:border">
+						<h2 className={`my-5 text-center text-lg font-bold`}>
 							Players ({players.length}/8)
 						</h2>
-						<Players
-							player={player}
-							players={players}
-							room_id={roomID}
-						/>
+						<Players player={player} players={players} room_id={roomID} />
 					</div>
 
-					<div className="col-span-2 lg:h-full lg:border border-black/10 rounded-2xl lg:px-10">
-						<div className="w-full h-full flex items-center justify-center">
+					<div className="col-span-2 rounded-2xl border-black/10 lg:h-full lg:border lg:px-10">
+						<div className="flex h-full w-full items-center justify-center">
 							{/* Main items */}
 							<div className=" my-2 flex-1">
 								{/* Room Code */}
 								<motion.p
 									whileHover={{ scale: 1.1 }}
 									whileTap={{ scale: 0.9 }}
-									className="font-mono font-bold text-sm text-center my-10 cursor-pointer"
+									className="my-10 cursor-pointer text-center font-mono text-sm font-bold"
 									onClick={handleCopyRoomCode}
 								>
-									<span className="flex gap-1 w-fit items-center mx-auto bg-black text-white rounded-lg py-1 px-2">
+									<span className="mx-auto flex w-fit items-center gap-1 rounded-lg bg-black py-1 px-2 text-white">
 										<IconLink size={16} />
 										{roomCodeText}
 									</span>
 								</motion.p>
 
 								{/* Current Player Name */}
-								<main className="w-full flex items-center justify-center my-10">
+								<main className="my-10 flex w-full items-center justify-center">
 									<motion.div
-										className={`rnd bdr w-fit px-10 py-5 ${classNames(
-											{
-												"animate-zoom":
-													currentPlayer.player_id ===
-														player_id &&
-													action ===
-														Action.Waiting_For_Selection,
-											}
-										)}`}
+										className={`rnd bdr w-fit px-10 py-5 ${classNames({
+											"animate-zoom":
+												currentPlayer.player_id === player_id &&
+												action === Action.Waiting_For_Selection,
+										})}`}
 									>
-										<h1 className="font-Playfair font-black text-5xl text-center break-all">
+										<h1 className="break-all text-center font-Playfair text-5xl font-black">
 											{currentPlayer.display_name}
 										</h1>
 									</motion.div>
@@ -418,13 +406,12 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 											y: 100,
 										}}
 									>
-										<div className="rnd bdr w-fit px-10 py-5 space-y-4 mx-auto my-3">
-											<h2 className="text-center text-xl md:text-3xl font-semibold leading-normal">
+										<div className="rnd bdr mx-auto my-3 w-fit space-y-4 px-10 py-5">
+											<h2 className="text-center text-xl font-semibold leading-normal md:text-3xl">
 												{text}
 											</h2>
 
-											{player_id ===
-												currentPlayer.player_id && (
+											{player_id === currentPlayer.player_id && (
 												<motion.button
 													whileHover={{
 														scale: 1.1,
@@ -432,20 +419,16 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 													whileTap={{
 														scale: 0.9,
 													}}
-													className="bg-black text-sm text-white rounded-lg py-1 px-2 flex w-fit justify-center items-center mx-auto gap-1 disabled:text-opacity-50"
+													className="mx-auto flex w-fit items-center justify-center gap-1 rounded-lg bg-black py-1 px-2 text-sm text-white disabled:text-opacity-50"
 													disabled={isLoadingState}
 													onClick={
 														action === Action.Dare
 															? () => {
-																	console.log(
-																		"Re-rolling dare"
-																	);
+																	console.log("Re-rolling dare");
 																	selectDare();
 															  }
 															: () => {
-																	console.log(
-																		"Re-rolling truth"
-																	);
+																	console.log("Re-rolling truth");
 																	selectTruth();
 															  }
 													}
@@ -473,11 +456,9 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 									currentPlayer.player_id === player_id &&
 									action === Action.Waiting_For_Selection && (
 										<motion.div>
-											<p className="text-center">
-												Select One
-											</p>
+											<p className="text-center">Select One</p>
 
-											<div className="flex flex-wrap items-center justify-center gap-5 my-10">
+											<div className="my-10 flex flex-wrap items-center justify-center gap-5">
 												<motion.button
 													whileHover={{
 														scale: 1.1,
@@ -486,7 +467,7 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 													whileTap={{
 														scale: 0.9,
 													}}
-													className="btn-huge w-[120px] aspect-square disabled:text-opacity-50"
+													className="btn-huge aspect-square w-[120px] disabled:text-opacity-50"
 													disabled={isLoadingState}
 													onClick={selectTruth}
 												>
@@ -501,7 +482,7 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 													whileTap={{
 														scale: 0.9,
 													}}
-													className="btn-huge w-[120px] aspect-square disabled:text-opacity-50"
+													className="btn-huge aspect-square w-[120px] disabled:text-opacity-50"
 													disabled={isLoadingState}
 													onClick={selectDare}
 												>
@@ -514,17 +495,16 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 								{players.length < 2 && (
 									<>
 										<p className="text-center italic">
-											Waiting for more players to join.
-											(Min. 2)
+											Waiting for more players to join. (Min. 2)
 										</p>
 
 										<motion.p
 											whileHover={{ scale: 1.1 }}
 											whileTap={{ scale: 0.9 }}
-											className="font-bold text-sm text-center my-10 cursor-pointer"
+											className="my-10 cursor-pointer text-center text-sm font-bold"
 											onClick={handleCopyRoomCode}
 										>
-											<span className="bg-black text-white rounded-lg py-1 px-2 flex w-fit justify-center items-center mx-auto gap-1">
+											<span className="mx-auto flex w-fit items-center justify-center gap-1 rounded-lg bg-black py-1 px-2 text-white">
 												<IconLink size={16} />
 												Invite your friends
 											</span>
@@ -536,9 +516,7 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 								{currentPlayer.player_id !== player_id &&
 									action === Action.Waiting_For_Selection && (
 										<p className="text-center">
-											Waiting for{" "}
-											{currentPlayer.display_name} to
-											select
+											Waiting for {currentPlayer.display_name} to select
 										</p>
 									)}
 
@@ -559,7 +537,7 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 													repeatType: "mirror",
 													duration: 1,
 												}}
-												className="px-5 py-3 rounded-xl mt-2 my-1 t bg-green-300 text-green-900 flex gap-2 items-center text-sm font-semibold disabled:text-opacity-50"
+												className="t my-1 mt-2 flex items-center gap-2 rounded-xl bg-green-300 px-5 py-3 text-sm font-semibold text-green-900 disabled:text-opacity-50"
 												onClick={handleContinue}
 												disabled={isLoadingState}
 											>
@@ -575,19 +553,17 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 														duration: 1,
 													}}
 												>
-													<IconArrowNarrowRight
-														size={16}
-													/>
+													<IconArrowNarrowRight size={16} />
 												</motion.div>
 											</motion.button>
 										</div>
 									)}
 
-								<div className="flex items-center justify-center h-[50px]">
+								<div className="flex h-[50px] items-center justify-center">
 									<PropagateLoader
 										loading={isLoadingState}
 										color={"black"}
-										className="bg-red-500 my-10"
+										className="my-10 bg-red-500"
 										size={10}
 									/>
 								</div>
@@ -595,7 +571,7 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 						</div>
 					</div>
 
-					<div className="col-span-1 lg:h-full py-5 lg:py-0">
+					<div className="col-span-1 py-5 lg:h-full lg:py-0">
 						<ChatBox
 							player_id={player_id}
 							room_id={roomID}

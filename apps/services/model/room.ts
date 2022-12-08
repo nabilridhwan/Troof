@@ -1,3 +1,5 @@
+/** @format */
+
 import { Prisma } from "@prisma/client";
 import { Action, Status } from "@troof/socket";
 import prisma from "../database/prisma";

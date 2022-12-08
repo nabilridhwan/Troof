@@ -1,3 +1,5 @@
+/** @format */
+
 import { IconAlertCircle } from "@tabler/icons";
 import { getServerVersion } from "@troof/api";
 import { useEffect, useState } from "react";
@@ -20,14 +22,14 @@ export default function ServerErrorSection() {
 	return (
 		<>
 			{!serverActive && (
-				<div className="relative text-sm bg-rose-100 text-rose-900 border border-rose-600/50 font-semibold rounded-xl py-4 px-2 flex flex-col items-center my-10 gap-2">
+				<div className="relative my-10 flex flex-col items-center gap-2 rounded-xl border border-rose-600/50 bg-rose-100 py-4 px-2 text-sm font-semibold text-rose-900">
 					<IconAlertCircle className="my-1" />
 
 					<h4 className="font-bold">We&apos;re having trouble</h4>
 
 					<p>
-						Our servers are currently experiencing issues. Please
-						try again later. You can&apos;t join or create rooms.
+						Our servers are currently experiencing issues. Please try again
+						later. You can&apos;t join or create rooms.
 					</p>
 				</div>
 			)}

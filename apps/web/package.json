@@ -9,10 +9,6 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
-		"@troof/helpers": "*",
-		"@troof/api": "*",
-		"@troof/responses": "*",
-		"@troof/socket": "*",
 		"@giphy/js-fetch-api": "^4.6.0",
 		"@headlessui/react": "^1.7.4",
 		"@prisma/client": "^4.6.1",
@@ -21,6 +17,11 @@
 		"@tabler/icons": "^1.113.0",
 		"@tailwindcss/line-clamp": "^0.4.2",
 		"@tailwindcss/typography": "^0.5.8",
+		"@troof/prettier-config": "*",
+		"@troof/api": "*",
+		"@troof/helpers": "*",
+		"@troof/responses": "*",
+		"@troof/socket": "*",
 		"@types/lodash.debounce": "^4.0.7",
 		"@types/markdown-it": "^12.2.3",
 		"@types/node": "18.11.9",
@@ -56,6 +57,8 @@
 		"autoprefixer": "^10.4.13",
 		"mongoose": "^6.7.3",
 		"postcss": "^8.4.19",
+		"prettier": "^2.8.1",
+		"prettier-plugin-tailwindcss": "^0.2.0",
 		"prisma": "^4.6.1",
 		"tailwindcss": "^3.2.4",
 		"turbo": "^1.6.3"

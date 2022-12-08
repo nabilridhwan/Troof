@@ -34,9 +34,9 @@ Since this project is built using TypeScript, it is important to add the `tsconf
 
 ```json
 {
-	"dependencies": {
-		"@troof/math": "*"
-	}
+  "dependencies": {
+    "@troof/math": "*"
+  }
 }
 ```
 

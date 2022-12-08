@@ -1,3 +1,5 @@
+/** @format */
+
 import { PrismaClient } from "@troof/database";
 
 const prisma = new PrismaClient();

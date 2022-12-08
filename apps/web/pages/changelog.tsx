@@ -1,3 +1,5 @@
+/** @format */
+
 import fs from "fs/promises";
 import matter from "gray-matter";
 import md from "markdown-it";

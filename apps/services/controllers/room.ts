@@ -1,3 +1,5 @@
+/** @format */
+
 import { generateRoomID } from "@troof/helpers";
 import {
 	BadRequest,
@@ -24,10 +26,7 @@ const CreateRoomSchema = z.object({
 });
 
 const Room = {
-	Get: async (
-		req: Request<{}, {}, {}, { room_id: string }>,
-		res: Response
-	) => {
+	Get: async (req: Request<{}, {}, {}, { room_id: string }>, res: Response) => {
 		try {
 			GetRoomSchema.parse(req.query);
 		} catch (error) {
@@ -37,10 +36,7 @@ const Room = {
 					error: issue.code,
 				}));
 
-				return new BadRequest("Invalid request", e).handleResponse(
-					req,
-					res
-				);
+				return new BadRequest("Invalid request", e).handleResponse(req, res);
 			}
 		}
 
@@ -55,10 +51,10 @@ const Room = {
 		});
 
 		if (!room) {
-			return new NotFoundResponse(
-				"Room does not exist",
-				{}
-			).handleResponse(req, res);
+			return new NotFoundResponse("Room does not exist", {}).handleResponse(
+				req,
+				res
+			);
 		}
 
 		// Return the room and player_id
@@ -81,10 +77,7 @@ const Room = {
 					error: issue.code,
 				}));
 
-				return new BadRequest("Invalid request", e).handleResponse(
-					req,
-					res
-				);
+				return new BadRequest("Invalid request", e).handleResponse(req, res);
 			}
 		}
 
@@ -99,14 +92,15 @@ const Room = {
 		});
 
 		if (!room) {
-			return new NotFoundResponse(
-				"Room does not exist",
-				{}
-			).handleResponse(req, res);
+			return new NotFoundResponse("Room does not exist", {}).handleResponse(
+				req,
+				res
+			);
 		}
 
-		const { player_id: playerCount } =
-			await RoomModel.getNumberOfPeopleInRoom(room_id);
+		const { player_id: playerCount } = await RoomModel.getNumberOfPeopleInRoom(
+			room_id
+		);
 
 		// Limit the number of players
 		if (playerCount >= 8) {
@@ -148,10 +142,7 @@ const Room = {
 					error: issue.code,
 				}));
 
-				return new BadRequest("Invalid request", e).handleResponse(
-					req,
-					res
-				);
+				return new BadRequest("Invalid request", e).handleResponse(req, res);
 			}
 		}
 
@@ -165,10 +156,12 @@ const Room = {
 		const { display_name } = req.body;
 
 		// Create a game and select the room ID
-		const { room_id: insertedRoomID, player } =
-			await RoomModel.createNewRoom(room_id, {
+		const { room_id: insertedRoomID, player } = await RoomModel.createNewRoom(
+			room_id,
+			{
 				display_name,
-			});
+			}
+		);
 
 		new SuccessResponse("Room Created", {
 			room_id: insertedRoomID,

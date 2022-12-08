@@ -1,3 +1,5 @@
+/** @format */
+
 import express from "express";
 import Room from "../controllers/room";
 

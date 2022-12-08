@@ -1,3 +1,5 @@
+/** @format */
+
 import { get_dare, get_truth } from "@troof/helpers";
 import {
 	Action,
@@ -62,11 +64,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 				console.log(playerWhoJoinedData);
 
 				// Broadcast the log to the room
-				socket.emit(
-					TRUTH_OR_DARE_GAME.INCOMING_DATA,
-					lastLogItem!,
-					player!
-				);
+				socket.emit(TRUTH_OR_DARE_GAME.INCOMING_DATA, lastLogItem!, player!);
 
 				const systemMessageToSend: SystemMessage = {
 					message: `${playerWhoJoinedData?.display_name} has joined the game`,
@@ -146,21 +144,14 @@ const gameHandler = (io: Server, socket: Socket) => {
 			type: "system",
 		};
 
-		io.to(obj.room_id).emit(
-			MESSAGE_EVENTS.MESSAGE_SYSTEM,
-			systemMessageToSend
-		);
+		io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
 
 		io.to(obj.room_id).emit(
 			MESSAGE_EVENTS.MESSAGE_SYSTEM,
 			dataSystemMessageToSend
 		);
 
-		io.to(obj.room_id).emit(
-			TRUTH_OR_DARE_GAME.INCOMING_DATA,
-			logData,
-			player!
-		);
+		io.to(obj.room_id).emit(TRUTH_OR_DARE_GAME.INCOMING_DATA, logData, player!);
 
 		// Write to database
 		ChatModel.pushSystemMessage(systemMessageToSend);
@@ -225,21 +216,14 @@ const gameHandler = (io: Server, socket: Socket) => {
 			type: "system",
 		};
 
-		io.to(obj.room_id).emit(
-			MESSAGE_EVENTS.MESSAGE_SYSTEM,
-			systemMessageToSend
-		);
+		io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
 
 		io.to(obj.room_id).emit(
 			MESSAGE_EVENTS.MESSAGE_SYSTEM,
 			dataSystemMessageToSend
 		);
 
-		io.to(obj.room_id).emit(
-			TRUTH_OR_DARE_GAME.INCOMING_DATA,
-			logData,
-			player!
-		);
+		io.to(obj.room_id).emit(TRUTH_OR_DARE_GAME.INCOMING_DATA, logData, player!);
 
 		// Write to database
 		ChatModel.pushSystemMessage(systemMessageToSend);
@@ -303,10 +287,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 			type: "system",
 		};
 
-		io.to(obj.room_id).emit(
-			MESSAGE_EVENTS.MESSAGE_SYSTEM,
-			systemMessageToSend
-		);
+		io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
 
 		io.to(obj.room_id).emit(TRUTH_OR_DARE_GAME.CONTINUE, logData!, player!);
 
@@ -340,10 +321,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 			type: "system",
 		};
 
-		io.to(obj.room_id).emit(
-			MESSAGE_EVENTS.MESSAGE_SYSTEM,
-			systemMessageToSend
-		);
+		io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
 
 		// Write to database
 		ChatModel.pushSystemMessage(systemMessageToSend);
@@ -364,9 +342,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 				);
 
 				// Set the next player as the party leader
-				const nextPlayerId = await Sequence.getNextPlayerID(
-					obj.room_id
-				);
+				const nextPlayerId = await Sequence.getNextPlayerID(obj.room_id);
 
 				if (!nextPlayerId) {
 					console.log("Found no next player. Aborting");
@@ -442,16 +418,11 @@ const gameHandler = (io: Server, socket: Socket) => {
 			// Remove player from the room
 			await RoomModel.removePlayerFromRoom(obj.room_id, obj.player_id);
 		} catch (error) {
-			console.log(
-				`Error removing player ${obj.player_id} from room: `,
-				error
-			);
+			console.log(`Error removing player ${obj.player_id} from room: `, error);
 		}
 
 		// Get remaining players
-		const remainingPlayers = await PlayerModel.getPlayersInRoom(
-			obj.room_id
-		);
+		const remainingPlayers = await PlayerModel.getPlayersInRoom(obj.room_id);
 
 		io.to(obj.room_id).emit(EVENTS.PLAYERS_UPDATE, remainingPlayers);
 	};

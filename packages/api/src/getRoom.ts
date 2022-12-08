@@ -1,13 +1,13 @@
 import axiosInstance from "./axiosInstance";
 
 const getRoom = async (room_id: string) => {
-	const res = await axiosInstance.get("/api/room", {
-		params: {
-			room_id,
-		},
-	});
+  const res = await axiosInstance.get("/api/room", {
+    params: {
+      room_id,
+    },
+  });
 
-	return res;
+  return res;
 };
 
 export default getRoom;

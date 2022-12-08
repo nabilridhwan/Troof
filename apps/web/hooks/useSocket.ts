@@ -1,3 +1,5 @@
+/** @format */
+
 import { ClientToServerEvents, ServerToClientEvents } from "@troof/socket";
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";

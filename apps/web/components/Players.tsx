@@ -1,3 +1,5 @@
+/** @format */
+
 import {
 	IconArrowForward,
 	IconCrown,
@@ -51,34 +53,29 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 	};
 
 	return (
-		<div className="my-2 w-full max-h-full">
+		<div className="my-2 max-h-full w-full">
 			{/* <p>Players ({players.length})</p> */}
 
-			<div className="bg-white/30 border border-black/10 my-1 rounded-2xl h-full">
+			<div className="my-1 h-full rounded-2xl border border-black/10 bg-white/30">
 				<div className="max-h-full overflow-y-auto">
 					{players.map((player, index) => (
 						<div
-							className="flex items-center px-4 py-5 w-full even:bg-black/5"
+							className="flex w-full items-center px-4 py-5 even:bg-black/5"
 							key={index}
 						>
 							<div className="mr-2">
-								<ProfilePictureFromName
-									name={player.display_name}
-								/>
+								<ProfilePictureFromName name={player.display_name} />
 							</div>
 
 							<span
 								className={cx({
 									"flex-1": true,
 									"break-all": true,
-									"font-bold":
-										player.player_id === p.player_id,
+									"font-bold": player.player_id === p.player_id,
 								})}
 							>
 								{player.display_name}{" "}
-								{player.player_id === p.player_id && (
-									<span>(You)</span>
-								)}
+								{player.player_id === p.player_id && <span>(You)</span>}
 							</span>
 
 							{/* Crown */}
@@ -87,19 +84,16 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 							)}
 
 							<div className="flex gap-2">
-								{p.is_party_leader &&
-									player.player_id !== p.player_id && (
-										<motion.button
-											whileHover={{ scale: 1.1 }}
-											whileTap={{ scale: 0.9 }}
-											className="aspect-square bg-red-300 text-red-900 p-2 rounded-lg"
-											onClick={() =>
-												removePlayer(player.player_id)
-											}
-										>
-											<IconTrash className="" size={18} />
-										</motion.button>
-									)}
+								{p.is_party_leader && player.player_id !== p.player_id && (
+									<motion.button
+										whileHover={{ scale: 1.1 }}
+										whileTap={{ scale: 0.9 }}
+										className="aspect-square rounded-lg bg-red-300 p-2 text-red-900"
+										onClick={() => removePlayer(player.player_id)}
+									>
+										<IconTrash className="" size={18} />
+									</motion.button>
+								)}
 
 								{/* {player.player_id === p.player_id && (
 									<motion.button
@@ -125,7 +119,7 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 								disabled={players.length < 2}
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.9 }}
-								className="btn disabled:opacity-70 my-2 bg-amber-300 text-amber-900 border-none flex items-center gap-2 text-sm"
+								className="btn my-2 flex items-center gap-2 border-none bg-amber-300 text-sm text-amber-900 disabled:opacity-70"
 								onClick={handleContinue}
 							>
 								<IconArrowForward size={16} />
@@ -137,7 +131,7 @@ const Players = ({ players, player: p, room_id }: PlayersProps) => {
 					<motion.button
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.9 }}
-						className="btn my-2 bg-red-300 text-red-900 border-none flex items-center gap-2 text-sm"
+						className="btn my-2 flex items-center gap-2 border-none bg-red-300 text-sm text-red-900"
 						onClick={() => removePlayer(p.player_id)}
 					>
 						<IconLogout size={16} />

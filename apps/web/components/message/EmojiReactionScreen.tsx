@@ -1,3 +1,5 @@
+/** @format */
+
 import { MESSAGE_EVENTS } from "@troof/socket";
 import { Emoji, EmojiStyle } from "emoji-picker-react";
 import { useContext, useEffect, useState } from "react";
@@ -46,9 +48,7 @@ const EmojiReactionScreen = ({ room_id }: EmojiReactionScreenProps) => {
 				const finalArray = Array.from({ length: numberOfEmojis }).map(
 					(_, index) => ({
 						emoji: data.message,
-						positionX: Math.floor(
-							Math.random() * window.innerWidth
-						),
+						positionX: Math.floor(Math.random() * window.innerWidth),
 						delay: Math.random() * 2000,
 
 						size: Math.floor(Math.random() * 10) + 30,
@@ -77,13 +77,13 @@ const EmojiReactionScreen = ({ room_id }: EmojiReactionScreenProps) => {
 	return (
 		<div
 			id="emoji-reaction-screen"
-			className="fixed w-screen h-screen bg-transparent top-0 left-0 overflow-hidden pointer-events-none z-50"
+			className="pointer-events-none fixed top-0 left-0 z-50 h-screen w-screen overflow-hidden bg-transparent"
 		>
 			<Container>
 				{emojis.map((emoji, index) => (
 					<div
 						key={index}
-						className={`z-50 animate-drop absolute top-0 overflow-hidden pointer-events-none`}
+						className={`pointer-events-none absolute top-0 z-50 animate-drop overflow-hidden`}
 						style={{
 							opacity: 0,
 							animationDelay: `${emoji.delay}ms`,

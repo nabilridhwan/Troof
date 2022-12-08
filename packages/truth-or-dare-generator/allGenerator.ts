@@ -8,67 +8,63 @@ const dares: string[] = [];
 const truths: string[] = [];
 
 (async () => {
-	console.log("Reading files in output folder...");
+  console.log("Reading files in output folder...");
 
-	const data = await fs.readdir("./output");
+  const data = await fs.readdir("./output");
 
-	const textFiles = data.filter((file) => file.endsWith(".json"));
+  const textFiles = data.filter((file) => file.endsWith(".json"));
 
-	const textFileData = await Promise.all(
-		textFiles.map(async (file) => {
-			return fs.readFile(`./output/${file}`, "utf-8");
-		})
-	);
+  const textFileData = await Promise.all(
+    textFiles.map(async (file) => {
+      return fs.readFile(`./output/${file}`, "utf-8");
+    })
+  );
 
-	let total = 0;
-	const write = textFileData.map((file, index) => {
-		const jsonData = JSON.parse(file);
+  let total = 0;
+  const write = textFileData.map((file, index) => {
+    const jsonData = JSON.parse(file);
 
-		const fileName = textFiles[index].replace(".json", "");
-		// Check the last letter if D or T
-		const lastLetter = fileName[fileName.length - 1];
+    const fileName = textFiles[index].replace(".json", "");
+    // Check the last letter if D or T
+    const lastLetter = fileName[fileName.length - 1];
 
-		if (lastLetter === "D") {
-			console.log(`[DARE] ${fileName}`);
-			dares.push(...jsonData);
-		}
+    if (lastLetter === "D") {
+      console.log(`[DARE] ${fileName}`);
+      dares.push(...jsonData);
+    }
 
-		if (lastLetter === "T") {
-			console.log(`[TRUTHS] ${fileName}`);
-			truths.push(...jsonData);
-		}
-	});
+    if (lastLetter === "T") {
+      console.log(`[TRUTHS] ${fileName}`);
+      truths.push(...jsonData);
+    }
+  });
 
-	// Wait for Promise.all to finish
-	await Promise.all(write);
+  // Wait for Promise.all to finish
+  await Promise.all(write);
 
-	// Remove duplicates
-	const uniqueDares = [...new Set(dares)];
-	const uniqueTruths = [...new Set(truths)];
+  // Remove duplicates
+  const uniqueDares = [...new Set(dares)];
+  const uniqueTruths = [...new Set(truths)];
 
-	// Write the files
-	await fs.writeFile("./output/all_dares.json", JSON.stringify(uniqueDares), {
-		encoding: "utf-8",
-		flag: "w",
-	});
+  // Write the files
+  await fs.writeFile("./output/all_dares.json", JSON.stringify(uniqueDares), {
+    encoding: "utf-8",
+    flag: "w",
+  });
 
-	await fs.writeFile(
-		"./output/all_truths.json",
-		JSON.stringify(uniqueTruths),
-		{
-			encoding: "utf-8",
-			flag: "w",
-		}
-	);
+  await fs.writeFile("./output/all_truths.json", JSON.stringify(uniqueTruths), {
+    encoding: "utf-8",
+    flag: "w",
+  });
 
-	console.log("Done.");
-	console.log(
-		`Filtered out ${dares.length - uniqueDares.length} duplicate dares.`
-	);
-	console.log(
-		`Filtered out ${truths.length - uniqueTruths.length} duplicate truths.`
-	);
-	console.log(`Total Dares: ${uniqueDares.length}`);
-	console.log(`Total Truths: ${uniqueTruths.length}`);
-	console.log(`Total: ${uniqueDares.length + uniqueTruths.length}`);
+  console.log("Done.");
+  console.log(
+    `Filtered out ${dares.length - uniqueDares.length} duplicate dares.`
+  );
+  console.log(
+    `Filtered out ${truths.length - uniqueTruths.length} duplicate truths.`
+  );
+  console.log(`Total Dares: ${uniqueDares.length}`);
+  console.log(`Total Truths: ${uniqueTruths.length}`);
+  console.log(`Total: ${uniqueDares.length + uniqueTruths.length}`);
 })();

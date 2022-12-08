@@ -1,3 +1,5 @@
+/** @format */
+
 import { RegexHelper } from "@troof/helpers";
 import { MessageUpdatedFromServer } from "@troof/socket";
 import { Emoji, EmojiStyle } from "emoji-picker-react";
@@ -21,7 +23,7 @@ const SelfChatBubble = ({
 	onReply,
 	replyMessage,
 }: SelfChatBubbleProps) => (
-	<motion.div className=" max-w-full flex flex-row justify-end items-end my-2 text-sm gap-2 relative">
+	<motion.div className=" relative my-2 flex max-w-full flex-row items-end justify-end gap-2 text-sm">
 		<motion.div
 			onDoubleClick={() => onReply(message.id)}
 			whileHover={{ scale: 1.05 }}
@@ -32,15 +34,15 @@ const SelfChatBubble = ({
 					ease: "easeIn",
 				},
 			}}
-			className="bg-gray-100 max-w-[80%]  p-2 px-3 rounded-lg rounded-br-none cursor-pointer"
+			className="max-w-[80%] cursor-pointer  rounded-lg rounded-br-none bg-gray-100 p-2 px-3"
 		>
 			{/* This is a message that needs reply */}
 			{asReply && (
 				<div className="mb-1">
 					{replyMessage ? (
 						<>
-							<div className="bg-gray-200 rounded-lg p-2">
-								<p className="text-xs font-semibold mb-1">
+							<div className="rounded-lg bg-gray-200 p-2">
+								<p className="mb-1 text-xs font-semibold">
 									{replyMessage?.display_name}
 								</p>
 
@@ -63,8 +65,8 @@ const SelfChatBubble = ({
 							</div>
 						</>
 					) : (
-						<div className="bg-gray-200 rounded-lg p-2">
-							<p className="break-words italic text-xs">
+						<div className="rounded-lg bg-gray-200 p-2">
+							<p className="break-words text-xs italic">
 								Couldn&apos;t find the message
 							</p>
 						</div>
@@ -82,9 +84,7 @@ const SelfChatBubble = ({
 				<p
 					className="break-words"
 					dangerouslySetInnerHTML={{
-						__html: RegexHelper.globalReplaceLinksAndImages(
-							message.message
-						),
+						__html: RegexHelper.globalReplaceLinksAndImages(message.message),
 					}}
 				/>
 			)}

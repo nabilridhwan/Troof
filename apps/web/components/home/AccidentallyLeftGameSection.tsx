@@ -1,3 +1,5 @@
+/** @format */
+
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
@@ -47,7 +49,7 @@ const AccidentallyLeftGame = ({
 								leaveFrom="opacity-100 scale-100"
 								leaveTo="opacity-0 scale-95"
 							>
-								<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-primary border-black/20 p-6 text-left align-middle shadow-xl transition-all">
+								<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl border-black/20 bg-primary p-6 text-left align-middle shadow-xl transition-all">
 									<Dialog.Title
 										as="h3"
 										className="text-lg font-medium leading-6 text-gray-900"
@@ -57,9 +59,8 @@ const AccidentallyLeftGame = ({
 
 									<div className="mt-2">
 										<p className="text-sm text-gray-500">
-											It looks like you accidentally left
-											the game. To return to your game,
-											click the button below.
+											It looks like you accidentally left the game. To return to
+											your game, click the button below.
 										</p>
 									</div>
 

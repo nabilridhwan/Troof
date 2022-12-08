@@ -1,3 +1,5 @@
+/** @format */
+
 import { IconMessage, IconMoodHappy, IconSend, IconX } from "@tabler/icons";
 import {
 	BaseNewMessage,
@@ -86,10 +88,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 	};
 
 	const sendReaction = (emoji: string) => {
-		console.log(
-			"Reaction to: ",
-			replyToMessage ? replyToMessage.id : "null"
-		);
+		console.log("Reaction to: ", replyToMessage ? replyToMessage.id : "null");
 		setInputMessage("");
 
 		const newMessageObject: BaseNewMessage = {
@@ -167,9 +166,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 
 				if (!data.is_typing) {
 					setPeopleTyping((oldPeopleTyping) =>
-						oldPeopleTyping.filter(
-							(person) => person !== data.display_name
-						)
+						oldPeopleTyping.filter((person) => person !== data.display_name)
 					);
 				}
 			});
@@ -271,11 +268,11 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 	};
 
 	return (
-		<div className="w-full h-full chatbox">
+		<div className="chatbox h-full w-full">
 			{/* Chat box */}
 			<div
 				ref={messagesBoxRefElement}
-				className="h-[450px] lg:min-h-[85%] relative bg-black/5 p-2 rounded-xl overflow-auto mb-2 border border-black/10"
+				className="relative mb-2 h-[450px] overflow-auto rounded-xl border border-black/10 bg-black/5 p-2 lg:min-h-[85%]"
 			>
 				{!messages.length && (
 					<p className="text-center text-gray-500">
@@ -283,23 +280,17 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 					</p>
 				)}
 				{messages.map(
-					(
-						message: MessageUpdatedFromServer | SystemMessage,
-						index
-					) => {
+					(message: MessageUpdatedFromServer | SystemMessage, index) => {
 						return (
 							<div
 								key={index}
 								ref={
-									index === messages.length - 1
-										? lastMessageElementRef
-										: null
+									index === messages.length - 1 ? lastMessageElementRef : null
 								}
 							>
 								{message.type === "message" && (
 									<>
-										{message.display_name ===
-										display_name ? (
+										{message.display_name === display_name ? (
 											<SelfChatBubble
 												onReply={handleReply}
 												asReply={!!message.reply_to}
@@ -311,9 +302,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 														  )
 														: undefined
 												}
-												displayName={
-													message.display_name
-												}
+												displayName={message.display_name}
 												message={message}
 											/>
 										) : (
@@ -328,9 +317,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 														  )
 														: undefined
 												}
-												displayName={
-													message.display_name
-												}
+												displayName={message.display_name}
 												message={message}
 											/>
 										)}
@@ -339,12 +326,9 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 
 								{message.type === "reaction" && (
 									<>
-										{message.display_name ===
-										display_name ? (
+										{message.display_name === display_name ? (
 											<SelfChatBubble
-												asEmoji={
-													message.type === "reaction"
-												}
+												asEmoji={message.type === "reaction"}
 												onReply={handleReply}
 												asReply={!!message.reply_to}
 												replyMessage={
@@ -355,16 +339,12 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 														  )
 														: undefined
 												}
-												displayName={
-													message.display_name
-												}
+												displayName={message.display_name}
 												message={message}
 											/>
 										) : (
 											<OtherPlayerChatBubble
-												asEmoji={
-													message.type === "reaction"
-												}
+												asEmoji={message.type === "reaction"}
 												onReply={handleReply}
 												asReply={!!message.reply_to}
 												replyMessage={
@@ -375,9 +355,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 														  )
 														: undefined
 												}
-												displayName={
-													message.display_name
-												}
+												displayName={message.display_name}
 												message={message}
 											/>
 										)}
@@ -385,8 +363,8 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 								)}
 
 								{message.type === "system" && (
-									<div className="text-xs flex flex-row justify-center my-5">
-										<div className="bg-black/10 w-fit p-2 rounded-lg text-center">
+									<div className="my-5 flex flex-row justify-center text-xs">
+										<div className="w-fit rounded-lg bg-black/10 p-2 text-center">
 											<p>{message.message}</p>
 										</div>
 									</div>
@@ -406,17 +384,14 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 							animate={{ opacity: 1, y: 0 }}
 							exit={{ opacity: 0, y: -10 }}
 							transition={{ duration: 0.2, ease: "easeOut" }}
-							className="text-xs my-1 italic text-opacity-50"
+							className="my-1 text-xs italic text-opacity-50"
 						>
 							{uniquePeopleTyping.length > 3 ? (
 								<>People are typing...</>
 							) : (
 								<>
 									{uniquePeopleTyping.join(", ")}{" "}
-									{uniquePeopleTyping.length > 1
-										? "are"
-										: "is"}{" "}
-									typing...
+									{uniquePeopleTyping.length > 1 ? "are" : "is"} typing...
 								</>
 							)}
 						</motion.p>
@@ -440,9 +415,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 									}}
 									skinTonesDisabled={true}
 									suggestedEmojisMode={SuggestionMode.RECENT}
-									onEmojiClick={(
-										emojiData: EmojiClickData
-									) => {
+									onEmojiClick={(emojiData: EmojiClickData) => {
 										handleReaction(emojiData.unified);
 										setShowEmojiPicker(false);
 									}}
@@ -462,7 +435,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 								animate={{ opacity: 1, y: 0 }}
 								exit={{ opacity: 0, y: 10 }}
 								transition={{ duration: 0.2, ease: "easeOut" }}
-								className="my-2 absolute w-[350px] bottom-14 right-0 z-30"
+								className="absolute bottom-14 right-0 z-30 my-2 w-[350px]"
 							>
 								<GifPicker onSelectGif={handleSelectGif} />
 							</motion.div>
@@ -490,14 +463,14 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 							initial={{ opacity: 0, y: -10 }}
 							animate={{ opacity: 1, y: 0 }}
 							exit={{ opacity: 0, y: -10 }}
-							className=" bg-black/5 border relative border-black/10 rounded-lg p-2 px-3 items-center space-y-1 my-1 w-full"
+							className=" relative my-1 w-full items-center space-y-1 rounded-lg border border-black/10 bg-black/5 p-2 px-3"
 						>
 							<div className="items-center gap-2 text-xs">
 								<div className="flex gap-1 opacity-60">
 									<IconMessage size={16} />
 									<p>
 										Replying to{" "}
-										<span className="text-black/70 font-bold">
+										<span className="font-bold text-black/70">
 											{replyToMessage.display_name}
 										</span>
 										...
@@ -511,10 +484,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 										size={20}
 									/>
 								) : (
-									<p
-										className="line-clamp-1"
-										title={replyToMessage.message}
-									>
+									<p className="line-clamp-1" title={replyToMessage.message}>
 										{replyToMessage.message}
 									</p>
 								)}
@@ -542,12 +512,9 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 								setShowGifPicker(false);
 								setShowEmojiPicker(!showEmojiPicker);
 							}}
-							className="my-2 p-2 flex items-center gap-2 text-center justify-center text-black/60"
+							className="my-2 flex items-center justify-center gap-2 p-2 text-center text-black/60"
 						>
-							<IconMoodHappy
-								size={20}
-								className="text-black/50"
-							/>
+							<IconMoodHappy size={20} className="text-black/50" />
 						</motion.button>
 
 						<motion.button
@@ -558,12 +525,12 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 								setShowEmojiPicker(false);
 								setShowGifPicker(!showGifPicker);
 							}}
-							className="my-2 p-2 flex items-center gap-2 text-center justify-center text-black/60"
+							className="my-2 flex items-center justify-center gap-2 p-2 text-center text-black/60"
 						>
 							<p className="text-sm font-black">GIF</p>
 						</motion.button>
 
-						<div className="relative gap-3 flex items-center justify-center flex-1">
+						<div className="relative flex flex-1 items-center justify-center gap-3">
 							<input
 								ref={inputElementRef}
 								onFocus={handleFocus}
@@ -578,7 +545,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 							<button
 								type="submit"
 								disabled={inputMessage.length === 0}
-								className="disabled:opacity-50 bg-primary absolute right-0 mr-1 p-2.5 rounded-lg flex items-center gap-2 text-center justify-center"
+								className="absolute right-0 mr-1 flex items-center justify-center gap-2 rounded-lg bg-primary p-2.5 text-center disabled:opacity-50"
 							>
 								<IconSend size={18} />
 							</button>

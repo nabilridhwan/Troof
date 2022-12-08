@@ -1,3 +1,5 @@
+/** @format */
+
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap");
 
 @tailwind base;
@@ -5,15 +7,15 @@
 @tailwind utilities;
 
 html {
-	@apply font-Poppins bg-primary text-text;
+	@apply bg-primary font-Poppins text-text;
 }
 
 .btn-huge {
-	@apply p-10 rounded-3xl shadow-lg border border-black/10 disabled:text-black/50;
+	@apply rounded-3xl border border-black/10 p-10 shadow-lg disabled:text-black/50;
 }
 
 .btn {
-	@apply w-full p-3 rounded-2xl shadow-sm border border-black/10 disabled:text-black/50;
+	@apply w-full rounded-2xl border border-black/10 p-3 shadow-sm disabled:text-black/50;
 }
 
 .bdr {
@@ -25,7 +27,7 @@ html {
 }
 
 input {
-	@apply block w-full rounded-xl py-5 px-3 bg-primary border-2 border-black/30 outline-none focus:bg-primary/10 focus:border-black/50;
+	@apply block w-full rounded-xl border-2 border-black/30 bg-primary py-5 px-3 outline-none focus:border-black/50 focus:bg-primary/10;
 }
 
 .t {

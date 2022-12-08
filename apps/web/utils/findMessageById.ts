@@ -1,3 +1,5 @@
+/** @format */
+
 import { MessageUpdatedFromServer } from "@troof/socket";
 
 const findMessageById = (id: string, messages: MessageUpdatedFromServer[]) => {

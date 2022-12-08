@@ -1,3 +1,5 @@
+/** @format */
+
 import { Emoji, EmojiStyle } from "emoji-picker-react";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -92,14 +94,14 @@ const EmojiReactionBar = ({ handleReaction }: EmojiReactionBarProps) => {
 	};
 
 	return (
-		<div className="relative flex flex-wrap justify-center gap-4 my-2 mx-auto w-fit">
+		<div className="relative my-2 mx-auto flex w-fit flex-wrap justify-center gap-4">
 			{Object.values(emojiBar).map((emoji, index) => (
 				<motion.button
 					key={index}
 					whileTap={{ scale: 0.9 }}
 					whileHover={{ scale: 1.1 }}
 					disabled={disabled}
-					className="disabled:opacity-50 disabled:cursor-not-allowed"
+					className="disabled:cursor-not-allowed disabled:opacity-50"
 					onClick={() => handleOnClick(emoji.unified)}
 				>
 					<Emoji

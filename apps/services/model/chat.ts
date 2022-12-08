@@ -1,3 +1,5 @@
+/** @format */
+
 import { MessageUpdatedFromServer, SystemMessage } from "@troof/socket";
 import prisma from "../database/prisma";
 

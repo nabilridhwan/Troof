@@ -1,3 +1,5 @@
+/** @format */
+
 import {
 	ClientToServerEvents,
 	DisconnectedRoomObject,
@@ -67,9 +69,7 @@ const roomHandler = (
 	};
 
 	const statusChangeHandler = async (obj: StatusChangeObject) => {
-		console.log(
-			`Status changed to ${obj.status} received for ${obj.room_id}`
-		);
+		console.log(`Status changed to ${obj.status} received for ${obj.room_id}`);
 
 		const room = await RoomModel.updateRoomStatus(obj.room_id, obj.status);
 
@@ -83,10 +83,7 @@ const roomHandler = (
 		console.log(`Start game received for ${obj.room_id}`);
 
 		// Update status
-		const room = await RoomModel.updateRoomStatus(
-			obj.room_id,
-			Status.In_Game
-		);
+		const room = await RoomModel.updateRoomStatus(obj.room_id, Status.In_Game);
 
 		// Broadcast to the room that the game has started
 		io.to(obj.room_id).emit(EVENTS.GAME_UPDATE, {

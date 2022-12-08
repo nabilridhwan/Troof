@@ -1,3 +1,5 @@
+/** @format */
+
 import { createRoom } from "@troof/api";
 import { NextPageContext } from "next/types";
 import { Cookie } from "../utils/Cookie";

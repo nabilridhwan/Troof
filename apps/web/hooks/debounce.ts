@@ -1,3 +1,5 @@
+/** @format */
+
 // A hook for countown timer
 
 export const customDebounce = (cb: (...args: any) => any, delay: number) => {

@@ -1,12 +1,14 @@
-import { IconDeviceGamepad, IconDice, IconServer } from "@tabler/icons";
-import { getServerVersion } from "@troof/api";
-import { useEffect, useState } from "react";
-import pkgjson from "../../package.json";
+/** @format */
+
+import { IconDeviceGamepad, IconDice, IconServer } from '@tabler/icons';
+import { getServerVersion } from '@troof/api';
+import { useEffect, useState } from 'react';
+import pkgjson from '../../package.json';
 
 const VersionSection = () => {
-	const [serverVersion, setServerVersion] = useState<string>("");
+	const [serverVersion, setServerVersion] = useState<string>('');
 	const [clientVersion, setClientVersion] = useState<string>(
-		"v" + pkgjson.version
+		'v' + pkgjson.version
 	);
 
 	const [loadingServerVersion, setLoadingServerVersion] =
@@ -18,9 +20,9 @@ const VersionSection = () => {
 			try {
 				const sVersion = await getServerVersion();
 
-				setServerVersion("v" + sVersion);
+				setServerVersion('v' + sVersion);
 			} catch (err) {
-				setServerVersion("Error");
+				setServerVersion('Error');
 			} finally {
 				setLoadingServerVersion(false);
 			}
@@ -28,30 +30,30 @@ const VersionSection = () => {
 	}, []);
 
 	return (
-		<p className="font-semibold text-xs text-center  mb-6 mt-2 space-x-1.5 flex justify-center">
+		<p className="mb-6 mt-2 flex  justify-center space-x-1.5 text-center text-xs font-semibold">
 			<span
 				title="Game Version"
-				className="flex bg-gray-800 text-gray-200 rounded-lg py-1 px-2 gap-1 items-center"
+				className="flex items-center gap-1 rounded-lg bg-gray-800 py-1 px-2 text-gray-200"
 			>
 				<span className="text-xs">
 					<IconDeviceGamepad size={20} />
-				</span>{" "}
+				</span>{' '}
 				{clientVersion}
 			</span>
 
 			<span
 				title="Server Version"
-				className="flex bg-gray-800 text-gray-200 rounded-lg py-1 px-2 gap-1 items-center"
+				className="flex items-center gap-1 rounded-lg bg-gray-800 py-1 px-2 text-gray-200"
 			>
 				{loadingServerVersion ? (
-					<span className="w-fit h-fit animate-spin">
+					<span className="h-fit w-fit animate-spin">
 						<IconDice size={20} />
 					</span>
 				) : (
 					<>
 						<span className="text-xs">
 							<IconServer size={20} />
-						</span>{" "}
+						</span>{' '}
 						{serverVersion}
 					</>
 				)}

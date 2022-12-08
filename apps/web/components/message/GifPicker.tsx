@@ -1,3 +1,5 @@
+/** @format */
+
 import { IconSearch, IconX } from "@tabler/icons";
 import { useEffect, useRef, useState } from "react";
 import { BarLoader } from "react-spinners";
@@ -123,24 +125,24 @@ const GifPicker = ({ onSelectGif }: GifSelectorProps) => {
 	}, [searchQuery]);
 
 	return (
-		<div className="w-full bg-white rounded-xl p-2 border border-black/20 shadow-lg">
+		<div className="w-full rounded-xl border border-black/20 bg-white p-2 shadow-lg">
 			<p className="font-black">GIF</p>
 
 			<form onSubmit={handleGifSearch}>
-				<div className="flex my-2 gap-2 relative">
+				<div className="relative my-2 flex gap-2">
 					<input
 						ref={searchInputRef}
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
 						placeholder="Search for a gif"
-						className="h-[5px] flex-1 bg-white relative"
+						className="relative h-[5px] flex-1 bg-white"
 					/>
 
 					{searchQuery.length > 0 && (
 						<button
 							onClick={() => setSearchQuery("")}
 							type="button"
-							className="flex items-center  h-full absolute right-16 px-2"
+							className="absolute right-16  flex h-full items-center px-2"
 						>
 							<IconX size={18} />
 						</button>
@@ -148,17 +150,15 @@ const GifPicker = ({ onSelectGif }: GifSelectorProps) => {
 
 					<button
 						type="submit"
-						className=" bg-purple-300 text-purple-900 rounded-lg px-4 flex items-center gap-2 border border-purple-900/20"
+						className=" flex items-center gap-2 rounded-lg border border-purple-900/20 bg-purple-300 px-4 text-purple-900"
 					>
 						<IconSearch size={16} />
 					</button>
 				</div>
 			</form>
 
-			<p className="mt-3 my-0.5 text-sm font-semibold">
-				Featured Categories
-			</p>
-			<div className="flex text-sm overflow-x-scroll gap-2">
+			<p className="my-0.5 mt-3 text-sm font-semibold">Featured Categories</p>
+			<div className="flex gap-2 overflow-x-scroll text-sm">
 				{featuredCategories &&
 					featuredCategories.map((category, index) => (
 						<motion.button
@@ -169,15 +169,11 @@ const GifPicker = ({ onSelectGif }: GifSelectorProps) => {
 							}}
 							style={{
 								// Set color of button to be hsl
-								backgroundColor: `hsl(${
-									index * 20
-								}, 100%, 85%)`,
+								backgroundColor: `hsl(${index * 20}, 100%, 85%)`,
 								color: `hsl(${index * 20}, 100%, 25%)`,
-								border: `1px solid hsl(${
-									index * 20
-								}, 100%, 45%)`,
+								border: `1px solid hsl(${index * 20}, 100%, 45%)`,
 							}}
-							className="my-2 p-1.5 px-3 rounded-lg relative flex items-center"
+							className="relative my-2 flex items-center rounded-lg p-1.5 px-3"
 						>
 							{category}
 						</motion.button>
@@ -186,14 +182,14 @@ const GifPicker = ({ onSelectGif }: GifSelectorProps) => {
 
 			{/* Show 'Search for gifs by typing in the input box above' when there is no gifs */}
 			{!gifsData && (
-				<p className="font-semibold text-center text-gray-500 px-10 my-5 mb-0">
+				<p className="my-5 mb-0 px-10 text-center font-semibold text-gray-500">
 					Search for gifs by typing in the input box above
 				</p>
 			)}
 
 			{/* Show loading spinner */}
 			{loading && (
-				<div className="flex justify-center items-center my-5">
+				<div className="my-5 flex items-center justify-center">
 					<BarLoader color="#6B46C1" loading={loading} width={100} />
 				</div>
 			)}
@@ -202,7 +198,7 @@ const GifPicker = ({ onSelectGif }: GifSelectorProps) => {
 			{!loading && gifsData.length > 0 && (
 				<motion.div
 					layout
-					className="grid grid-cols-2 flex-wrap max-h-[350px] overflow-auto gap-2 grid-flow-dense rounded-xl"
+					className="grid max-h-[350px] grid-flow-dense grid-cols-2 flex-wrap gap-2 overflow-auto rounded-xl"
 				>
 					{gifsData.map((gif, index) => (
 						<motion.div
@@ -211,11 +207,11 @@ const GifPicker = ({ onSelectGif }: GifSelectorProps) => {
 							onClick={() => handleGifClick(gif)}
 							className=" rounded-xl border-black"
 						>
-							<picture className="w-full h-full">
+							<picture className="h-full w-full">
 								<img
 									src={gif.media_formats.tinygif?.url}
 									alt=""
-									className="w-fit object-contain rounded-xl h-full border shadow-sm"
+									className="h-full w-fit rounded-xl border object-contain shadow-sm"
 								/>
 							</picture>
 						</motion.div>
@@ -223,7 +219,7 @@ const GifPicker = ({ onSelectGif }: GifSelectorProps) => {
 				</motion.div>
 			)}
 
-			<p className="text-xs text-black/40 mt-4">
+			<p className="mt-4 text-xs text-black/40">
 				Powered by Tenor, built by Nabil
 			</p>
 		</div>
