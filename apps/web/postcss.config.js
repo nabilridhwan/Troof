@@ -1,8 +1,5 @@
 /** @format */
 
 module.exports = {
-	plugins: {
-		tailwindcss: {},
-		autoprefixer: {},
-	},
+	...require("@troof/config/postcss.config"),
 };
