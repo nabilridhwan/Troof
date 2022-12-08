@@ -6,6 +6,8 @@ import { version } from "./package.json";
 import { SuccessResponse } from "@troof/responses";
 import cors from "cors";
 import * as dotenv from "dotenv";
+import helmet from "helmet";
+import hpp from "hpp";
 import { ServerToClientEvents } from "../../packages/socket/dist";
 import playerRouter from "./routers/playerRouter";
 import roomRouter from "./routers/roomRouter";
@@ -24,6 +26,8 @@ const io = new Server<ServerToClientEvents>(server, {
 // Config dotenv
 dotenv.config();
 
+app.use(helmet());
+app.use(hpp());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
