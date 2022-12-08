@@ -9,7 +9,6 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
-		"@giphy/js-fetch-api": "^4.6.0",
 		"@headlessui/react": "^1.7.4",
 		"@prisma/client": "^4.6.1",
 		"@reacticons/ionicons": "^6.0.4",
@@ -18,9 +17,9 @@
 		"@tailwindcss/line-clamp": "^0.4.2",
 		"@tailwindcss/typography": "^0.5.8",
 		"@troof/api": "*",
+		"@troof/config": "*",
 		"@troof/gifpicker": "*",
 		"@troof/helpers": "*",
-		"@troof/config": "*",
 		"@troof/responses": "*",
 		"@troof/socket": "*",
 		"@types/lodash.debounce": "^4.0.7",
