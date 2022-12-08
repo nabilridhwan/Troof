@@ -1,45 +1,24 @@
-import { axiosInstance, getPlayer, getRoom } from "@troof/api";
+import { getPlayer, getRoom } from "@troof/api";
 import { Player } from "@troof/socket";
 import { AnimatePresence, motion } from "framer-motion";
-import { NextPageContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CautionSection from "../components/home/CautionSection";
 import CreateRoomSection from "../components/home/CreateRoomSection";
-import ExistingGameSection from "../components/home/ExistingGameSection";
 import JoinRoomSection from "../components/home/JoinRoomSection";
-import pkgjson from "../package.json";
 import { Cookie } from "../utils/Cookie";
 
-import { IconDeviceGamepad, IconServer } from "@tabler/icons";
 import Image from "next/image";
+import AccidentallyLeftGame from "../components/home/AccidentallyLeftGameSection";
+import ServerErrorSection from "../components/home/ServerErrorSection";
+import VersionSection from "../components/home/VersionSection";
 import troofPromoImage from "../public/troof_promo_new_new.png";
 
 type MainScreenAction = "create" | "join" | "existing_game" | "none";
 
-export async function getServerSideProps(context: NextPageContext) {
-	try {
-		const res = await axiosInstance.get("/");
-
-		const { version } = res.data.data;
-
-		return {
-			props: {
-				serverVersion: `v${version}`,
-			},
-		};
-	} catch (error) {
-		return {
-			props: {
-				serverVersion: "Error",
-			},
-		};
-	}
-}
-
-export default function Home({ serverVersion }: { serverVersion: string }) {
+export default function Home() {
 	const { query } = useRouter();
 
 	const { room_id = "", error } = query;
@@ -48,6 +27,8 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 
 	const [roomIDInput, setRoomIDInput] = useState<string>(room_id as string);
 	const [displayName, setDisplayName] = useState<string>("");
+	const [showExistingGameModal, setShowExistingGameModal] =
+		useState<boolean>(false);
 
 	const [showCautions, setShowCautions] = useState<boolean>(false);
 
@@ -59,6 +40,9 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 
 	const [existingGameExists, setExistingGameExists] =
 		useState<boolean>(false);
+
+	const [serverVersion, setServerVersion] = useState<string>("");
+	const [serverError, setServerError] = useState<string>("");
 
 	const handleJoinGameButtonClick = () => {
 		if (displayName.trim().length > 0 && roomIDInput.trim().length > 0) {
@@ -74,6 +58,11 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 			window.location.href = "/create?display_name=" + displayName;
 			setClickedAlready(true);
 		}
+	};
+
+	const joinBackExistingGame = () => {
+		const roomIDFromCookies = Cookie.getRoomId();
+		window.location.href = `/game/${roomIDFromCookies}`;
 	};
 
 	useEffect(() => {
@@ -150,8 +139,8 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 
 						if (player && room) {
 							console.log("The room and player is still valid");
-							setMainScreenAction("existing_game");
 							setExistingGameExists(true);
+							setShowExistingGameModal(true);
 							// Redirect to the game page
 							// window.location.href = `/game/${roomIDFromCookies}`;
 						}
@@ -184,7 +173,7 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 
 			<main className="text-center w-[90%] lg:w-[55%] mx-auto">
 				<div>
-					<div className="grid lg:grid-cols-2 my-10">
+					<div className="grid lg:grid-cols-2 my-10 gap-10">
 						<div className="lg:text-left">
 							<motion.h1
 								initial={{ opacity: 0, fontSize: 0, y: 1 }}
@@ -205,8 +194,8 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 
 							<p className="text-lg mb-5">
 								Experience the ultimate social truth or dare
-								game - see, chat, and react together with your
-								friends!
+								game - see, chat, and react together with up to
+								8 friends!
 							</p>
 
 							<p className="my-5">
@@ -235,7 +224,7 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 
 					<p className="text-red-500">{errorMessage}</p>
 
-					{/* Only show this section when main screen action is not "existing_game" */}
+					<ServerErrorSection />
 
 					<div className="flex py-5 justify-around flex-wrap">
 						<div
@@ -265,22 +254,6 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 								/>
 							)}
 						</div>
-
-						{existingGameExists && (
-							<div
-								className="flex-1 cursor-pointer my-2"
-								onClick={() =>
-									setMainScreenAction("existing_game")
-								}
-							>
-								<p>Existing Game</p>
-
-								<motion.div
-									layoutId="bar"
-									className="bg-black/30 h-[5px] rounded-full my-2"
-								/>
-							</div>
-						)}
 					</div>
 
 					<AnimatePresence>
@@ -317,13 +290,17 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 								/>
 							</motion.div>
 						)}
-
-						{mainScreenAction === "existing_game" && (
-							<ExistingGameSection
-								onClose={() => setMainScreenAction("join")}
-							/>
-						)}
 					</AnimatePresence>
+
+					<AccidentallyLeftGame
+						onClose={() => setShowExistingGameModal(false)}
+						onClickNo={() => {
+							console.log("Intentional");
+						}}
+						onClickYes={joinBackExistingGame}
+						show={showExistingGameModal}
+						setShow={setShowExistingGameModal}
+					/>
 
 					<p className="mb-10 text-sm">
 						By clicking &quot;Create Room&quot;, &quot;Join
@@ -339,49 +316,13 @@ export default function Home({ serverVersion }: { serverVersion: string }) {
 						.
 					</p>
 
-					{/* <p className="text-sm mb-2">
-						Created by{" "}
-						<Link
-							className="text-red-600"
-							href={"https://github.nabilridhwan.com"}
-						>
-							Nabil
-						</Link>
-					</p> */}
-
-					{/* <button className="bg-lime-100 text-lime-900 rounded-lg px-4 py-2 my-4 text-xs mb-10 border border-lime-900/20">
-						<Link href={"/changelog"} className="no-underline">
-							Read what&apos;s new in v{pkgjson.version}
-						</Link>
-					</button> */}
-
 					{/* Contains all the links to caution, terms of service, privacy and my github page */}
 
 					{/* Versions */}
-
 					<div className="my-10">
 						<p className="text-sm">Version</p>
-						<p className="font-semibold text-xs text-center  mb-6 mt-2 space-x-1.5 flex justify-center">
-							<span
-								title="Game Version"
-								className="flex bg-gray-800 text-gray-200 rounded-lg py-1 px-2 gap-1 items-center"
-							>
-								<span className="text-xs">
-									<IconDeviceGamepad size={20} />
-								</span>{" "}
-								v{pkgjson.version}
-							</span>
 
-							<span
-								title="Server Version"
-								className="flex bg-gray-800 text-gray-200 rounded-lg py-1 px-2 gap-1 items-center"
-							>
-								<span className="text-xs">
-									<IconServer size={20} />
-								</span>{" "}
-								{serverVersion}
-							</span>
-						</p>
+						<VersionSection />
 					</div>
 
 					<footer className="flex flex-wrap my-5 text-xs gap-2 justify-center">
