@@ -595,7 +595,7 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 						</div>
 					</div>
 
-					<div className="col-span-1 lg:h-full">
+					<div className="col-span-1 lg:h-full py-5 lg:py-0">
 						<ChatBox
 							player_id={player_id}
 							room_id={roomID}
