@@ -1,5 +1,6 @@
 import { IconArrowNarrowRight, IconDice, IconLink } from "@tabler/icons";
 import { getPlayer } from "@troof/api";
+import { BadRequest, NotFoundResponse } from "@troof/responses";
 import {
 	Action,
 	EVENTS,
@@ -8,6 +9,7 @@ import {
 	Status,
 	TRUTH_OR_DARE_GAME,
 } from "@troof/socket";
+import { AxiosError, isAxiosError } from "axios";
 import classNames from "classnames";
 import { motion } from "framer-motion";
 import { NextPageContext } from "next";
@@ -58,9 +60,40 @@ export async function getServerSideProps(context: NextPageContext) {
 		// Find the player using the API
 		playerAPIData = await getPlayer(player_id);
 	} catch (error) {
+		if (isAxiosError(error)) {
+			let e: AxiosError<BadRequest | NotFoundResponse> = error;
+
+			console.log(e);
+
+			if (!e.response) {
+				// The user does not have an internet connection because there is no error response hence why there is no reply from server
+				console.log(
+					"The user does not have an internet connection because there is no error response (No connection to server)"
+				);
+				return {
+					redirect: {
+						destination:
+							"/?error=An unknown error occurred. Please try again later. (No connection to server)",
+						permanent: false,
+					},
+				};
+			}
+
+			let {
+				data: { message },
+			} = e.response;
+			return {
+				redirect: {
+					destination: `/?error=${message}`,
+					permanent: false,
+				},
+			};
+		}
+
 		return {
 			redirect: {
-				destination: "/?error=player_not_found",
+				destination:
+					"/?error=An unknown error occurred. Please try again later.",
 				permanent: false,
 			},
 		};
@@ -199,13 +232,24 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 				// socket.disconnect();
 			});
 
-			socket.on("disconnect", () => {
+			socket.on("disconnect", (reason) => {
+				console.log(reason);
 				console.log("Disconnected");
 				console.log("You are disconnected");
 
+				if (reason === "transport close") {
+					setTimeout(() => {
+						window.location.reload();
+					}, 1500);
+
+					return;
+				}
+
 				setTimeout(() => {
 					window.location.reload();
-				}, 3000);
+				}, 2500);
+
+				return;
 
 				// Refresh the page
 				// window.location.reload();
@@ -312,8 +356,8 @@ function GamePageContent({ r: roomID, player_id, player }: GamePageProps) {
 			<div className="h-screen py-10 ">
 				<div className="lg:grid lg:grid-cols-4 gap-10 h-full items-center justify-center">
 					<div className="col-span-1 lg:h-full lg:border border-black/10 rounded-2xl px-1">
-						<h2 className="font-bold text-lg my-5 text-center">
-							Players
+						<h2 className={`font-bold text-lg my-5 text-center`}>
+							Players ({players.length}/8)
 						</h2>
 						<Players
 							player={player}
