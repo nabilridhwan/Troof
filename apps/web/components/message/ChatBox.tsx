@@ -275,7 +275,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 			{/* Chat box */}
 			<div
 				ref={messagesBoxRefElement}
-				className="h-[300px] lg:min-h-[85%] relative bg-black/5 p-2 rounded-xl overflow-auto mb-2 border border-black/10"
+				className="h-[450px] lg:min-h-[85%] relative bg-black/5 p-2 rounded-xl overflow-auto mb-2 border border-black/10"
 			>
 				{!messages.length && (
 					<p className="text-center text-gray-500">
