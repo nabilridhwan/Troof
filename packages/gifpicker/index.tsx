@@ -1,7 +1,7 @@
 /** @format */
 
 import { IconSearch, IconX } from "@tabler/icons";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BarLoader } from "react-spinners";
 
 import {
@@ -157,7 +157,9 @@ const GifPicker = ({ onSelectGif }: GifSelectorProps) => {
 				</div>
 			</form>
 
-			<p className="my-0.5 mt-3 text-sm font-semibold">Featured Categories</p>
+			<p className="my-0.5 mt-3 text-sm font-semibold">
+				Featured Categories
+			</p>
 			<div className="flex gap-2 overflow-x-scroll text-sm">
 				{featuredCategories &&
 					featuredCategories.map((category, index) => (
@@ -169,9 +171,13 @@ const GifPicker = ({ onSelectGif }: GifSelectorProps) => {
 							}}
 							style={{
 								// Set color of button to be hsl
-								backgroundColor: `hsl(${index * 20}, 100%, 85%)`,
+								backgroundColor: `hsl(${
+									index * 20
+								}, 100%, 85%)`,
 								color: `hsl(${index * 20}, 100%, 25%)`,
-								border: `1px solid hsl(${index * 20}, 100%, 45%)`,
+								border: `1px solid hsl(${
+									index * 20
+								}, 100%, 45%)`,
 							}}
 							className="relative my-2 flex items-center rounded-lg p-1.5 px-3"
 						>

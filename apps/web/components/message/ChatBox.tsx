@@ -1,6 +1,7 @@
 /** @format */
 
 import { IconMessage, IconMoodHappy, IconSend, IconX } from "@tabler/icons";
+import GifPicker from "@troof/gifpicker";
 import {
 	BaseNewMessage,
 	MessageUpdatedFromServer,
@@ -18,7 +19,6 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { SocketProviderContext } from "../../context/SocketProvider";
 import findMessageById from "../../utils/findMessageById";
 import EmojiReactionBar from "../EmojiBar";
-import GifPicker from "./GifPicker";
 import OtherPlayerChatBubble from "./OtherPlayerChatBubble";
 import SelfChatBubble from "./SelfChatBubble";
 
