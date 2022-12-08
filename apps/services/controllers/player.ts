@@ -1,7 +1,6 @@
+import { NotFoundResponse, SuccessResponse } from "@troof/responses";
 import type { Request, Response } from "express";
 import prisma from "../database/prisma";
-import NotFoundResponse from "../responses/NotFoundResponse";
-import SuccessResponse from "../responses/SuccessResponse";
 
 const Player = {
 	Find: async (

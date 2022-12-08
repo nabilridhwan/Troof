@@ -1,3 +1,4 @@
+import { axiosInstance, getPlayer, getRoom } from "@troof/api";
 import { Player } from "@troof/socket";
 import { AnimatePresence, motion } from "framer-motion";
 import { NextPageContext } from "next";
@@ -10,9 +11,6 @@ import CreateRoomSection from "../components/home/CreateRoomSection";
 import ExistingGameSection from "../components/home/ExistingGameSection";
 import JoinRoomSection from "../components/home/JoinRoomSection";
 import pkgjson from "../package.json";
-import getPlayer from "../services/getPlayer";
-import getRoom from "../services/getRoom";
-import axiosInstance from "../utils/axiosInstance";
 import { Cookie } from "../utils/Cookie";
 
 import { IconDeviceGamepad, IconServer } from "@tabler/icons";

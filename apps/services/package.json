@@ -14,6 +14,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"@troof/helpers": "*",
+		"@troof/responses": "*",
 		"@troof/database": "*",
 		"@troof/socket": "*",
 		"@types/bad-words": "^3.0.1",

@@ -1,4 +1,4 @@
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "./axiosInstance";
 
 const getRoom = async (room_id: string) => {
 	const res = await axiosInstance.get("/api/room", {

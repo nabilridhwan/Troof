@@ -1,5 +1,5 @@
+import { createRoom } from "@troof/api";
 import { NextPageContext } from "next/types";
-import { createRoom } from "../services/createRoom";
 import { Cookie } from "../utils/Cookie";
 
 // Export getServerSideProps to get the query string
@@ -8,6 +8,8 @@ export async function getServerSideProps(context: NextPageContext) {
 
 	try {
 		const res = await createRoom(display_name as string);
+
+		console.log(res);
 
 		const {
 			status,
@@ -36,6 +38,7 @@ export async function getServerSideProps(context: NextPageContext) {
 			},
 		};
 	} catch (error: any) {
+		console.log(error);
 		return {
 			redirect: {
 				destination: "/",

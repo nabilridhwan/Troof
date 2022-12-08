@@ -1,7 +1,7 @@
+import { joinRoom } from "@troof/api";
 import { AxiosError } from "axios";
 import { NextPageContext } from "next";
 import Head from "next/head";
-import { joinRoom } from "../../services/joinRoom";
 import { Cookie } from "../../utils/Cookie";
 
 import { BadRequest, NotFoundResponse } from "@troof/responses";

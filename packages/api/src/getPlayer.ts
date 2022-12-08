@@ -1,4 +1,4 @@
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "./axiosInstance";
 
 const getPlayer = async (player_id: string) => {
 	const res = await axiosInstance.get("/api/player", {

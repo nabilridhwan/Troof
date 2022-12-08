@@ -1,4 +1,5 @@
 import { IconArrowNarrowRight, IconDice, IconLink } from "@tabler/icons";
+import { getPlayer } from "@troof/api";
 import {
 	Action,
 	EVENTS,
@@ -21,7 +22,6 @@ import {
 	SocketProvider,
 	SocketProviderContext,
 } from "../../context/SocketProvider";
-import getPlayer from "../../services/getPlayer";
 import { Cookie } from "../../utils/Cookie";
 
 export async function getServerSideProps(context: NextPageContext) {

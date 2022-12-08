@@ -10,6 +10,7 @@
 	},
 	"dependencies": {
 		"@troof/helpers": "*",
+		"@troof/api": "*",
 		"@troof/responses": "*",
 		"@troof/socket": "*",
 		"@giphy/js-fetch-api": "^4.6.0",

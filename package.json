@@ -17,6 +17,7 @@
 		"build:troof": "turbo run build --scope=web",
 		"start:all": "turbo run start",
 		"build:all": "turbo run build",
+		"start:clean": "turbo start --no-cache --force",
 		"dev": "turbo run dev"
 	},
 	"devDependencies": {
