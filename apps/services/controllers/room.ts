@@ -1,6 +1,7 @@
 /** @format */
 
 import { generateRoomID } from "@troof/helpers";
+import logger from "@troof/logger";
 import {
 	BadRequest,
 	NotFoundResponse,
@@ -147,7 +148,7 @@ const Room = {
 		}
 
 		// Generate a room_id
-		console.log(`Created room with id ${generateRoomID().toUpperCase()}`);
+		logger.info(`Created room with id ${generateRoomID().toUpperCase()}`);
 
 		const room_id = generateRoomID();
 

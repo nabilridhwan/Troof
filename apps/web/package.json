@@ -9,6 +9,7 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"@troof/logger": "*",
 		"@headlessui/react": "^1.7.4",
 		"@prisma/client": "^4.6.1",
 		"@reacticons/ionicons": "^6.0.4",

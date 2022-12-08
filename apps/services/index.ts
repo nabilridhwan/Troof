@@ -2,9 +2,11 @@
 
 import express from "express";
 import http from "http";
+import morgan from "morgan";
 import { Server } from "socket.io";
 import { version } from "./package.json";
 
+import logger, { MorganStreamer } from "@troof/logger";
 import { SuccessResponse } from "@troof/responses";
 import { ServerToClientEvents } from "@troof/socket";
 import all_dares from "@troof/truth-or-dare/output/all_dares.json";
@@ -30,6 +32,8 @@ const io = new Server<ServerToClientEvents>(server, {
 // Config dotenv
 dotenv.config();
 
+let mStreamer = new MorganStreamer();
+app.use(morgan("combined", { stream: mStreamer }));
 app.use(helmet());
 app.use(hpp());
 app.use(express.json());
@@ -51,18 +55,18 @@ app.use("/api/room", roomRouter);
 app.use("/api/player", playerRouter);
 
 io.on("connection", (socket) => {
-	console.log("Current active sockets: ", io.engine.clientsCount);
-	console.log(`A user connected (${socket.id})`);
+	logger.warn(`Current active sockets: ${io.engine.clientsCount}`);
+	logger.info(`A user connected (${socket.id})`);
 
 	roomHandler(io, socket);
 	gameHandler(io, socket);
 	messageHandler(io, socket);
 
 	socket.on("disconnect", () => {
-		console.log(`A user disconnected (${socket.id})`);
+		logger.warn("Current active sockets: ", io.engine.clientsCount);
 	});
 });
 
 server.listen(process.env.PORT, () => {
-	console.log(`listening on *:${process.env.PORT}`);
+	logger.info(`listening on *:${process.env.PORT}`);
 });

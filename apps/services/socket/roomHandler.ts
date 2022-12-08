@@ -17,11 +17,13 @@ import ChatModel from "../model/chat";
 import PlayerModel from "../model/player";
 import RoomModel from "../model/room";
 
+import logger from "@troof/logger";
+
 const roomHandler = (
 	io: Server<ClientToServerEvents, ServerToClientEvents>,
 	socket: Socket<ClientToServerEvents, ServerToClientEvents>
 ) => {
-	console.log("Registered room handler");
+	logger.info("Registered room handler");
 
 	const joinRoomHandler = async (obj: RoomIDObject) => {
 		// Make the socket join the room ID
@@ -48,7 +50,7 @@ const roomHandler = (
 	};
 
 	const disconnectedHandler = async (obj: DisconnectedRoomObject) => {
-		console.log(
+		logger.warn(
 			`Disconnected received from ${obj.player_id}. Method not implemented!`
 		);
 
@@ -62,14 +64,14 @@ const roomHandler = (
 		// 	// Broadcast back to each room the latest players
 		// 	io.to(obj.room_id).emit(EVENTS.PLAYERS_UPDATE, players);
 		// } catch (error) {
-		// 	console.log(
+		// 	logger.info(
 		// 		"Cannot remove player from room. Maybe they're disconnected already!"
 		// 	);
 		// }
 	};
 
 	const statusChangeHandler = async (obj: StatusChangeObject) => {
-		console.log(`Status changed to ${obj.status} received for ${obj.room_id}`);
+		logger.info(`Status changed to ${obj.status} received for ${obj.room_id}`);
 
 		const room = await RoomModel.updateRoomStatus(obj.room_id, obj.status);
 
@@ -80,7 +82,7 @@ const roomHandler = (
 	};
 
 	const startGameHandler = async (obj: RoomIDObject) => {
-		console.log(`Start game received for ${obj.room_id}`);
+		logger.info(`Start game received for ${obj.room_id}`);
 
 		// Update status
 		const room = await RoomModel.updateRoomStatus(obj.room_id, Status.In_Game);
@@ -94,7 +96,7 @@ const roomHandler = (
 	const changeUserDisplayName = async (
 		obj: Parameters<ClientToServerEvents[EVENTS.CHANGE_NAME]>[0]
 	) => {
-		console.log(`Change name received for ${obj.player_id} ${obj.room_id}`);
+		logger.info(`Change name received for ${obj.player_id} ${obj.room_id}`);
 
 		// Change the users's name
 		await PlayerModel.updatePlayerName(obj.player_id, obj.new_name);

@@ -13,8 +13,10 @@ import ChatModel from "../model/chat";
 
 import { v4 as generateUUIDv4 } from "uuid";
 
+import logger from "@troof/logger";
+
 const messageHandler = (io: Server, socket: Socket) => {
-	console.log("Registered message handler");
+	logger.info("Registered message handler");
 
 	const joinMessageHandler = async (obj: RoomIDObject) => {
 		socket.join(obj.room_id);
@@ -27,7 +29,7 @@ const messageHandler = (io: Server, socket: Socket) => {
 	};
 
 	const newReactionHandler = async (obj: BaseNewMessage) => {
-		console.log(
+		logger.info(
 			`Received new reaction (${obj.type}). Sending it to ${obj.room_id}`
 		);
 
@@ -48,8 +50,8 @@ const messageHandler = (io: Server, socket: Socket) => {
 	};
 
 	const newMessageHandler = async (obj: BaseNewMessage) => {
-		console.log(obj);
-		console.log(
+		logger.info(obj);
+		logger.info(
 			`Received new message (${obj.type}). Sending it to ${obj.room_id}`
 		);
 

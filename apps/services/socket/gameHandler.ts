@@ -1,6 +1,7 @@
 /** @format */
 
 import { get_dare, get_truth } from "@troof/helpers";
+import logger from "@troof/logger";
 import {
 	Action,
 	EVENTS,
@@ -19,10 +20,10 @@ import RoomModel from "../model/room";
 import Sequence from "../model/sequence";
 
 const gameHandler = (io: Server, socket: Socket) => {
-	console.log("Registered game handler");
+	logger.info("Registering game handler");
 
 	const joinHandler = async (obj: RoomIDObject & PlayerIDObject) => {
-		console.log(`Received joined room ${obj.room_id}`);
+		logger.info(`Received joined room ${obj.room_id}`);
 
 		// Let the socket join the room
 		socket.join(obj.room_id);
@@ -51,17 +52,14 @@ const gameHandler = (io: Server, socket: Socket) => {
 		});
 
 		// Broadcast the log to the room
-		console.log("Broadcasting back");
+		logger.info("Broadcasting back");
 
 		// Get players in room
 		const playersInRoom = PlayerModel.getPlayersInRoom(obj.room_id);
 
 		Promise.all([lastLogItem, player, playersInRoom, playerWhoJoined]).then(
 			([lastLogItem, player, playersInRoom, playerWhoJoinedData]) => {
-				console.log(lastLogItem);
-				console.log(player);
-				console.log(playersInRoom);
-				console.log(playerWhoJoinedData);
+				logger.info("Promise all resolved");
 
 				// Broadcast the log to the room
 				socket.emit(TRUTH_OR_DARE_GAME.INCOMING_DATA, lastLogItem!, player!);
@@ -89,7 +87,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 	};
 
 	const selectTruthHandler = async (obj: RoomIDObject & PlayerIDObject) => {
-		console.log(`Truth received from ${obj.player_id}`);
+		logger.info(`Received select truth ${obj.room_id}`);
 		// Emit a dare to the room for the player
 		const truth = await get_truth();
 
@@ -100,10 +98,11 @@ const gameHandler = (io: Server, socket: Socket) => {
 
 		const { current_player_id } = sequenceData;
 
-		console.log(`Current Player: ${current_player_id}`);
+		// Find the current player
+		logger.info(`Current Player: ${current_player_id}`);
 
 		if (!sequenceData) {
-			console.log("No sequence data found. Aborting");
+			logger.error("No sequence data found. Aborting");
 			return;
 		}
 
@@ -112,7 +111,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 			player_id: current_player_id,
 		});
 
-		console.log("Writing to log");
+		logger.info(`Writing to log in database`);
 
 		// Write to log
 		const logData = await prisma.log.create({
@@ -124,7 +123,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 			},
 		});
 
-		console.log("Emitting back new data");
+		logger.info(`Emitted back new data`);
 
 		const systemMessageToSend: SystemMessage = {
 			message: `${player?.display_name} selected Truth`,
@@ -159,7 +158,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 	};
 
 	const selectDareHandler = async (obj: RoomIDObject & PlayerIDObject) => {
-		console.log(`Dare received from ${obj.player_id}`);
+		logger.info(`Received select dare ${obj.room_id}`);
 
 		// Emit a dare to the room for the player
 
@@ -172,10 +171,10 @@ const gameHandler = (io: Server, socket: Socket) => {
 
 		const { current_player_id } = sequenceData;
 
-		console.log(`Current Player: ${current_player_id}`);
+		logger.info(`Current Player: ${current_player_id}`);
 
 		if (!sequenceData) {
-			console.log("No sequence data found. Aborting");
+			logger.info("No sequence data found. Aborting");
 			return;
 		}
 
@@ -184,7 +183,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 			player_id: current_player_id,
 		});
 
-		console.log("Writing to log");
+		logger.info("Writing to log");
 
 		// Write to log
 		const logData = await prisma.log.create({
@@ -196,7 +195,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 			},
 		});
 
-		console.log("Emitting back new data");
+		logger.info("Emitting back new data");
 
 		const systemMessageToSend: SystemMessage = {
 			message: `${player?.display_name} selected Dare`,
@@ -231,16 +230,16 @@ const gameHandler = (io: Server, socket: Socket) => {
 	};
 
 	const continueHandler = async (obj: RoomIDObject) => {
-		console.log("Continuing to next player");
+		logger.info("Continuing to next player");
 
 		// Find the current player in the sequence
 		const sequenceData = await Sequence.getCurrentPlayer(obj.room_id);
 		if (!sequenceData) return;
 		// Get the current_player_id
 		const { current_player_id } = sequenceData;
-		console.log(`Current Player: ${current_player_id}`);
+		logger.info(`Current Player: ${current_player_id}`);
 		if (!sequenceData) {
-			console.log("No sequence data found. Aborting");
+			logger.error("No sequence data found. Aborting");
 			return;
 		}
 
@@ -253,9 +252,9 @@ const gameHandler = (io: Server, socket: Socket) => {
 			player_id: nextPlayer.current_player_id,
 		});
 
-		console.log("Writing to log");
+		logger.info("Writing to log");
 
-		console.log("Next player set: ", nextPlayer);
+		logger.info(`Next player set: ${nextPlayer.current_player_id}`);
 
 		// Write to log
 		const logData = await prisma.log.create({
@@ -274,7 +273,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 			},
 		});
 
-		console.log(
+		logger.info(
 			`Emitting back new data: Now player ${nextPlayer.current_player_id} is waiting_for_selection`
 		);
 
@@ -296,7 +295,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 	};
 
 	const leaveGameHandler = async (obj: RoomIDObject & PlayerIDObject) => {
-		console.log(
+		logger.info(
 			`Leave Game Handler called: Removing player ${obj.player_id} from room ${obj.room_id}`
 		);
 
@@ -327,17 +326,17 @@ const gameHandler = (io: Server, socket: Socket) => {
 		ChatModel.pushSystemMessage(systemMessageToSend);
 
 		// Emit to the room that the player has left, and hence the person sent back, if the ID matches, they will be redirected to home page
-		console.log("Emitting EVENTS.LEFT_GAME");
+		logger.warn("Emitting back to room that the player has left");
 		io.to(obj.room_id).emit(EVENTS.LEFT_GAME, player);
 
 		// If the player leaving is the current player, then set the next player
 		if (current_player_id === obj.player_id) {
-			console.log(
+			logger.info(
 				`Player ${obj.player_id} is the current player and is leaving. Skipping the user's turn.`
 			);
 
 			if (player?.is_party_leader) {
-				console.log(
+				logger.info(
 					"Player is the party leader. Setting the next player as the party leader"
 				);
 
@@ -345,12 +344,12 @@ const gameHandler = (io: Server, socket: Socket) => {
 				const nextPlayerId = await Sequence.getNextPlayerID(obj.room_id);
 
 				if (!nextPlayerId) {
-					console.log("Found no next player. Aborting");
+					logger.error("Found no next player. Aborting");
 					return;
 				}
 
 				await PlayerModel.setPlayerAsPartyLeader(nextPlayerId);
-				console.log("Next player set as party leader successfully");
+				logger.info("Next player set as party leader successfully");
 			}
 
 			const remainingPlayersIfCurrentPlayerIsRemoved =
@@ -366,14 +365,14 @@ const gameHandler = (io: Server, socket: Socket) => {
 
 			if (remainingPlayersIfCurrentPlayerIsRemoved.length === 0) {
 				// TODO: Handle this case
-				console.log(
+				logger.info(
 					"No more players will be left in the room. Setting status to game_over"
 				);
 
 				// Destroy the room
 				await RoomModel.updateRoomStatus(obj.room_id, Status.Game_Over);
 
-				console.log(`Room ${obj.room_id} set to game_over`);
+				logger.info(`Room ${obj.room_id} set to game_over`);
 				return;
 			}
 
@@ -418,7 +417,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 			// Remove player from the room
 			await RoomModel.removePlayerFromRoom(obj.room_id, obj.player_id);
 		} catch (error) {
-			console.log(`Error removing player ${obj.player_id} from room: `, error);
+			logger.error(`Error removing player ${obj.player_id} from room: `, error);
 		}
 
 		// Get remaining players

@@ -1,0 +1,14 @@
+{
+	"name": "@troof/logger",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsc"
+	},
+	"private": true,
+	"license": "MIT",
+	"dependencies": {
+		"winston": "^3.8.2"
+	}
+}

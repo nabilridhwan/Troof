@@ -1,14 +1,14 @@
 /** @format */
 
 import { Prisma } from "@prisma/client";
+import logger from "@troof/logger";
 import { Action, Status } from "@troof/socket";
 import prisma from "../database/prisma";
 import Sequence from "./sequence";
 
 const RoomModel = {
 	deleteRoom: async (roomId: string) => {
-		console.log("Delete room called, deleting room with id", roomId);
-		roomId = "B4HYL1";
+		logger.warn(`Delete room called, deleting room with id ${roomId}`);
 		return await prisma.game.delete({
 			where: {
 				room_id: roomId,

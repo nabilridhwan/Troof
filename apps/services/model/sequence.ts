@@ -1,10 +1,11 @@
 /** @format */
 
+import logger from "@troof/logger";
 import prisma from "../database/prisma";
 
 const Sequence = {
 	setCurrentPlayer: async (roomId: string, playerId: string) => {
-		console.log(
+		logger.info(
 			`Set current player model called: Setting ${playerId} to be the current player`
 		);
 		return await prisma.player_sequence.upsert({
@@ -32,15 +33,15 @@ const Sequence = {
 	},
 
 	setNextPlayer: async (roomId: string) => {
-		console.log("Set next player model called");
+		logger.info("Set next player model called");
 		const currentPlayer = await Sequence.getCurrentPlayer(roomId);
 
 		if (!currentPlayer) {
-			console.log("No current player found. Aborting setNextPlayer");
+			logger.error("No current player found. Aborting setNextPlayer");
 			return;
 		}
 
-		console.log("Current player: ", currentPlayer);
+		logger.info(`Current player: ${currentPlayer}`);
 		const players = await prisma.player.findMany({
 			where: {
 				game_room_id: roomId,
@@ -56,26 +57,27 @@ const Sequence = {
 		const nextPlayerIndex = (currentPlayerIndex + 1) % players.length;
 		const nextPlayer = players[nextPlayerIndex];
 
-		console.log("Current player index: ", currentPlayerIndex);
-		console.log("Current player: ", JSON.stringify(currentPlayer));
+		logger.info(`Current player index: ${currentPlayerIndex}`);
+		logger.info(`Current player: ${JSON.stringify(currentPlayer)}`);
 
-		console.log("Next player index: ", nextPlayerIndex);
-		console.log("Next player: ", JSON.stringify(nextPlayer));
+		logger.info(`Next player index: ${nextPlayerIndex}`);
+		logger.info(`Next player: ${JSON.stringify(nextPlayer)}`);
 
 		return await Sequence.setCurrentPlayer(roomId, nextPlayer.player_id);
 	},
 
 	// TODO: Export this to external place
 	getNextPlayerID: async (roomId: string) => {
-		console.log("Set next player model called");
+		logger.info("Get next player model called");
 		const currentPlayer = await Sequence.getCurrentPlayer(roomId);
 
 		if (!currentPlayer) {
-			console.log("No current player found. Aborting setNextPlayer");
+			logger.error("No current player found. Aborting setNextPlayer");
 			return;
 		}
 
-		console.log("Current player: ", currentPlayer);
+		logger.info(`Current player: ${currentPlayer}`);
+
 		const players = await prisma.player.findMany({
 			where: {
 				game_room_id: roomId,
@@ -91,11 +93,11 @@ const Sequence = {
 		const nextPlayerIndex = (currentPlayerIndex + 1) % players.length;
 		const nextPlayer = players[nextPlayerIndex];
 
-		console.log("Current player index: ", currentPlayerIndex);
-		console.log("Current player: ", JSON.stringify(currentPlayer));
+		logger.info(`Current player index: ${currentPlayerIndex}`);
+		logger.info(`Current player: ${JSON.stringify(currentPlayer)}`);
 
-		console.log("Next player index: ", nextPlayerIndex);
-		console.log("Next player: ", JSON.stringify(nextPlayer));
+		logger.info(`Next player index: ${nextPlayerIndex}`);
+		logger.info(`Next player: ${JSON.stringify(nextPlayer)}`);
 
 		return nextPlayer.player_id;
 	},
