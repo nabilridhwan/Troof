@@ -1,3 +1,18 @@
+## Client - 0.3.8
+
+### What's new (Client)
+
+-   Moved from Giphy to Tenor for all Gif related services (including the Gif Picker)
+-   Now, instead of clicking on a message to reply, you double click (or tap) on a message.
+
+### What's new (Server)
+
+-   Nothing new
+
+### What's new (Packages)
+
+-   Add Tenor api related stuff in `@troof/api`
+
 ## Client - 0.3.7 and Server - 0.2.10
 
 Going forward, we will strive to provide more thorough changelogs. To start, we will include a 'What's New' section for any packages that are critical to our base services and website. 😁✌️
