@@ -1,10 +1,9 @@
 import { joinRoom } from "@troof/api";
-import { AxiosError } from "axios";
+import { BadRequest, NotFoundResponse } from "@troof/responses";
+import { AxiosError, isAxiosError } from "axios";
 import { NextPageContext } from "next";
 import Head from "next/head";
 import { Cookie } from "../../utils/Cookie";
-
-import { BadRequest, NotFoundResponse } from "@troof/responses";
 
 // Export getServerSideProps to get the query string
 export async function getServerSideProps(context: NextPageContext) {
@@ -38,14 +37,15 @@ export async function getServerSideProps(context: NextPageContext) {
 			},
 		};
 	} catch (error) {
-		if (error instanceof AxiosError<BadRequest | NotFoundResponse>) {
+		if (isAxiosError(error)) {
+			let e: AxiosError<BadRequest | NotFoundResponse> = error;
 			const {
 				status,
 				data: { message },
-			} = error.response!;
+			} = e.response!;
 
 			console.log(status);
-			console.log(JSON.stringify(error.response?.data.data));
+			console.log(JSON.stringify(e.response?.data.data));
 
 			if (status === 404) {
 				return {
