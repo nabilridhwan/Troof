@@ -1,3 +1,4 @@
+import logger from "@troof/logger";
 import fs from "fs/promises";
 import path from "path";
 
@@ -9,14 +10,14 @@ export default async function cleanTruthOrDareData(
 	const srcDir = path.resolve(srcTextFileDir);
 	const outputDir = path.resolve(outputDirString);
 
-	console.log(`Getting files in ${srcDir}...`);
+	logger.info(`Getting files in ${srcDir}...`);
 
 	const data = await fs.readdir(srcDir);
 
 	// This contains the directory of the text files
 	const filteredTextFiles = data.filter((file) => file.endsWith(".txt"));
 
-	console.log(`Reading each file in ${srcDir}...`);
+	logger.info(`Reading each file in ${srcDir}...`);
 
 	const allTextData = await Promise.all(
 		filteredTextFiles.map((textFileDir) => {
@@ -25,10 +26,10 @@ export default async function cleanTruthOrDareData(
 		})
 	);
 
-	console.log("Done reading files.");
+	logger.info("Done reading files.");
 
 	// Remove every file in the output folder
-	console.log("Removing all items in output folder");
+	logger.info("Removing all items in output folder");
 	// Check if the folder exists, if not, create it
 	if (!(await fs.stat(outputDir).catch(() => false))) {
 		await fs.mkdir(outputDir);
@@ -42,13 +43,12 @@ export default async function cleanTruthOrDareData(
 			})
 		);
 	});
-	console.log("Done removing files in output folder.");
+	logger.info("Done removing files in output folder.");
 
-	console.log("Writing files to output folder...");
+	logger.info("Writing files to output folder...");
 
 	let total = 0;
 	const write = allTextData.map((file, index) => {
-		console.log(`[FOUND AND WRITING] ${filteredTextFiles[index]}`);
 		const splitFile: string[] = file.split(fileEnding);
 		total += splitFile.length;
 
@@ -61,6 +61,8 @@ export default async function cleanTruthOrDareData(
 			.replace("_", "-")
 			.replace(".txt", "");
 
+		logger.info(`[FOUND AND WRITING] ${cleanedFilePath}`);
+
 		fs.writeFile(cleanedFilePath, JSON.stringify(splitFile), {
 			encoding: "utf-8",
 			flag: "w",
@@ -69,5 +71,5 @@ export default async function cleanTruthOrDareData(
 		return splitFile;
 	});
 
-	console.log("Done. Total Truths and Dares: ", total);
+	logger.info(`Done. Total Truths and Dares:${total}`);
 }

@@ -12,5 +12,8 @@
 	"scripts": {
 		"build": "tsc && node dist/index.js",
 		"dev": "tsc && node dist/index.js"
+	},
+	"dependencies": {
+		"@troof/logger": "*"
 	}
 }

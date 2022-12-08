@@ -3,6 +3,7 @@ import path from "path";
 
 // Path: truth_or_dare_generator\allGenerator.ts
 
+import logger from "@troof/logger";
 import fs from "fs/promises";
 
 const dares: string[] = [];
@@ -36,7 +37,7 @@ export default async function generateAllData(
 	const srcDir = path.resolve(srcJsonFileDir);
 	const outputDir = path.resolve(outputDirString);
 
-	console.log("Reading files in output folder...");
+	logger.info("Reading files in output folder...");
 
 	const data = await fs.readdir(srcDir);
 
@@ -64,7 +65,7 @@ export default async function generateAllData(
 			const currentItemsInCollector = collector[name] || [];
 
 			collector[name] = [...currentItemsInCollector, ...j];
-			console.log(`[WRITTEN] [${name.toUpperCase()}] ${fileName}`);
+			logger.info(`[WRITTEN] [${name.toUpperCase()}] ${fileName}`);
 		}
 	});
 
@@ -91,15 +92,15 @@ export default async function generateAllData(
 		);
 	});
 
-	console.log("Done.");
+	logger.info("Done.");
 
 	Object.keys(uniqueCollector).forEach((key) => {
-		console.log(
+		logger.warn(
 			`[STATS] Filtered out ${
 				collector[key].length - uniqueCollector[key].length
 			} duplicate ${key.toUpperCase()}.`
 		);
-		console.log(
+		logger.info(
 			`[STATS] Total ${key.toUpperCase()}: ${uniqueCollector[key].length}`
 		);
 	});
