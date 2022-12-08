@@ -4,11 +4,11 @@ import { Server } from "socket.io";
 import { version } from "./package.json";
 
 import { SuccessResponse } from "@troof/responses";
+import { ServerToClientEvents } from "@troof/socket";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import helmet from "helmet";
 import hpp from "hpp";
-import { ServerToClientEvents } from "../../packages/socket/dist";
 import playerRouter from "./routers/playerRouter";
 import roomRouter from "./routers/roomRouter";
 import gameHandler from "./socket/gameHandler";
