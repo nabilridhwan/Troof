@@ -1,14 +1,14 @@
 {
-  "name": "@troof/helpers",
-  "version": "1.0.0",
-  "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc -w --preserveWatchOutput"
-  },
-  "dependencies": {
-    "@troof/truth-or-dare": "*"
-  }
+	"name": "@troof/helpers",
+	"version": "1.0.0",
+	"private": true,
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc -w --preserveWatchOutput"
+	},
+	"dependencies": {
+		"@troof/truth-or-dare": "*"
+	}
 }

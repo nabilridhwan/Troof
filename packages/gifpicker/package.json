@@ -1,12 +1,12 @@
 {
-  "name": "@troof/gifpicker",
-  "version": "1.0.0",
-  "files": [
-    "index.tsx"
-  ],
-  "private": true,
-  "license": "MIT",
-  "dependencies": {
-    "@troof/api": "*"
-  }
+	"name": "@troof/gifpicker",
+	"version": "1.0.0",
+	"files": [
+		"index.tsx"
+	],
+	"private": true,
+	"license": "MIT",
+	"dependencies": {
+		"@troof/api": "*"
+	}
 }

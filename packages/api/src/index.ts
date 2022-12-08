@@ -10,14 +10,14 @@ import searchForGifs from "./tenor/searchForGifs";
 import tenorAxiosInstance from "./tenorAxiosInstance";
 
 export {
-  axiosInstance,
-  getServerVersion,
-  createRoom,
-  getRoom,
-  getPlayer,
-  joinRoom,
-  tenorAxiosInstance,
-  getFeaturedCategories,
-  searchForGifs,
-  getFeaturedGifs,
+	axiosInstance,
+	getServerVersion,
+	createRoom,
+	getRoom,
+	getPlayer,
+	joinRoom,
+	tenorAxiosInstance,
+	getFeaturedCategories,
+	searchForGifs,
+	getFeaturedGifs,
 };

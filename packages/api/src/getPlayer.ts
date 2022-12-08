@@ -1,13 +1,13 @@
 import axiosInstance from "./axiosInstance";
 
 const getPlayer = async (player_id: string) => {
-  const res = await axiosInstance.get("/api/player", {
-    params: {
-      player_id,
-    },
-  });
+	const res = await axiosInstance.get("/api/player", {
+		params: {
+			player_id,
+		},
+	});
 
-  return res;
+	return res;
 };
 
 export default getPlayer;

@@ -30,11 +30,11 @@ Extract the sentences in the format of
 let str = [];
 
 [...Array.from(document.getElementsByTagName("p"))].forEach((p) => {
-  const m = p.innerText.matchAll(/^\d\d\. (.+)/g);
-  const arr = Array.from(m, m[1]);
+	const m = p.innerText.matchAll(/^\d\d\. (.+)/g);
+	const arr = Array.from(m, m[1]);
 
-  if (arr.length > 0) {
-    str.push(arr[0][1]);
-  }
+	if (arr.length > 0) {
+		str.push(arr[0][1]);
+	}
 });
 ```
