@@ -13,6 +13,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@troof/truth-or-dare": "*",
 		"@troof/prettier-config": "*",
 		"@troof/database": "*",
 		"@troof/helpers": "*",

@@ -5,3 +5,4 @@ dist/
 **/.svn
 **/.hg
 **/node_modules
+*.json

@@ -12,6 +12,7 @@
     -   api # API utils (Axios)
     -   database # Database utils (Prisma)
     -   helpers # Helper functions used both in backend and frontend
+    -  prettier-config # Shared Prettier config
     -   responses # Response utils (Express.js)
     -   socket # Socket utils types (Socket.io) and events that are used in both backend and frontend
     -   truth-or-dare-generator # Separate package for data cleansing truth and dares

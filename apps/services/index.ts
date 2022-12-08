@@ -7,6 +7,8 @@ import { version } from "./package.json";
 
 import { SuccessResponse } from "@troof/responses";
 import { ServerToClientEvents } from "@troof/socket";
+import all_dares from "@troof/truth-or-dare/output/all_dares.json";
+import all_truths from "@troof/truth-or-dare/output/all_truths.json";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import helmet from "helmet";
@@ -38,6 +40,9 @@ app.get("/", (req, res) => {
 	// TODO: Keep version somewhere sage
 	return new SuccessResponse("Server is running", {
 		version,
+		dares: all_dares.length,
+		truths: all_truths.length,
+		total: all_dares.length + all_truths.length,
 	}).handleResponse(req, res);
 });
 

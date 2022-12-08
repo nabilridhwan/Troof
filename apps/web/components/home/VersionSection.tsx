@@ -1,14 +1,14 @@
 /** @format */
 
-import { IconDeviceGamepad, IconDice, IconServer } from '@tabler/icons';
-import { getServerVersion } from '@troof/api';
-import { useEffect, useState } from 'react';
-import pkgjson from '../../package.json';
+import { IconDeviceGamepad, IconDice, IconServer } from "@tabler/icons";
+import { getServerVersion } from "@troof/api";
+import { useEffect, useState } from "react";
+import pkgjson from "../../package.json";
 
 const VersionSection = () => {
-	const [serverVersion, setServerVersion] = useState<string>('');
+	const [serverVersion, setServerVersion] = useState<string>("");
 	const [clientVersion, setClientVersion] = useState<string>(
-		'v' + pkgjson.version
+		"v" + pkgjson.version
 	);
 
 	const [loadingServerVersion, setLoadingServerVersion] =
@@ -20,9 +20,9 @@ const VersionSection = () => {
 			try {
 				const sVersion = await getServerVersion();
 
-				setServerVersion('v' + sVersion);
+				setServerVersion("v" + sVersion);
 			} catch (err) {
-				setServerVersion('Error');
+				setServerVersion("Error");
 			} finally {
 				setLoadingServerVersion(false);
 			}
@@ -37,7 +37,7 @@ const VersionSection = () => {
 			>
 				<span className="text-xs">
 					<IconDeviceGamepad size={20} />
-				</span>{' '}
+				</span>{" "}
 				{clientVersion}
 			</span>
 
@@ -53,7 +53,7 @@ const VersionSection = () => {
 					<>
 						<span className="text-xs">
 							<IconServer size={20} />
-						</span>{' '}
+						</span>{" "}
 						{serverVersion}
 					</>
 				)}

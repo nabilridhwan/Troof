@@ -6,8 +6,8 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc -w"
+    "build": "prisma db pull && prisma generate && tsc",
+    "dev": "tsc -w --preserveWatchOutput"
   },
   "devDependencies": {
     "prisma": "^4.7.1",
