@@ -1,3 +1,23 @@
+## Version - 0.3.9
+
+### What's new (Client)
+
+-   Changed force skip buttons from teal to orange.
+-   Now when you accidentally leave the game and go to the home page, you'll be greeted with a modal.
+-   Now the home screen loads faster.
+-   Separated version section to be another component, and client side request to server for version.
+-   Increased height for chat in mobile.
+-   Fixed a layout issue on mobile for chat that it is too low to the bottom.
+-   Added an error dialog at home page when the server is experiencing issues.
+
+### What's new (Server)
+
+-   Nothing new
+
+### What's new (Packages)
+
+-   Add `getServerVersion` in `@troof/api`
+
 ## Client - 0.3.8
 
 ### What's new (Client)
