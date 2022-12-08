@@ -1,6 +1,6 @@
-<center>
+<p align="center">
   <img src="./docs/troof_promo_new_new.png" width=500 />
-</center>
+</p>
 
 <h1 align="center">Troof</h1>
 
