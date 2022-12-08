@@ -9,7 +9,7 @@ const dares: string[] = [];
 const truths: string[] = [];
 
 type CollectorInterface = {
-	[key: Template[keyof Template]["name"]]: string[];
+  [key: Template[keyof Template]["name"]]: string[];
 };
 
 const collector: CollectorInterface = {};
@@ -23,84 +23,84 @@ const collector: CollectorInterface = {};
  * @interface Template
  */
 interface Template {
-	[key: string]: {
-		name: string;
-	};
+  [key: string]: {
+    name: string;
+  };
 }
 
 export default async function generateAllData(
-	srcJsonFileDir: string,
-	outputDirString: string,
-	template: Template
+  srcJsonFileDir: string,
+  outputDirString: string,
+  template: Template
 ) {
-	const srcDir = path.resolve(srcJsonFileDir);
-	const outputDir = path.resolve(outputDirString);
+  const srcDir = path.resolve(srcJsonFileDir);
+  const outputDir = path.resolve(outputDirString);
 
-	console.log("Reading files in output folder...");
+  console.log("Reading files in output folder...");
 
-	const data = await fs.readdir(srcDir);
+  const data = await fs.readdir(srcDir);
 
-	const filteredJsonFiles = data.filter((file) => file.endsWith(".json"));
+  const filteredJsonFiles = data.filter((file) => file.endsWith(".json"));
 
-	const allJsonFileData = await Promise.all(
-		filteredJsonFiles.map(async (file) => {
-			const p = path.resolve(srcDir, file);
-			return fs.readFile(p, "utf-8");
-		})
-	);
+  const allJsonFileData = await Promise.all(
+    filteredJsonFiles.map(async (file) => {
+      const p = path.resolve(srcDir, file);
+      return fs.readFile(p, "utf-8");
+    })
+  );
 
-	let total = 0;
-	const writeAllFiles = allJsonFileData.map((file, index) => {
-		const j = JSON.parse(file);
+  let total = 0;
+  const writeAllFiles = allJsonFileData.map((file, index) => {
+    const j = JSON.parse(file);
 
-		const fileName = filteredJsonFiles[index].replace(".json", "");
-		// Check the last letter if D or T
-		const lastLetter = fileName[fileName.length - 1];
+    const fileName = filteredJsonFiles[index].replace(".json", "");
+    // Check the last letter if D or T
+    const lastLetter = fileName[fileName.length - 1];
 
-		if (template[lastLetter]) {
-			// Collector is available
+    if (template[lastLetter]) {
+      // Collector is available
 
-			const name = template[lastLetter].name;
-			const currentItemsInCollector = collector[name] || [];
+      const name = template[lastLetter].name;
+      const currentItemsInCollector = collector[name] || [];
 
-			collector[name] = [...currentItemsInCollector, ...j];
-			console.log(`[WRITTEN] [${name.toUpperCase()}] ${fileName}`);
-		}
-	});
+      collector[name] = [...currentItemsInCollector, ...j];
+      console.log(`[WRITTEN] [${name.toUpperCase()}] ${fileName}`);
+    }
+  });
 
-	// Wait for Promise.all to finish
-	await Promise.all(writeAllFiles);
+  // Wait for Promise.all to finish
+  await Promise.all(writeAllFiles);
 
-	// Remove duplicates
-	// Unique collector items
-	const uniqueCollector: CollectorInterface = {};
+  // Remove duplicates
+  // Unique collector items
+  const uniqueCollector: CollectorInterface = {};
 
-	Object.keys(collector).forEach((key) => {
-		uniqueCollector[key] = [...new Set(collector[key])];
-	});
+  Object.keys(collector).forEach((key) => {
+    uniqueCollector[key] = [...new Set(collector[key])];
+  });
 
-	// Write the files
-	Object.keys(uniqueCollector).forEach(async (key) => {
-		await fs.writeFile(
-			path.resolve(outputDir, `all_${key}.json`),
-			JSON.stringify(uniqueCollector[key]),
-			{
-				encoding: "utf-8",
-				flag: "w",
-			}
-		);
-	});
+  // Write the files
+  Object.keys(uniqueCollector).forEach(async (key) => {
+    await fs.writeFile(
+      path.resolve(outputDir, `all_${key}.json`),
+      JSON.stringify(uniqueCollector[key]),
+      {
+        encoding: "utf-8",
+        flag: "w",
+      }
+    );
+  });
 
-	console.log("Done.");
+  console.log("Done.");
 
-	Object.keys(uniqueCollector).forEach((key) => {
-		console.log(
-			`[STATS] Filtered out ${
-				collector[key].length - uniqueCollector[key].length
-			} duplicate ${key.toUpperCase()}.`
-		);
-		console.log(
-			`[STATS] Total ${key.toUpperCase()}: ${uniqueCollector[key].length}`
-		);
-	});
+  Object.keys(uniqueCollector).forEach((key) => {
+    console.log(
+      `[STATS] Filtered out ${
+        collector[key].length - uniqueCollector[key].length
+      } duplicate ${key.toUpperCase()}.`
+    );
+    console.log(
+      `[STATS] Total ${key.toUpperCase()}: ${uniqueCollector[key].length}`
+    );
+  });
 }

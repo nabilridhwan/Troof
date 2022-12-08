@@ -15,7 +15,8 @@
     -  prettier-config # Shared Prettier config
     -   responses # Response utils (Express.js)
     -   socket # Socket utils types (Socket.io) and events that are used in both backend and frontend
-    -   truth-or-dare-generator # Separate package for data cleansing truth and dares
+    -   truth-or-dare # Separate package for data cleansing truth and dares
+      - output # Output folder for all the truth and dares (re-run the build to update the data)
     -   ui # UI components (React)
 ```
 

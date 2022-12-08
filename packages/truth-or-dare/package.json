@@ -1,12 +1,16 @@
 {
-	"name": "@troof/truth-or-dare",
-	"version": "1.0.0",
-	"private": true,
-	"license": "MIT",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
-	"scripts": {
-		"build": "tsc && node dist/index.js",
-		"dev": "tsc && node dist/index.js"
-	}
+  "name": "@troof/truth-or-dare",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "output",
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && node dist/index.js",
+    "dev": "tsc && node dist/index.js"
+  }
 }
