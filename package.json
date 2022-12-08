@@ -15,9 +15,9 @@
 		"start:troof": "turbo run start --scope=web",
 		"start:all": "turbo run start",
 		"start:clean": "turbo start --no-cache --force",
-		"build:troof": "yarn install && turbo run build --scope=web",
-		"build:services": "yarn install && turbo run build --scope=services",
-		"build:all": "yarn install && turbo run build",
+		"build:troof": "yarn install && yarn turbo run build --scope=web",
+		"build:services": "yarn install && yarn turbo run build --scope=services",
+		"build:all": "yarn install && yarn turbo run build",
 		"dev": "turbo run dev"
 	},
 	"devDependencies": {
