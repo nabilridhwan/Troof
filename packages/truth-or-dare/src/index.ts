@@ -5,7 +5,7 @@ import cleanTruthOrDareData from "./clean";
 (async () => {
 	console.log("==============================");
 	logger.warn("Cleaning data from textfiles");
-	await cleanTruthOrDareData("textfiles", "output");
+	await cleanTruthOrDareData("textfiles", "output", "\n");
 	console.log("==============================");
 	logger.warn("Generating all_xxx.json files");
 	await generateAllData("output", "output", {
