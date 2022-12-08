@@ -39,10 +39,25 @@ export async function getServerSideProps(context: NextPageContext) {
 	} catch (error) {
 		if (isAxiosError(error)) {
 			let e: AxiosError<BadRequest | NotFoundResponse> = error;
+
+			if (!e.response) {
+				// The user does not have an internet connection because there is no error response hence why there is no reply from server
+				console.log(
+					"The user does not have an internet connection because there is no error response (No connection to server)"
+				);
+				return {
+					redirect: {
+						destination:
+							"/?error=An unknown error occurred. Please try again later. (No connection to server)",
+						permanent: false,
+					},
+				};
+			}
+
 			const {
 				status,
 				data: { message },
-			} = e.response!;
+			} = e.response;
 
 			console.log(status);
 			console.log(JSON.stringify(e.response?.data.data));
