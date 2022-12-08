@@ -34,6 +34,16 @@ var RegexHelper;
         return text;
     }
     RegexHelper.replaceFancyStyles = replaceFancyStyles;
+    function extractRoomCode(text) {
+        const regex = new RegExp(/(\w+)-(\w+)-(\w+)-(\w+)/g);
+        const match = regex.exec(text);
+        console.log(match);
+        if (match) {
+            return match[0];
+        }
+        return false;
+    }
+    RegexHelper.extractRoomCode = extractRoomCode;
     function globalReplaceLinksAndImages(text) {
         // Check if the end of the string is a link or image
         if (text.endsWith(".png") ||

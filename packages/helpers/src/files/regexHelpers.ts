@@ -40,6 +40,20 @@ export namespace RegexHelper {
 		return text;
 	}
 
+	export function extractRoomCode(text: string): string | false {
+		const regex: RegExp = new RegExp(/(\w+)-(\w+)-(\w+)-(\w+)/g);
+
+		const match = regex.exec(text);
+
+		console.log(match);
+
+		if (match) {
+			return match[0];
+		}
+
+		return false;
+	}
+
 	export function globalReplaceLinksAndImages(text: string): string {
 		// Check if the end of the string is a link or image
 
