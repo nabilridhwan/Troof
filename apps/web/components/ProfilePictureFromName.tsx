@@ -1,7 +1,6 @@
 /** @format */
 
 import { getContrastYIQ, stringToColor } from "@troof/helpers";
-import { useState } from "react";
 
 interface ProfilePictureFromNameProps {
 	name: string;
@@ -12,15 +11,14 @@ const ProfilePictureFromName = ({
 	name,
 	size = 40,
 }: ProfilePictureFromNameProps) => {
-	const [initials, setInitials] = useState<string>(
+	const initials =
 		name.split(" ").length < 2
 			? name[0]
 			: name
 					.split(" ")
 					.map((name) => name[0])
 					.join("")
-					.slice(0, 2)
-	);
+					.slice(0, 2);
 
 	return (
 		<div
