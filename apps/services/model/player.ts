@@ -14,7 +14,7 @@ const PlayerModel = {
 		return await prisma.player.findMany({
 			where: selectObject,
 			orderBy: {
-				is_party_leader: "desc",
+				joined_at: "asc",
 			},
 		});
 	},
