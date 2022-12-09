@@ -14,6 +14,7 @@ module.exports = {
 			fontFamily: {
 				Poppins: ["Poppins"],
 				Playfair: ["Playfair Display"],
+				mono: ["Azeret Mono"],
 			},
 			colors: {
 				primary: "#efede9",
