@@ -8,6 +8,10 @@ export enum EVENTS {
 	LEFT_GAME = "left_game",
 
 	CHANGE_NAME = "change_name",
+	TRANSFER_PARTY_LEADER = "transfer_party_leader",
+
+	// This is a event to let users get their own details
+	SELF_INFO = "self_info",
 }
 
 export enum MESSAGE_EVENTS {
@@ -113,6 +117,8 @@ export interface ServerToClientEvents {
 	[EVENTS.GAME_UPDATE]: (room: Room) => void;
 	[EVENTS.LEFT_GAME]: (playerRemoved: Player) => void;
 
+	[EVENTS.SELF_INFO]: (obj: Player) => void;
+
 	[TRUTH_OR_DARE_GAME.INCOMING_DATA]: (log: Log, player: Player) => void;
 
 	[TRUTH_OR_DARE_GAME.LEAVE_GAME]: (room: Room) => void;
@@ -145,10 +151,14 @@ export interface ClientToServerEvents {
 	[EVENTS.JOIN_ROOM]: (obj: RoomIDObject) => void;
 	[EVENTS.START_GAME]: (obj: RoomIDObject) => void;
 
+	[EVENTS.SELF_INFO]: (obj: PlayerIDObject) => void;
+
 	[EVENTS.CHANGE_NAME]: (
 		obj: RoomIDObject &
 			PlayerIDObject & { display_name: string; new_name: string }
 	) => void;
+
+	[EVENTS.TRANSFER_PARTY_LEADER]: (obj: RoomIDObject & PlayerIDObject) => void;
 
 	[TRUTH_OR_DARE_GAME.LEAVE_GAME]: (obj: RoomIDObject & PlayerIDObject) => void;
 
