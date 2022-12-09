@@ -1,4 +1,5 @@
 import logger from "@troof/logger";
+import path from "path";
 import generateAllData, { Template } from "./allGenerator";
 import cleanTruthOrDareData from "./clean";
 import removeDuplicates from "./removeDuplicates";
@@ -14,11 +15,13 @@ const template: Template = {
 		name: "would_you_rather",
 	},
 };
+const srcPath = path.resolve(__dirname, "..", "textfiles");
+const outputPath = path.resolve(__dirname, "..", "output");
 
 async function main() {
 	console.log("==============================");
 	logger.warn("Cleaning data from textfiles");
-	await cleanTruthOrDareData("textfiles", "output", {
+	await cleanTruthOrDareData(srcPath, outputPath, {
 		fileEnding: "\n",
 		template,
 		preserveExisting: false,
@@ -26,13 +29,15 @@ async function main() {
 
 	console.log("==============================");
 	logger.warn("Generating all_xxx.json files");
-	await generateAllData("output", "output", template);
+	await generateAllData(outputPath, outputPath, template);
 	console.log("==============================");
 	logger.warn("Removing duplicates");
-	await removeDuplicates("output", template);
+	await removeDuplicates(outputPath, template);
 	// console.log("==============================");
 	// logger.warn("Writing to database");
 	// await writeToDatabase("output");
 }
 
 main();
+
+// export { get_truth, get_dare };

@@ -8,11 +8,11 @@ import stringToColor from "./files/stringToColor";
 import { get_dare, get_truth } from "./files/truthOrDareGenerator";
 
 export {
-	filterProfanity as filterProfanity,
-	generateRoomID,
-	generateUserID,
 	get_dare,
 	get_truth,
+	filterProfanity,
+	generateRoomID,
+	generateUserID,
 	getContrastYIQ,
 	RegexHelper,
 	stringToColor,
