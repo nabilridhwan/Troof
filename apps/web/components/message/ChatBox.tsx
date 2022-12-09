@@ -537,7 +537,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 								onBlur={handleBlur}
 								tabIndex={0}
 								placeholder="Type a message..."
-								className="h-[15px]"
+								className="h-[15px] border-[1px] "
 								value={inputMessage}
 								onChange={handleTyping}
 							/>
