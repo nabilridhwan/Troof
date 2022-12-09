@@ -1,4 +1,27 @@
-<!-- @format -->
+## Version - 0.3.10
+
+### What's new (Client)
+
+- **[NEW]** Added the ability to transfer the party leader to someone else in the room.
+- **[FIXED]** Added back the feature to change your name in game.
+  - Note that once you change your name, the previous chat message from you will be considered to be other people's chat messages.
+- Cleaned up players section
+  - Added a menu dropdown which contains change name, set as party leader* and remove player* (\*only available for party leaders)
+- The "Force Skip" button is now renamed to the "Skip" button.
+  - The position of the button is now beside the current player's name
+- Changed the layout of the room code copy and paste.
+- Decreased the border width of the chat text input box.
+- Now every time the selection comes out on screen, it will show if it is a 'Truth' or 'Dare'.
+- Code cleanup. Cleaned up 2 player states from game page.
+- Changed all monospace font to `Azeret Mono`
+
+### What's new (Server - 0.2.11)
+
+- Added support for transfer of party leader status.
+
+### What's new (Packages)
+
+- Added more Client-to-Server and Server-to-Client events and types for support of new features in `@troof/socket`
 
 ## Version - 0.3.9
 
