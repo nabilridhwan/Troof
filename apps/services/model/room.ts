@@ -123,6 +123,52 @@ const RoomModel = {
 	startGame: async (roomId: string) => {
 		return await RoomModel.updateRoomStatus(roomId, Status.In_Game);
 	},
+
+	updateRoomLeader: async (roomId: string, playerId: string) => {
+		logger.info(`Updating room leader to ${playerId}`);
+		logger.info(`Setting all players to not be the leader`);
+
+		// Set all players to not be the leader
+		await prisma.player.updateMany({
+			where: {
+				game_room_id: roomId,
+			},
+			data: {
+				is_party_leader: false,
+			},
+		});
+
+		logger.info(`Updating the player to be the leader`);
+
+		const latestPlayersAfterChanging = await prisma.game.update({
+			where: {
+				room_id: roomId,
+			},
+			data: {
+				player: {
+					update: {
+						where: {
+							player_id: playerId,
+						},
+						data: {
+							is_party_leader: true,
+						},
+					},
+				},
+			},
+			select: {
+				player: {
+					where: {
+						game_room_id: roomId,
+					},
+				},
+			},
+		});
+
+		logger.info(`Done updating the room leader`);
+
+		return latestPlayersAfterChanging;
+	},
 };
 
 export default RoomModel;

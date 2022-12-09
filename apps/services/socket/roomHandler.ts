@@ -5,6 +5,7 @@ import {
 	DisconnectedRoomObject,
 	EVENTS,
 	MESSAGE_EVENTS,
+	PlayerIDObject,
 	Room,
 	RoomIDObject,
 	ServerToClientEvents,
@@ -125,11 +126,35 @@ const roomHandler = (
 		ChatModel.pushSystemMessage(systemMessageToSend);
 	};
 
+	const transferPartyLeaderHandler = async (
+		obj: RoomIDObject & PlayerIDObject
+	) => {
+		// Update the room leader
+		const p = await RoomModel.updateRoomLeader(obj.room_id, obj.player_id);
+
+		io.to(obj.room_id).emit(EVENTS.PLAYERS_UPDATE, p.player);
+	};
+
+	const getSelfInfo = async (obj: PlayerIDObject) => {
+		const p = await PlayerModel.getPlayer({
+			player_id: obj.player_id,
+		});
+
+		if (!p) {
+			logger.error(`[${EVENTS.SELF_INFO}] Player not found`);
+			return;
+		}
+
+		socket.emit(EVENTS.SELF_INFO, p);
+	};
+
 	socket.on(EVENTS.GAME_UPDATE, statusChangeHandler);
 	socket.on(EVENTS.DISCONNECTED, disconnectedHandler);
 	socket.on(EVENTS.JOIN_ROOM, joinRoomHandler);
 	socket.on(EVENTS.START_GAME, startGameHandler);
 	socket.on(EVENTS.CHANGE_NAME, changeUserDisplayName);
+	socket.on(EVENTS.TRANSFER_PARTY_LEADER, transferPartyLeaderHandler);
+	socket.on(EVENTS.SELF_INFO, getSelfInfo);
 };
 
 export default roomHandler;
