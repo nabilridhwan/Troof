@@ -14,7 +14,9 @@
 		"dev": "tsc && node dist/index.js"
 	},
 	"dependencies": {
+		"@troof/config": "*",
+		"@troof/database": "*",
 		"@troof/logger": "*",
-		"@troof/config": "*"
+		"uuid": "^9.0.0"
 	}
 }

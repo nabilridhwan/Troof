@@ -6,12 +6,16 @@ import path from "path";
 import logger from "@troof/logger";
 import fs from "fs/promises";
 
-const dares: string[] = [];
-const truths: string[] = [];
+export interface Data {
+	id: string;
+	type: Template[keyof Template]["name"];
+	data: string;
+	batch_name: string;
+}
 
-type CollectorInterface = {
-	[key: Template[keyof Template]["name"]]: string[];
-};
+export interface CollectorInterface {
+	[key: Template[keyof Template]["name"]]: Data[];
+}
 
 const collector: CollectorInterface = {};
 
@@ -23,7 +27,7 @@ const collector: CollectorInterface = {};
  *
  * @interface Template
  */
-interface Template {
+export interface Template {
 	[key: string]: {
 		name: string;
 	};
@@ -65,26 +69,17 @@ export default async function generateAllData(
 			const currentItemsInCollector = collector[name] || [];
 
 			collector[name] = [...currentItemsInCollector, ...j];
-			logger.info(`[WRITTEN] [${name.toUpperCase()}] ${fileName}`);
 		}
 	});
 
 	// Wait for Promise.all to finish
 	await Promise.all(writeAllFiles);
 
-	// Remove duplicates
-	// Unique collector items
-	const uniqueCollector: CollectorInterface = {};
-
-	Object.keys(collector).forEach((key) => {
-		uniqueCollector[key] = [...new Set(collector[key])];
-	});
-
-	// Write the files
-	Object.keys(uniqueCollector).forEach(async (key) => {
+	Object.keys(collector).forEach(async (key) => {
+		logger.info(`[WRITING] Writing all_${key}.json file...`);
 		await fs.writeFile(
 			path.resolve(outputDir, `all_${key}.json`),
-			JSON.stringify(uniqueCollector[key]),
+			JSON.stringify(collector[key]),
 			{
 				encoding: "utf-8",
 				flag: "w",
@@ -92,16 +87,9 @@ export default async function generateAllData(
 		);
 	});
 
-	logger.info("Done.");
+	logger.info("Done writing all_xxx.json files.");
 
-	Object.keys(uniqueCollector).forEach((key) => {
-		logger.warn(
-			`[STATS] Filtered out ${
-				collector[key].length - uniqueCollector[key].length
-			} duplicate ${key.toUpperCase()}.`
-		);
-		logger.info(
-			`[STATS] Total ${key.toUpperCase()}: ${uniqueCollector[key].length}`
-		);
+	Object.keys(collector).forEach((key) => {
+		logger.info(`[STATS] Total ${key.toUpperCase()}: ${collector[key].length}`);
 	});
 }

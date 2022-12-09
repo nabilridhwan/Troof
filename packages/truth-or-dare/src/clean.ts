@@ -1,11 +1,19 @@
 import logger from "@troof/logger";
 import fs from "fs/promises";
 import path from "path";
+import { v4 as uuid } from "uuid";
+import { Template } from "./allGenerator";
 
-export default async function cleanTruthOrDareData(
+interface CleanTruthOrDareOptions {
+	fileEnding: "\n" | "\r\n";
+	template: Template;
+	preserveExisting: boolean;
+}
+
+export default async function CleanTruthOrDareData(
 	srcTextFileDir: string,
 	outputDirString: string,
-	fileEnding: "\n" | "\r\n" = "\r\n"
+	options: CleanTruthOrDareOptions
 ) {
 	const srcDir = path.resolve(srcTextFileDir);
 	const outputDir = path.resolve(outputDirString);
@@ -15,7 +23,32 @@ export default async function cleanTruthOrDareData(
 	const data = await fs.readdir(srcDir);
 
 	// This contains the directory of the text files
-	const filteredTextFiles = data.filter((file) => file.endsWith(".txt"));
+	let filteredTextFiles = data.filter((file) => file.endsWith(".txt"));
+
+	if (options.preserveExisting) {
+		logger.info(
+			"Preserved existing files enabled. Filtering out non existing files to work on..."
+		);
+		// Filtered text files would exclude items that are already in the output folder
+		const outputDirFiles = await fs.readdir(outputDir);
+
+		const changedOutputDirFiles = outputDirFiles.map((file) => {
+			const fileName = file.replace(".json", ".txt");
+			return fileName;
+		});
+
+		filteredTextFiles = filteredTextFiles.filter(
+			(file) => !changedOutputDirFiles.includes(file)
+		);
+		logger.info(
+			`Done filtering out non existing files. ${filteredTextFiles.length} files left to work on.`
+		);
+
+		if (filteredTextFiles.length === 0) {
+			logger.error("No files left to work on. Exiting...");
+			return;
+		}
+	}
 
 	logger.info(`Reading each file in ${srcDir}...`);
 
@@ -29,46 +62,56 @@ export default async function cleanTruthOrDareData(
 	logger.info("Done reading files.");
 
 	// Remove every file in the output folder
-	logger.info("Removing all items in output folder");
-	// Check if the folder exists, if not, create it
-	if (!(await fs.stat(outputDir).catch(() => false))) {
-		await fs.mkdir(outputDir);
-	}
+	// logger.info("Removing all items in output folder");
+	// // Check if the folder exists, if not, create it
+	// if (!(await fs.stat(outputDir).catch(() => false))) {
+	// 	await fs.mkdir(outputDir);
+	// }
 
-	await fs.readdir(outputDir).then(async (files) => {
-		await Promise.all(
-			files.map(async (file) => {
-				const filePath = path.resolve(outputDir, file);
-				await fs.unlink(filePath);
-			})
-		);
-	});
-	logger.info("Done removing files in output folder.");
+	// await fs.readdir(outputDir).then(async (files) => {
+	// 	await Promise.all(
+	// 		files.map(async (file) => {
+	// 			const filePath = path.resolve(outputDir, file);
+	// 			await fs.unlink(filePath);
+	// 		})
+	// 	);
+	// });
+	// logger.info("Done removing files in output folder.");
 
 	logger.info("Writing files to output folder...");
 
 	let total = 0;
 	const write = allTextData.map((file, index) => {
-		const splitFile: string[] = file.split(fileEnding);
-		total += splitFile.length;
+		const splittedContentByLine: string[] = file.split(options.fileEnding);
+		total += splittedContentByLine.length;
 
 		const filePath = path.resolve(
 			outputDir,
 			filteredTextFiles[index] + ".json"
 		);
-		const cleanedFilePath = filePath
-			.replace(" ", "-")
-			.replace("_", "-")
-			.replace(".txt", "");
+		const cleanedFilePath = filePath.replace(".txt", "");
+
+		// Get the file name and last letter to assign it to template
+		const fileName = filteredTextFiles[index].replace(".txt", "");
+		const lastLetter = fileName[fileName.length - 1];
+
+		const properMappedData = splittedContentByLine.map((line) => {
+			return {
+				id: uuid(),
+				type: options.template[lastLetter].name,
+				data: line,
+				batch_name: fileName,
+			};
+		});
 
 		logger.info(`[FOUND AND WRITING] ${cleanedFilePath}`);
 
-		fs.writeFile(cleanedFilePath, JSON.stringify(splitFile), {
+		fs.writeFile(cleanedFilePath, JSON.stringify(properMappedData), {
 			encoding: "utf-8",
 			flag: "w",
 		});
 
-		return splitFile;
+		return splittedContentByLine;
 	});
 
 	logger.info(`Done. Total Truths and Dares:${total}`);
