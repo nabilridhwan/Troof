@@ -62,21 +62,21 @@ export default async function CleanTruthOrDareData(
 	logger.info("Done reading files.");
 
 	// Remove every file in the output folder
-	// logger.info("Removing all items in output folder");
-	// // Check if the folder exists, if not, create it
-	// if (!(await fs.stat(outputDir).catch(() => false))) {
-	// 	await fs.mkdir(outputDir);
-	// }
+	logger.info("Removing all items in output folder");
+	// Check if the folder exists, if not, create it
+	if (!(await fs.stat(outputDir).catch(() => false))) {
+		await fs.mkdir(outputDir);
+	}
 
-	// await fs.readdir(outputDir).then(async (files) => {
-	// 	await Promise.all(
-	// 		files.map(async (file) => {
-	// 			const filePath = path.resolve(outputDir, file);
-	// 			await fs.unlink(filePath);
-	// 		})
-	// 	);
-	// });
-	// logger.info("Done removing files in output folder.");
+	await fs.readdir(outputDir).then(async (files) => {
+		await Promise.all(
+			files.map(async (file) => {
+				const filePath = path.resolve(outputDir, file);
+				await fs.unlink(filePath);
+			})
+		);
+	});
+	logger.info("Done removing files in output folder.");
 
 	logger.info("Writing files to output folder...");
 

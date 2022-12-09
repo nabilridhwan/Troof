@@ -2,7 +2,6 @@ import logger from "@troof/logger";
 import generateAllData, { Template } from "./allGenerator";
 import cleanTruthOrDareData from "./clean";
 import removeDuplicates from "./removeDuplicates";
-import writeToDatabase from "./writeToDatabase";
 
 const template: Template = {
 	D: {
@@ -31,9 +30,9 @@ async function main() {
 	console.log("==============================");
 	logger.warn("Removing duplicates");
 	await removeDuplicates("output", template);
-	console.log("==============================");
-	logger.warn("Writing to database");
-	await writeToDatabase("output");
+	// console.log("==============================");
+	// logger.warn("Writing to database");
+	// await writeToDatabase("output");
 }
 
 main();

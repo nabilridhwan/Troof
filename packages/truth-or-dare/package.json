@@ -15,7 +15,6 @@
 	},
 	"dependencies": {
 		"@troof/config": "*",
-		"@troof/database": "*",
 		"@troof/logger": "*",
 		"uuid": "^9.0.0"
 	}
