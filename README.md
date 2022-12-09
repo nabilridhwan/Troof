@@ -10,6 +10,31 @@
 
 <hr>
 
+<div align="center">
+
+## Status
+
+![Deployment Status](https://img.shields.io/github/deployments/nabilridhwan/troof/production?label=deployment)
+![](https://img.shields.io/website?label=backend&up_message=online&url=https%3A%2F%2Ftroofservice.nabilridhwan.com%2F)
+![](https://img.shields.io/website?label=frontend&up_message=online&url=https%3A%2F%2Ftroof.nabilridhwan.com)
+
+</div>
+
+<hr>
+
+<div align="center">
+
+## Latest Versions
+
+![](https://img.shields.io/github/package-json/v/nabilridhwan/troof?filename=apps%2Fweb%2Fpackage.json&label=services)
+![](https://img.shields.io/github/package-json/v/nabilridhwan/troof?filename=apps%2Fservices%2Fpackage.json&label=web)
+
+</div>
+
+<hr>
+
+<div align="center">
+
 ## Powered by
 
 ![](https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
@@ -19,12 +44,7 @@
 ![](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![](htts://img.shields.io/badge/Railway-131415?style=for-the-badge&logo=railway&logoColor=white)
 
-<hr>
-
-## Deployment Status
-
-![Deployment Status](https://img.shields.io/github/deployments/nabilridhwan/troof/production?label=deployment)
-
+</div>
 <hr>
 
 ## Turborepo/monorepo
