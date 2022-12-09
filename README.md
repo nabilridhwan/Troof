@@ -26,8 +26,8 @@
 
 ## Latest Versions
 
-![](https://img.shields.io/github/package-json/v/nabilridhwan/troof?filename=apps%2Fweb%2Fpackage.json&label=services)
-![](https://img.shields.io/github/package-json/v/nabilridhwan/troof?filename=apps%2Fservices%2Fpackage.json&label=web)
+![](https://img.shields.io/github/package-json/v/nabilridhwan/troof?filename=apps%2Fweb%2Fpackage.json&label=web)
+![](https://img.shields.io/github/package-json/v/nabilridhwan/troof?filename=apps%2Fservices%2Fpackage.json&label=services)
 
 </div>
 
