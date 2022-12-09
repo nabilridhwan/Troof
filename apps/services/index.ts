@@ -15,8 +15,10 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import helmet from "helmet";
 import hpp from "hpp";
+import dareRouter from "./routers/dareRouter";
 import playerRouter from "./routers/playerRouter";
 import roomRouter from "./routers/roomRouter";
+import truthRouter from "./routers/truthRouter";
 import gameHandler from "./socket/gameHandler";
 import messageHandler from "./socket/messageHandler";
 import roomHandler from "./socket/roomHandler";
@@ -53,6 +55,9 @@ app.get("/", (req, res) => {
 // Routers
 app.use("/api/room", roomRouter);
 app.use("/api/player", playerRouter);
+
+app.use("/api/truth", truthRouter);
+app.use("/api/dare", dareRouter);
 
 io.on("connection", (socket) => {
 	logger.warn(`Current active sockets: ${io.engine.clientsCount}`);
