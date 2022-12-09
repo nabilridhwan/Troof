@@ -1,7 +1,7 @@
 /** @format */
 
 import { Prisma } from "@prisma/client";
-import logger from "@troof/logger";
+import { logger } from "@troof/logger";
 import { Action, Status } from "@troof/socket";
 import prisma from "../database/prisma";
 import Sequence from "./sequence";

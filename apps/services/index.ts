@@ -6,7 +6,7 @@ import morgan from "morgan";
 import { Server } from "socket.io";
 import { version } from "./package.json";
 
-import logger, { MorganStreamer } from "@troof/logger";
+import { logger, MorganStreamer } from "@troof/logger";
 import { SuccessResponse } from "@troof/responses";
 import { ServerToClientEvents } from "@troof/socket";
 import all_dares from "@troof/truth-or-dare/output/all_dare.json";

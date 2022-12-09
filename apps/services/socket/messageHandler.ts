@@ -13,7 +13,7 @@ import ChatModel from "../model/chat";
 
 import { v4 as generateUUIDv4 } from "uuid";
 
-import logger from "@troof/logger";
+import { logger } from "@troof/logger";
 
 const messageHandler = (io: Server, socket: Socket) => {
 	logger.info("Registered message handler");

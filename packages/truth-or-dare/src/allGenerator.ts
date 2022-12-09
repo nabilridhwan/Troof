@@ -3,7 +3,7 @@ import path from "path";
 
 // Path: truth_or_dare_generator\allGenerator.ts
 
-import logger from "@troof/logger";
+import { logger } from "@troof/logger";
 import fs from "fs/promises";
 
 export interface Data {

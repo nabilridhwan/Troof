@@ -1,7 +1,7 @@
 /** @format */
 
 import { generateRoomID } from "@troof/helpers";
-import logger from "@troof/logger";
+import { logger } from "@troof/logger";
 import {
 	BadRequest,
 	NotFoundResponse,

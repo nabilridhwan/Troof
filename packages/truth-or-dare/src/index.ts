@@ -1,4 +1,4 @@
-import logger from "@troof/logger";
+import { logger } from "@troof/logger";
 import path from "path";
 import generateAllData, { Template } from "./allGenerator";
 import cleanTruthOrDareData from "./clean";

@@ -6,4 +6,4 @@ export class MorganStreamer {
 	}
 }
 
-export default logger;
+export { logger };

@@ -18,7 +18,7 @@ import ChatModel from "../model/chat";
 import PlayerModel from "../model/player";
 import RoomModel from "../model/room";
 
-import logger from "@troof/logger";
+import { logger } from "@troof/logger";
 
 const roomHandler = (
 	io: Server<ClientToServerEvents, ServerToClientEvents>,

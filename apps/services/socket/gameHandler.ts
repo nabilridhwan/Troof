@@ -1,7 +1,7 @@
 /** @format */
 
 import { get_dare, get_truth } from "@troof/helpers";
-import logger from "@troof/logger";
+import { logger } from "@troof/logger";
 import {
 	Action,
 	EVENTS,

@@ -1,4 +1,4 @@
-import logger from "@troof/logger";
+import { logger } from "@troof/logger";
 import fs from "fs/promises";
 import path from "path";
 import { CollectorInterface, Data, Template } from "./allGenerator";

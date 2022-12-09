@@ -1,6 +1,6 @@
 /** @format */
 
-import logger from "@troof/logger";
+import { logger } from "@troof/logger";
 import prisma from "../database/prisma";
 
 const Sequence = {
