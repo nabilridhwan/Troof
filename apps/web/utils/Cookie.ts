@@ -62,4 +62,25 @@ export namespace Cookie {
 		});
 		return;
 	}
+
+	export function setToken(token: string, req?: Req, res?: Res) {
+		setCookie("token", token, {
+			req,
+			res,
+		});
+		return;
+	}
+
+	export function getToken(req?: Req, res?: Res): string | null {
+		const c = getCookie("token", {
+			req,
+			res,
+		});
+
+		if (!c) {
+			return null;
+		}
+
+		return c.toString();
+	}
 }
