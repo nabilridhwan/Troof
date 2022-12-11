@@ -8,6 +8,7 @@ import {
 	EVENTS,
 	Log,
 	Player,
+	SECURITY_EVENTS,
 	Status,
 	TRUTH_OR_DARE_GAME,
 } from "@troof/socket";
@@ -23,6 +24,11 @@ import RoomCodeSection from "../../components/game/RoomCodeSection";
 import ChatBox from "../../components/message/ChatBox";
 import EmojiReactionScreen from "../../components/message/EmojiReactionScreen";
 import Players from "../../components/Players";
+import {
+	PublicKeyProvider,
+	PublicKeyProviderContext,
+	UsePublicKeyType,
+} from "../../context/PublicKeyProvider";
 import {
 	SocketProvider,
 	SocketProviderContext,
@@ -140,15 +146,21 @@ export default function GamePage({
 	player: Player;
 }) {
 	return (
-		<SocketProvider>
-			<GamePageContent r={roomID} player={player} />
-		</SocketProvider>
+		<PublicKeyProvider>
+			<SocketProvider>
+				<GamePageContent r={roomID} player={player} />
+			</SocketProvider>
+		</PublicKeyProvider>
 	);
 }
 
 function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 	const [room_id] = useState<string>(roomID);
 	const [players, setPlayers] = useState<Player[]>([]);
+
+	const { publicKey, setPublicKey } = useContext(
+		PublicKeyProviderContext
+	) as UsePublicKeyType;
 
 	const [player, setPlayer] = useState<Player>(p);
 
@@ -213,6 +225,11 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 					setLoadingState(false);
 				}
 			);
+
+			socket.on(SECURITY_EVENTS.PUBLIC_KEY, (publicKey: string) => {
+				setPublicKey(publicKey);
+				console.log("Set public key in game page");
+			});
 
 			// Handles if the user successfully left the game
 			socket.on(EVENTS.LEFT_GAME, (playerRemoved: Player) => {

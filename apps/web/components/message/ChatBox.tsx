@@ -1,6 +1,7 @@
 /** @format */
 
 import { IconMessage, IconMoodHappy, IconSend, IconX } from "@tabler/icons";
+import { Encryption } from "@troof/encrypt";
 import GifPicker from "@troof/gifpicker";
 import {
 	BaseNewMessage,
@@ -16,6 +17,10 @@ import EmojiPicker, {
 } from "emoji-picker-react";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { useContext, useEffect, useRef, useState } from "react";
+import {
+	PublicKeyProviderContext,
+	UsePublicKeyType,
+} from "../../context/PublicKeyProvider";
 import { SocketProviderContext } from "../../context/SocketProvider";
 import findMessageById from "../../utils/findMessageById";
 import EmojiReactionBar from "../EmojiBar";
@@ -34,6 +39,10 @@ let doneTypingTimeout: NodeJS.Timeout;
 const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 	const [replyToMessage, setReplyToMessage] =
 		useState<MessageUpdatedFromServer | null>(null);
+
+	const { publicKey } = useContext(
+		PublicKeyProviderContext
+	) as UsePublicKeyType;
 
 	const socket = useContext(SocketProviderContext);
 	const inputElementRef = useRef<HTMLInputElement>(null);
@@ -56,6 +65,15 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 
 	const sendMessage = (content: string) => {
 		console.log("Reply to: ", replyToMessage ? replyToMessage.id : "null");
+
+		if (!publicKey) {
+			console.log("No public key found");
+			return;
+		}
+
+		// ! Encrypt the emoji
+		content = Encryption.encryptWithPublic(content, publicKey);
+
 		const newMessageObject: BaseNewMessage = {
 			room_id,
 			display_name,
@@ -91,6 +109,14 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 		console.log("Reaction to: ", replyToMessage ? replyToMessage.id : "null");
 		setInputMessage("");
 
+		if (!publicKey) {
+			console.log("No public key found");
+			return;
+		}
+
+		// ! Encrypt the emoji
+		emoji = Encryption.encryptWithPublic(emoji, publicKey);
+
 		const newMessageObject: BaseNewMessage = {
 			room_id,
 			display_name,
@@ -101,10 +127,10 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 		};
 
 		if (socket) {
-			console.log("Emitting new message");
+			console.log("Emitting new reaction");
 
 			// Emit to socket
-			socket.emit(MESSAGE_EVENTS.MESSAGE_REACTION, newMessageObject);
+			socket.emit(MESSAGE_EVENTS.MESSAGE_NEW, newMessageObject);
 		}
 		setReplyToMessage(null);
 	};
@@ -113,27 +139,62 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 		if (socket) {
 			console.log("Emitting joined chatbox");
 
+			// Emit to the server that we joined the chatbox
 			socket.emit(MESSAGE_EVENTS.JOIN, {
 				room_id,
 			});
 
+			// This handles the latest messages
 			socket.on(MESSAGE_EVENTS.LATEST_MESSAGES, (data) => {
+				console.log("Latest messages received");
 				// We reverse the array because we want the latest messages to be at the bottom
 				// However the server sends the latest messages at the top
-				setMessages([...data.reverse()]);
+
+				if (!publicKey) {
+					console.log("No public key found");
+					return;
+				}
+
+				// Decrypt the messages using your public key
+				// ! Decrypt the messages
+				const messages = data.reverse().map((d) => {
+					return {
+						...d,
+						message: Encryption.decryptWithPublic(d.message, publicKey),
+					};
+				});
+
+				setMessages([...messages]);
 			});
 
+			// This handles new messages
 			socket.on(MESSAGE_EVENTS.MESSAGE_NEW, (data) => {
-				setMessages((oldMessages) => [...oldMessages, data]);
+				if (!publicKey) {
+					console.log("No public key found");
+					return;
+				}
+
+				console.log("Message received");
+				console.log(
+					"Decrypting message: ",
+					data.message,
+					" with key: ",
+					publicKey
+				);
+
+				setMessages((oldMessages) => [
+					...oldMessages,
+					{
+						...data,
+						message: Encryption.decryptWithPublic(data.message, publicKey),
+					},
+				]);
 			});
 
-			socket.on(MESSAGE_EVENTS.MESSAGE_REACTION, (data) => {
-				setMessages((oldMessages) => [...oldMessages, data]);
-			});
-
-			socket.on(MESSAGE_EVENTS.MESSAGE_SYSTEM, (data) => {
-				setMessages((oldMessages) => [...oldMessages, data]);
-			});
+			// ! System message events
+			// socket.on(MESSAGE_EVENTS.MESSAGE_SYSTEM, (data) => {
+			// 	setMessages((oldMessages) => [...oldMessages, data]);
+			// });
 
 			socket.on("disconnect", () => {
 				const disconnectedSystemMessage: SystemMessage = {
@@ -171,7 +232,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 				}
 			});
 		}
-	}, [socket]);
+	}, [socket, publicKey]);
 
 	useEffect(() => {
 		console.log("Messages");
@@ -536,6 +597,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 								onFocus={handleFocus}
 								onBlur={handleBlur}
 								tabIndex={0}
+								disabled={!publicKey}
 								placeholder="Type a message..."
 								className="h-[15px] border-[1px] "
 								value={inputMessage}

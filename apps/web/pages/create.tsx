@@ -11,8 +11,6 @@ export async function getServerSideProps(context: NextPageContext) {
 	try {
 		const res = await createRoom(display_name as string);
 
-		console.log(res);
-
 		const {
 			status,
 			data: {
