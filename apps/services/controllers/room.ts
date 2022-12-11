@@ -1,6 +1,7 @@
 /** @format */
 
 import { generateRoomID } from "@troof/helpers";
+import { JWT } from "@troof/jwt";
 import { logger } from "@troof/logger";
 import {
 	BadRequest,
@@ -122,11 +123,19 @@ const Room = {
 			},
 		});
 
+		const token = JWT.generate(
+			{
+				player_id,
+			},
+			process.env.JWT_SECRET!
+		);
+
 		// Return the room and player_id
 		new SuccessResponse("Successfully joined room", {
 			player_id,
 			room_id,
 			status: room.status,
+			token,
 		}).handleResponse(req, res);
 	},
 
@@ -164,9 +173,17 @@ const Room = {
 			}
 		);
 
+		const token = JWT.generate(
+			{
+				player_id: player.player_id,
+			},
+			process.env.JWT_SECRET!
+		);
+
 		new SuccessResponse("Room Created", {
 			room_id: insertedRoomID,
 			room_creator: player,
+			token,
 		}).handleResponse(req, res);
 	},
 };
