@@ -4,7 +4,7 @@ import { ClientToServerEvents, ServerToClientEvents } from "@troof/socket";
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
-export function useSocket() {
+export function useSocket(token: string) {
 	const [socket, setSocket] = useState<Socket<
 		ServerToClientEvents,
 		ClientToServerEvents
@@ -28,7 +28,11 @@ export function useSocket() {
 	const clientSocketInitializer = async () => {
 		console.log("USESOCKET: Client Socket Initializer Ran");
 		const url = process.env.NEXT_PUBLIC_SERVICES_URL!;
-		const s = io(url);
+		const s = io(url, {
+			auth: {
+				token,
+			},
+		});
 		setSocket(s);
 		setEffectRan(true);
 	};
