@@ -1,0 +1,20 @@
+{
+	"name": "@troof/encrypt",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"license": "MIT",
+	"private": true,
+	"scripts": {
+		"dev": "tsc -w",
+		"start": "tsc",
+		"build": "tsc"
+	},
+	"dependencies": {
+		"node-rsa": "^1.1.1",
+		"@troof/logger": "*"
+	},
+	"devDependencies": {
+		"@types/node-rsa": "^1.1.1"
+	}
+}
