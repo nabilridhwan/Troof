@@ -18,6 +18,7 @@
 		"@troof/database": "*",
 		"@troof/helpers": "*",
 		"@troof/logger": "*",
+		"@troof/jwt": "*",
 		"@troof/responses": "*",
 		"@troof/socket": "*",
 		"@troof/truth-or-dare": "*",

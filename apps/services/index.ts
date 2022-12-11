@@ -6,9 +6,10 @@ import morgan from "morgan";
 import { Server } from "socket.io";
 import { version } from "./package.json";
 
+import { JWT } from "@troof/jwt";
 import { logger, MorganStreamer } from "@troof/logger";
 import { SuccessResponse } from "@troof/responses";
-import { ServerToClientEvents } from "@troof/socket";
+import { PlayerIDObject, ServerToClientEvents } from "@troof/socket";
 import all_dares from "@troof/truth-or-dare/output/all_dare.json";
 import all_truths from "@troof/truth-or-dare/output/all_truth.json";
 import cors from "cors";
@@ -29,6 +30,7 @@ const io = new Server<ServerToClientEvents>(server, {
 	cors: {
 		origin: "*",
 	},
+	transports: ["websocket", "polling"],
 });
 
 // Config dotenv
@@ -58,6 +60,29 @@ app.use("/api/player", playerRouter);
 
 app.use("/api/truth", truthRouter);
 app.use("/api/dare", dareRouter);
+
+io.use((socket, next) => {
+	console.log("TOken");
+	console.log(socket.handshake.auth.token);
+
+	const { token } = socket.handshake.auth;
+
+	if (!token) {
+		return next(new Error("Authentication error"));
+	}
+
+	const verifiedData = JWT.verify<PlayerIDObject>(
+		token,
+		process.env.JWT_SECRET!
+	);
+
+	if (!verifiedData) {
+		return next(new Error("Authentication error - cannot verify token"));
+	}
+
+	socket.data.player_id = verifiedData.player_id;
+	next();
+});
 
 io.on("connection", (socket) => {
 	logger.warn(`Current active sockets: ${io.engine.clientsCount}`);
