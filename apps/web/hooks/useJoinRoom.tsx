@@ -16,7 +16,12 @@ export default function useJoinRoom() {
 
 			const {
 				data: {
-					data: { player_id, room_id: room_id_response, status: room_status },
+					data: {
+						player_id,
+						room_id: room_id_response,
+						status: room_status,
+						token,
+					},
 				},
 			} = res;
 
@@ -24,6 +29,7 @@ export default function useJoinRoom() {
 			// Set player ID in cookie
 			Cookie.setPlayerID(player_id);
 			Cookie.setRoomID(room_id_response);
+			Cookie.setToken(token);
 
 			console.log(room_status);
 

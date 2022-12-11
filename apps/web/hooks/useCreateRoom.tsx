@@ -18,6 +18,7 @@ export default function useCreateRoom() {
 					data: {
 						room_id,
 						room_creator: { player_id },
+						token,
 					},
 				},
 			} = res;
@@ -28,6 +29,7 @@ export default function useCreateRoom() {
 			// Set player ID in cookies
 			Cookie.setPlayerID(player_id);
 			Cookie.setRoomID(room_id);
+			Cookie.setToken(token);
 
 			router.push(`/game/${room_id}`);
 			return;

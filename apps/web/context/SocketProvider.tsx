@@ -2,6 +2,7 @@
 
 import { createContext } from "react";
 import { useSocket } from "../hooks/useSocket";
+import { Cookie } from "../utils/Cookie";
 
 type UseSocketType = ReturnType<typeof useSocket>["socket"];
 
@@ -12,7 +13,7 @@ interface SocketProviderProps {
 }
 
 export const SocketProvider = ({ children }: SocketProviderProps) => {
-	const { socket } = useSocket();
+	const { socket } = useSocket(Cookie.getToken() ?? "");
 	return (
 		<>
 			<SocketProviderContext.Provider value={socket}>
