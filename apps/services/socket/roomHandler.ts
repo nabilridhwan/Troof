@@ -99,6 +99,14 @@ const roomHandler = (
 	) => {
 		logger.info(`Change name received for ${obj.player_id} ${obj.room_id}`);
 
+		// ! Check if the player is the current player
+		if (socket.data.player_id !== obj.player_id) {
+			logger.error(
+				`Can't change name: Player ${socket.data.player_id} is not the player who sent the request ${obj.player_id}`
+			);
+			return;
+		}
+
 		// Change the users's name
 		await PlayerModel.updatePlayerName(obj.player_id, obj.new_name);
 
@@ -126,6 +134,7 @@ const roomHandler = (
 		ChatModel.pushSystemMessage(systemMessageToSend);
 	};
 
+	// TODO Secure
 	const transferPartyLeaderHandler = async (
 		obj: RoomIDObject & PlayerIDObject
 	) => {
@@ -136,6 +145,24 @@ const roomHandler = (
 	};
 
 	const getSelfInfo = async (obj: PlayerIDObject) => {
+		logger.info(`Get self info received for ${obj.player_id}`);
+		// const playerWhoSentTheRequest = await PlayerModel.getPlayer({
+		// 	player_id: socket.data.player_id,
+		// });
+
+		// if (!playerWhoSentTheRequest) {
+		// 	logger.error("Player who sent the request is not in the database");
+		// 	return;
+		// }
+
+		// // ! Check if the player is the current player
+		// if (socket.data.player_id !== obj.player_id) {
+		// 	logger.error(
+		// 		`Can't get private info: Player ${socket.data.player_id} is not ${obj.player_id}`
+		// 	);
+		// 	return;
+		// }
+
 		const p = await PlayerModel.getPlayer({
 			player_id: obj.player_id,
 		});

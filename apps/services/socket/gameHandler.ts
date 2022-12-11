@@ -24,7 +24,23 @@ const gameHandler = (io: Server, socket: Socket) => {
 	logger.info("Registering game handler");
 
 	const joinHandler = async (obj: RoomIDObject & PlayerIDObject) => {
-		logger.info(`Received joined room ${obj.room_id}`);
+		logger.info(
+			`Received joined room ${obj.room_id} from player ${socket.data.player_id}`
+		);
+
+		// ! Check if the player is already in the room
+
+		const p = await PlayerModel.getPlayer({
+			player_id: obj.player_id,
+			game_room_id: obj.room_id,
+		});
+
+		if (!p) {
+			logger.error(
+				`Join Handler: Player ${obj.player_id} is not in room ${obj.room_id}`
+			);
+			return;
+		}
 
 		// Let the socket join the room
 		socket.join(obj.room_id);
@@ -122,6 +138,14 @@ const gameHandler = (io: Server, socket: Socket) => {
 
 		const { current_player_id } = sequenceData;
 
+		// ! Check if the player is the current player
+		if (socket.data.player_id !== current_player_id) {
+			logger.error(
+				`Player ${socket.data.player_id} is not the current player. The current player is: ${current_player_id}`
+			);
+			return;
+		}
+
 		// Find the current player
 		logger.info(`Current Player: ${current_player_id}`);
 
@@ -195,6 +219,14 @@ const gameHandler = (io: Server, socket: Socket) => {
 
 		const { current_player_id } = sequenceData;
 
+		// ! Check if the player is the current player
+		if (socket.data.player_id !== current_player_id) {
+			logger.error(
+				`Player ${socket.data.player_id} is not the current player. The current player is: ${current_player_id}`
+			);
+			return;
+		}
+
 		logger.info(`Current Player: ${current_player_id}`);
 
 		if (!sequenceData) {
@@ -261,6 +293,27 @@ const gameHandler = (io: Server, socket: Socket) => {
 		if (!sequenceData) return;
 		// Get the current_player_id
 		const { current_player_id } = sequenceData;
+
+		const playerWhoSentTheRequest = await PlayerModel.getPlayer({
+			player_id: socket.data.player_id,
+		});
+
+		if (!playerWhoSentTheRequest) {
+			logger.error("Player who sent the request is not in the database");
+			return;
+		}
+
+		// ! Check if the player is the current player
+		if (
+			socket.data.player_id !== current_player_id ||
+			!playerWhoSentTheRequest.is_party_leader
+		) {
+			logger.error(
+				`Can't continue: Player ${socket.data.player_id} is not the current player or they're not the party leader. The current player is: ${current_player_id}`
+			);
+			return;
+		}
+
 		logger.info(`Current Player: ${current_player_id}`);
 		if (!sequenceData) {
 			logger.error("No sequence data found. Aborting");
