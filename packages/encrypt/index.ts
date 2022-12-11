@@ -29,26 +29,26 @@ export namespace Encryption {
 	}
 
 	export function encryptWithPublic(data: string, publicKey: string) {
-		console.log("encryptWithPublic", data, publicKey);
+		// console.log("encryptWithPublic", data, publicKey);
 		return new NodeRSA().importKey(publicKey, "public").encrypt(data, "base64");
 	}
 
 	export function encryptWithPrivate(data: string, privateKey: string) {
-		console.log("encryptWithPrivate", data, privateKey);
+		// console.log("encryptWithPrivate", data, privateKey);
 		return new NodeRSA()
 			.importKey(privateKey, "private")
 			.encryptPrivate(data, "base64");
 	}
 
 	export function decryptWithPublic(data: string, publicKey: string) {
-		console.log("decryptWithPublic", data, publicKey);
+		// console.log("decryptWithPublic", data, publicKey);
 		return new NodeRSA()
 			.importKey(publicKey, "public")
 			.decryptPublic(data, "utf8");
 	}
 
 	export function decryptWithPrivate(data: string, privateKey: string) {
-		console.log("decryptWithPrivate", data, privateKey);
+		// console.log("decryptWithPrivate", data, privateKey);
 		return new NodeRSA().importKey(privateKey, "private").decrypt(data, "utf8");
 	}
 }
