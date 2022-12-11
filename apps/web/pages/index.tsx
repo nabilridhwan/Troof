@@ -201,10 +201,10 @@ export default function Home() {
 
 						<div className="flex items-center justify-center">
 							<Image
-								quality={100}
 								height={900}
 								src={troofPromoImage}
 								alt="Troof promo image"
+								priority={true}
 							/>
 						</div>
 					</div>
@@ -213,9 +213,9 @@ export default function Home() {
 						<CautionSection onClose={() => setShowCautions(false)} />
 					)}
 
-					<p className="text-red-500">{errorMessage}</p>
-
 					<ServerErrorSection />
+
+					<p className="text-red-500">{errorMessage}</p>
 
 					<div className="flex flex-wrap justify-around py-5">
 						<div
@@ -259,7 +259,6 @@ export default function Home() {
 									disabled={clickedAlready}
 									displayName={displayName}
 									setDisplayName={setDisplayName}
-									handleOnClick={handleCreateRoomButtonClick}
 								/>
 							</motion.div>
 						)}
@@ -277,7 +276,6 @@ export default function Home() {
 									setRoomIDInput={setRoomIDInput}
 									displayName={displayName}
 									setDisplayName={setDisplayName}
-									handleOnClick={handleJoinGameButtonClick}
 								/>
 							</motion.div>
 						)}

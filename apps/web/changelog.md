@@ -1,3 +1,20 @@
+## Version - 0.3.12
+
+### What's new (Client - 0.3.12)
+
+- _Not in the previous release notes_, but, we added a new badge to the Chat box that all messages are end-to-end encrypted.
+- All joining and creation of rooms are now handled by the frontend and not the serverless functions by Vercel.
+  - This is because due to the nature of the current E2EE implementation, the serverless function may timeout when trying to create a room!
+- Now, when you click on "Join Room" or "Create Room", the button will be disabled and a loading spinner will be shown. This is to indicate to users that their request is being processed.
+
+### What's new (Server)
+
+- Nothing new.
+
+### What's new (Packages)
+
+- Nothing new.
+
 ## Version - 0.3.11
 
 ### What's new (Client - 0.3.11)

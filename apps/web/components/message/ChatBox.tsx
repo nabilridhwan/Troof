@@ -338,7 +338,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 		<div className="chatbox h-full w-full">
 			<div className="mb-2 flex items-center justify-center gap-1 rounded-xl py-2 text-xs text-black/50">
 				<IconLock size={16} />
-				<p>Your messages are end to end encrypted.</p>
+				<p>Messages are secured with end-to-end encryption.</p>
 			</div>
 
 			{/* Chat box */}
@@ -347,7 +347,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 				className="relative mb-2 h-[450px] overflow-auto rounded-xl border border-black/10 bg-black/5 p-2 lg:min-h-[85%]"
 			>
 				{!messages.length && (
-					<p className="text-center text-gray-500">
+					<p className="text-center text-sm text-gray-500">
 						No messages yet. Say something!
 					</p>
 				)}
