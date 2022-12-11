@@ -6,6 +6,9 @@
 - All joining and creation of rooms are now handled by the frontend and not the serverless functions by Vercel.
   - This is because due to the nature of the current E2EE implementation, the serverless function may timeout when trying to create a room!
 - Now, when you click on "Join Room" or "Create Room", the button will be disabled and a loading spinner will be shown. This is to indicate to users that their request is being processed.
+- Changed the padding and margins of the RoomCodeSection.
+- Now, all invite links is now literally in the address bar. Copy and paste (or alternatively click on the nice shiny copy button) to share the link with your friends!
+  - This is to encourage people in existing games to leave their previous games first before joining a new one.
 
 ### What's new (Server)
 

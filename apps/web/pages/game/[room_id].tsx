@@ -57,7 +57,7 @@ export async function getServerSideProps(context: NextPageContext) {
 	if (!player_id) {
 		return {
 			redirect: {
-				destination: "/",
+				destination: "/?room_id=" + room_id,
 				permanent: false,
 			},
 		};
@@ -354,7 +354,19 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 	return (
 		<Container>
 			<Head>
-				<title>Game</title>
+				<title>Troof! ({roomID})</title>
+				{/* meta description */}
+
+				{players.length < 2 ? (
+					<meta name="description" content="Come join me play truth or dare!" />
+				) : (
+					<meta
+						name="description"
+						content={`Come join me and ${
+							players.length - 1
+						} other people play truth or dare!`}
+					/>
+				)}
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
