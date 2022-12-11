@@ -35,6 +35,10 @@ export enum TRUTH_OR_DARE_GAME {
 	LEAVE_GAME = "leave_game",
 }
 
+export enum SECURITY_EVENTS {
+	PUBLIC_KEY = "security:public_key",
+}
+
 export enum Status {
 	In_Lobby = "in_lobby",
 	In_Game = "in_game",
@@ -130,9 +134,6 @@ export interface ServerToClientEvents {
 	// Messages
 	[MESSAGE_EVENTS.MESSAGE_NEW]: (message: MessageUpdatedFromServer) => void;
 	[MESSAGE_EVENTS.MESSAGE_ANSWER]: (message: MessageUpdatedFromServer) => void;
-	[MESSAGE_EVENTS.MESSAGE_REACTION]: (
-		message: MessageUpdatedFromServer
-	) => void;
 	[MESSAGE_EVENTS.MESSAGE_SYSTEM]: (message: SystemMessage) => void;
 	[MESSAGE_EVENTS.LATEST_MESSAGES]: (
 		messages: MessageUpdatedFromServer[]
@@ -141,6 +142,8 @@ export interface ServerToClientEvents {
 	[MESSAGE_EVENTS.IS_TYPING]: (
 		obj: PlayerDisplayNameObject & { is_typing: boolean }
 	) => void;
+
+	[SECURITY_EVENTS.PUBLIC_KEY]: (public_key: string) => void;
 }
 
 // This interface represents the events that are from clients to server when you use socket.on/io.on
@@ -178,7 +181,6 @@ export interface ClientToServerEvents {
 	[MESSAGE_EVENTS.MESSAGE_NEW]: (obj: BaseNewMessage) => void;
 	[MESSAGE_EVENTS.MESSAGE_ANSWER]: (obj: BaseNewMessage) => void;
 	[MESSAGE_EVENTS.JOIN]: (obj: RoomIDObject) => void;
-	[MESSAGE_EVENTS.MESSAGE_REACTION]: (obj: BaseNewMessage) => void;
 
 	[MESSAGE_EVENTS.IS_TYPING]: (
 		obj: RoomIDObject & PlayerDisplayNameObject & { is_typing: boolean }
