@@ -8,6 +8,7 @@ import {
 	MESSAGE_EVENTS,
 	PlayerIDObject,
 	RoomIDObject,
+	SECURITY_EVENTS,
 	Status,
 	SystemMessage,
 	TRUTH_OR_DARE_GAME,
@@ -57,8 +58,29 @@ const gameHandler = (io: Server, socket: Socket) => {
 		// Get players in room
 		const playersInRoom = PlayerModel.getPlayersInRoom(obj.room_id);
 
-		Promise.all([lastLogItem, player, playersInRoom, playerWhoJoined]).then(
-			([lastLogItem, player, playersInRoom, playerWhoJoinedData]) => {
+		// Get the private
+		const keys = prisma.keys.findFirst({
+			where: {
+				room_id: obj.room_id,
+			},
+			select: {
+				public: true,
+			},
+		});
+
+		if (!keys) {
+			logger.error(`Public key not found for room ${obj.room_id}`);
+			return;
+		}
+
+		Promise.all([
+			lastLogItem,
+			player,
+			playersInRoom,
+			playerWhoJoined,
+			keys,
+		]).then(
+			([lastLogItem, player, playersInRoom, playerWhoJoinedData, keysData]) => {
 				logger.info("Promise all resolved");
 
 				// Broadcast the log to the room
@@ -82,6 +104,10 @@ const gameHandler = (io: Server, socket: Socket) => {
 
 				// Broadcast the players in the room
 				io.to(obj.room_id).emit(EVENTS.PLAYERS_UPDATE, playersInRoom);
+
+				logger.info(`Emitting back public key to client ${keysData?.public}`);
+
+				socket.emit(SECURITY_EVENTS.PUBLIC_KEY, keysData?.public);
 			}
 		);
 	};

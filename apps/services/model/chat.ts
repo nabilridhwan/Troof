@@ -1,19 +1,40 @@
 /** @format */
 
+import { logger } from "@troof/logger";
 import { MessageUpdatedFromServer, SystemMessage } from "@troof/socket";
 import prisma from "../database/prisma";
 
 const ChatModel = {
 	pushSystemMessage: async (message: SystemMessage) => {
-		const { room_id, message: messageText, type } = message;
+		logger.error(
+			"Not pushing system message. System message are not supported."
+		);
+		// const { room_id, message: messageText, type } = message;
 
-		return await prisma.chat.create({
-			data: {
-				room_id,
-				message: messageText,
-				type,
-			},
-		});
+		// // Encrypt the message
+		// const keyRes = await prisma.keys.findFirst({
+		// 	where: {
+		// 		room_id,
+		// 	},
+		// 	select: {
+		// 		public: true,
+		// 	},
+		// });
+
+		// if (!keyRes) {
+		// 	logger.error(
+		// 		`No private key found for ${room_id} while trying to save system message`
+		// 	);
+		// 	return;
+		// }
+
+		// return await prisma.chat.create({
+		// 	data: {
+		// 		room_id,
+		// 		message: Encryption.encryptWithPublic(messageText, keyRes.public),
+		// 		type,
+		// 	},
+		// });
 	},
 
 	pushMessage: async (message: MessageUpdatedFromServer) => {

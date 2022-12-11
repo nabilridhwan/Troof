@@ -13,7 +13,9 @@ import ChatModel from "../model/chat";
 
 import { v4 as generateUUIDv4 } from "uuid";
 
+import { Encryption } from "@troof/encrypt";
 import { logger } from "@troof/logger";
+import prisma from "../database/prisma";
 
 const messageHandler = (io: Server, socket: Socket) => {
 	logger.info("Registered message handler");
@@ -25,30 +27,11 @@ const messageHandler = (io: Server, socket: Socket) => {
 		const messages = await ChatModel.getLatestMessagesByRoomID(obj.room_id);
 
 		// Send the messages back to the client
+		// The messages will be decrypted on the client side
 		socket.emit(MESSAGE_EVENTS.LATEST_MESSAGES, messages);
 	};
 
-	const newReactionHandler = async (obj: BaseNewMessage) => {
-		logger.info(
-			`Received new reaction (${obj.type}). Sending it to ${obj.room_id}`
-		);
-
-		// 1. Generate UUID v4
-		const u = generateUUIDv4();
-
-		// 2. Update obj with the new UUID
-		const new_obj: MessageUpdatedFromServer = {
-			...obj,
-			id: u,
-		};
-
-		// 3. Broadcast it back
-		io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_REACTION, new_obj);
-
-		// 4. Save it to the database
-		await ChatModel.pushMessage(new_obj);
-	};
-
+	// This method handles new message/reaction
 	const newMessageHandler = async (obj: BaseNewMessage) => {
 		logger.info(obj);
 		logger.info(
@@ -59,16 +42,57 @@ const messageHandler = (io: Server, socket: Socket) => {
 		const u = generateUUIDv4();
 
 		// 2. Update obj with the new UUID
-		const new_obj: MessageUpdatedFromServer = {
+		let new_obj: MessageUpdatedFromServer = {
 			...obj,
 			id: u,
 		};
 
-		// 3. Broadcast it back
-		io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_REACTION, new_obj);
+		const keyRes = await prisma.keys.findFirst({
+			where: {
+				room_id: obj.room_id,
+			},
+			select: {
+				private: true,
+			},
+		});
 
-		// 4. Save it to the database
-		await ChatModel.pushMessage(new_obj);
+		if (!keyRes) {
+			logger.error(
+				`No private key found for ${obj.room_id} while trying to emit back new message to client`
+			);
+			return;
+		}
+
+		console.log(keyRes.private);
+
+		// Decrypt the message
+		const decryptedMessage = Encryption.decryptWithPrivate(
+			obj.message,
+			keyRes.private
+		);
+
+		logger.warn(decryptedMessage);
+
+		// Encrypt the message with the private key
+		const privateEncryptedMessage = Encryption.encryptWithPrivate(
+			decryptedMessage,
+			keyRes.private
+		);
+
+		logger.warn(privateEncryptedMessage);
+
+		let privateEncryptedObj = {
+			...new_obj,
+			message: privateEncryptedMessage,
+		};
+
+		logger.warn(`Sending back ${JSON.stringify(privateEncryptedObj)}`);
+
+		// 3. Broadcast it back
+		io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_NEW, privateEncryptedObj);
+
+		// 4. Save it to the database (The private encrypted message)
+		await ChatModel.pushMessage(privateEncryptedObj);
 	};
 
 	const isTypingHandler = (
@@ -82,7 +106,6 @@ const messageHandler = (io: Server, socket: Socket) => {
 	socket.on(MESSAGE_EVENTS.IS_TYPING, isTypingHandler);
 	socket.on(MESSAGE_EVENTS.JOIN, joinMessageHandler);
 	socket.on(MESSAGE_EVENTS.MESSAGE_NEW, newMessageHandler);
-	socket.on(MESSAGE_EVENTS.MESSAGE_REACTION, newReactionHandler);
 };
 
 export default messageHandler;

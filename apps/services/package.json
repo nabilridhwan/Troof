@@ -13,6 +13,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@troof/encrypt": "*",
 		"@troof/config": "*",
 		"@troof/database": "*",
 		"@troof/helpers": "*",
