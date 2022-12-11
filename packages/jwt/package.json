@@ -1,0 +1,20 @@
+{
+	"name": "@troof/jwt",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"license": "MIT",
+	"private": true,
+	"scripts": {
+		"dev": "tsc -w",
+		"start": "tsc",
+		"build": "tsc"
+	},
+	"dependencies": {
+		"@troof/logger": "*",
+		"jsonwebtoken": "^8.5.1"
+	},
+	"devDependencies": {
+		"@types/jsonwebtoken": "^8.5.9"
+	}
+}
