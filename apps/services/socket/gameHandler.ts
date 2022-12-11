@@ -105,8 +105,6 @@ const gameHandler = (io: Server, socket: Socket) => {
 				// Broadcast the players in the room
 				io.to(obj.room_id).emit(EVENTS.PLAYERS_UPDATE, playersInRoom);
 
-				logger.info(`Emitting back public key to client ${keysData?.public}`);
-
 				socket.emit(SECURITY_EVENTS.PUBLIC_KEY, keysData?.public);
 			}
 		);

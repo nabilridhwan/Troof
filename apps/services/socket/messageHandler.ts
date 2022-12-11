@@ -63,8 +63,6 @@ const messageHandler = (io: Server, socket: Socket) => {
 			return;
 		}
 
-		console.log(keyRes.private);
-
 		// Decrypt the message
 		const decryptedMessage = Encryption.decryptWithPrivate(
 			obj.message,
