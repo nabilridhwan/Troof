@@ -139,6 +139,10 @@ export interface ServerToClientEvents {
 		messages: MessageUpdatedFromServer[]
 	) => void;
 
+	[MESSAGE_EVENTS.MESSAGE_REACTION]: (
+		message: MessageUpdatedFromServer
+	) => void;
+
 	[MESSAGE_EVENTS.IS_TYPING]: (
 		obj: PlayerDisplayNameObject & { is_typing: boolean }
 	) => void;

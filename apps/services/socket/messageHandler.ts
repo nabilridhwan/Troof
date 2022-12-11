@@ -88,6 +88,17 @@ const messageHandler = (io: Server, socket: Socket) => {
 
 		logger.warn(`Sending back ${JSON.stringify(privateEncryptedObj)}`);
 
+		// ! if it is an reaction, send the unencrypted message to the client via MESSAGE_REACTION for EmojiReactionScreen to handle
+		if (obj.type === "reaction") {
+			let d = {
+				...new_obj,
+				message: decryptedMessage,
+			};
+
+			// 3. Broadcast it back
+			io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_REACTION, d);
+		}
+
 		// 3. Broadcast it back
 		io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_NEW, privateEncryptedObj);
 
