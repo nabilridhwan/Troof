@@ -1,3 +1,20 @@
+## Version - 0.3.11
+
+### What's new (Client - 0.3.11)
+
+- **[NEW]** All your messages sent in chat are end to end encrypted! No one can read and snoop the message unless they're a participant of the room!
+  - Due to this feature, all system messages are not shown when someone joins the room! This will be looked into in the future.
+- When a user creates a room, it might take longer due to the system generating secret keys for your room!
+
+### What's new (Server - 0.2.12)
+
+- Added support for end to end encryption.
+
+### What's new (Packages)
+
+- Added `@troof/encrypt`, a package for the help of encryption and decryption of messages.
+- Updated the database schema to help with private and public keys in `@troof/database`
+
 ## Version - 0.3.10
 
 ### What's new (Client)
