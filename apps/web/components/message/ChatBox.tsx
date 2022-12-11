@@ -1,6 +1,12 @@
 /** @format */
 
-import { IconMessage, IconMoodHappy, IconSend, IconX } from "@tabler/icons";
+import {
+	IconLock,
+	IconMessage,
+	IconMoodHappy,
+	IconSend,
+	IconX,
+} from "@tabler/icons";
 import { Encryption } from "@troof/encrypt";
 import GifPicker from "@troof/gifpicker";
 import {
@@ -330,6 +336,11 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 
 	return (
 		<div className="chatbox h-full w-full">
+			<div className="mb-2 flex items-center justify-center gap-1 rounded-xl py-2 text-xs text-black/50">
+				<IconLock size={16} />
+				<p>Your messages are end to end encrypted.</p>
+			</div>
+
 			{/* Chat box */}
 			<div
 				ref={messagesBoxRefElement}
