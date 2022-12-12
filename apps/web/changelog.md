@@ -1,3 +1,31 @@
+## Version - 1.0.0
+
+The stable version is finally here! I am proud to finally release a stable version of the game after weeks of hard work on security and optimizing the user interface and user experience. 🙂✌️
+
+### Client - 1.0.0
+
+- **[NEW]** Now the Chat box has a limit of 150 characters.
+  - There is also a small character counter as part of this new update.
+- **[SECURITY]** The game just got that much more secure! When a person joins a room, they're given a unique key that is only to them. This will disallow:
+  - Unauthorized changing of party leader to someone else if they're not the party leader.
+  - Unauthorized skipping of turns.
+  - Unauthorized joining of games.
+- Fixed an issue that the "Player is typing" is broadcasted to all playing games.
+- The "Accidentally left game" pop-up box won't disturb you again if you press on "It's intentional!"
+- **[DEV]** Made token as part of the extra headers in socket.io.
+- **[DEV]** Removed the need of separate `sendMessage` and `sendReaction` in ChatBox. It is one method sendMessage with two arguments, first being content and second being the type ("message" | "reaction")
+
+### Packages
+
+- Added `@troof/jwt`, a package for the help of generating and verifying JWT tokens.
+- Updated `@troof/socket` to support the new JWT token system and remove redundant code with the introduction of the new JWT system.
+
+### Server - 1.0.0
+
+- Fixed an issue that the "Player is typing" is broadcasted to all playing games.
+- Included security barriers for all handlers to either check if the player is part of the room, party leader or many more and will reject if unauthorized.
+- Added socket.io middleware for token handling.
+
 ## Version - 0.3.12
 
 ### What's new (Client - 0.3.12)
