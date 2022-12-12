@@ -90,7 +90,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 			display_name,
 			reply_to: replyToMessage ? replyToMessage.id : null,
 			message: content,
-			type: "reaction",
+			type,
 			created_at: new Date(),
 		};
 
@@ -243,6 +243,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 	};
 
 	const handleReaction = (emoji: string) => {
+		console.log("Handle reaction called");
 		sendMessage(emoji, "reaction");
 	};
 
