@@ -7,12 +7,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 type Req = NextApiRequest | IncomingMessage | undefined;
 type Res = NextApiResponse | ServerResponse | undefined;
 
-enum CookieKeys {
-	PlayerId = "player_id",
-	RoomId = "room_id",
-}
-
 export namespace Cookie {
+	enum CookieKeys {
+		PlayerId = "player_id",
+		RoomId = "room_id",
+		Token = "token",
+	}
+
 	export function setPlayerID(player_id: string, req?: Req, res?: Res) {
 		setCookie(CookieKeys.PlayerId, player_id, {
 			req,
@@ -32,6 +33,14 @@ export namespace Cookie {
 		}
 
 		return c.toString();
+	}
+
+	export function removePlayerID(req?: Req, res?: Res) {
+		deleteCookie(CookieKeys.PlayerId, {
+			req,
+			res,
+		});
+		return;
 	}
 
 	export function setRoomID(room_id: string, req?: Req, res?: Res) {
@@ -55,8 +64,8 @@ export namespace Cookie {
 		return c.toString();
 	}
 
-	export function removePlayerID(req?: Req, res?: Res) {
-		deleteCookie(CookieKeys.PlayerId, {
+	export function removeRoomId(req?: Req, res?: Res) {
+		deleteCookie(CookieKeys.RoomId, {
 			req,
 			res,
 		});
@@ -64,7 +73,7 @@ export namespace Cookie {
 	}
 
 	export function setToken(token: string, req?: Req, res?: Res) {
-		setCookie("token", token, {
+		setCookie(CookieKeys.Token, token, {
 			req,
 			res,
 		});
@@ -72,7 +81,7 @@ export namespace Cookie {
 	}
 
 	export function getToken(req?: Req, res?: Res): string | null {
-		const c = getCookie("token", {
+		const c = getCookie(CookieKeys.Token, {
 			req,
 			res,
 		});
@@ -82,5 +91,13 @@ export namespace Cookie {
 		}
 
 		return c.toString();
+	}
+
+	export function removeToken(req?: Req, res?: Res) {
+		deleteCookie(CookieKeys.Token, {
+			req,
+			res,
+		});
+		return;
 	}
 }
