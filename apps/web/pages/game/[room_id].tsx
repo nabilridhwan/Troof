@@ -40,19 +40,6 @@ export async function getServerSideProps(context: NextPageContext) {
 	let { room_id } = context.query;
 
 	let player_id = Cookie.getPlayerID(context.req, context.res);
-	let roomIdFromCookie = Cookie.getRoomId(context.req, context.res);
-
-	// if (roomIdFromCookie) {
-	// 	room_id = roomIdFromCookie;
-
-	// 	// Redirect to the game page
-	// 	return {
-	// 		redirect: {
-	// 			destination: `/game/${room_id}`,
-	// 			permanent: true,
-	// 		},
-	// 	};
-	// }
 
 	if (!player_id) {
 		return {
@@ -63,11 +50,35 @@ export async function getServerSideProps(context: NextPageContext) {
 		};
 	}
 
-	let playerAPIData;
-
 	try {
 		// Find the player using the API
-		playerAPIData = await getPlayer(player_id);
+		const playerAPIData = await getPlayer(player_id);
+		const player = playerAPIData.data.data;
+
+		if (!player) {
+			return {
+				redirect: {
+					destination: "/",
+					permanent: false,
+				},
+			};
+		}
+
+		const rtnPlayer: Player = {
+			is_party_leader: player.is_party_leader,
+			display_name: player.display_name,
+			player_id: player.player_id,
+			game_room_id: player.game_room_id,
+			joined_at: null,
+		};
+
+		return {
+			props: {
+				// Pass the query string to the page
+				r: room_id,
+				player: rtnPlayer,
+			},
+		};
 	} catch (error) {
 		if (isAxiosError(error)) {
 			let e: AxiosError<BadRequest | NotFoundResponse> = error;
@@ -107,33 +118,6 @@ export async function getServerSideProps(context: NextPageContext) {
 			},
 		};
 	}
-
-	const player = playerAPIData.data.data;
-
-	if (!player) {
-		return {
-			redirect: {
-				destination: "/",
-				permanent: false,
-			},
-		};
-	}
-
-	const rtnPlayer: Player = {
-		is_party_leader: player.is_party_leader,
-		display_name: player.display_name,
-		player_id: player.player_id,
-		game_room_id: player.game_room_id,
-		joined_at: null,
-	};
-
-	return {
-		props: {
-			// Pass the query string to the page
-			r: room_id,
-			player: rtnPlayer,
-		},
-	};
 }
 
 type GamePageProps = Parameters<typeof GamePage>[0];
