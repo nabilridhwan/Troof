@@ -61,11 +61,14 @@ app.use("/api/player", playerRouter);
 app.use("/api/truth", truthRouter);
 app.use("/api/dare", dareRouter);
 
+// ! Token middleware
 io.use((socket, next) => {
-	console.log("TOken");
-	console.log(socket.handshake.auth.token);
+	let { token } = socket.handshake.headers;
 
-	const { token } = socket.handshake.auth;
+	if (typeof token !== "string") {
+		logger.error("Token is not a string");
+		return;
+	}
 
 	if (!token) {
 		return next(new Error("Authentication error"));
