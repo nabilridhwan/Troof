@@ -1,6 +1,6 @@
 {
 	"name": "services",
-	"version": "0.2.12",
+	"version": "1.0.0",
 	"description": "",
 	"main": "./dist/index.js",
 	"private": true,
