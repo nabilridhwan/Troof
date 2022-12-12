@@ -109,8 +109,9 @@ const Players = ({
 									player.player_id === currentPlayer.player_id && (
 										<motion.button
 											whileHover={{ scale: 1.1 }}
+											disabled={players.length === 1}
 											whileTap={{ scale: 0.9 }}
-											className="flex h-fit w-fit items-center  justify-center gap-1 rounded-lg border border-amber-900/25 bg-amber-300 p-2 text-amber-900"
+											className="flex h-fit w-fit items-center  justify-center gap-1 rounded-lg border border-amber-900/25 bg-amber-300 p-2 text-amber-900 disabled:opacity-50"
 											onClick={() => handleContinue()}
 										>
 											<IconPlayerTrackNext size={16} />
