@@ -182,7 +182,6 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 
 			socket.emit(TRUTH_OR_DARE_GAME.JOINED, {
 				room_id: room_id,
-				player_id: player.player_id,
 			});
 
 			socket.on(EVENTS.PLAYERS_UPDATE, (data) => {
