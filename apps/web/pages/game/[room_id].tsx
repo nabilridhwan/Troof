@@ -322,7 +322,6 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 		console.log("Emitting to server to select truth");
 		socket.emit(TRUTH_OR_DARE_GAME.SELECT_TRUTH, {
 			room_id: room_id,
-			player_id: player.player_id,
 		});
 	};
 
@@ -331,7 +330,6 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 		setLoadingState(true);
 		socket.emit(TRUTH_OR_DARE_GAME.SELECT_DARE, {
 			room_id: room_id,
-			player_id: player.player_id,
 		});
 	};
 
