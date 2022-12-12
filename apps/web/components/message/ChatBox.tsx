@@ -69,11 +69,16 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 	const messagesBoxRefElement = useRef<HTMLDivElement>(null);
 	const lastMessageElementRef = useRef<HTMLDivElement>(null);
 
-	const sendMessage = (content: string) => {
+	const sendMessage = (content: string, type: "message" | "reaction") => {
 		console.log("Reply to: ", replyToMessage ? replyToMessage.id : "null");
 
 		if (!publicKey) {
 			console.log("No public key found");
+			return;
+		}
+
+		if (content.length > 150) {
+			console.error("Message too long, won't send message");
 			return;
 		}
 
@@ -85,7 +90,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 			display_name,
 			reply_to: replyToMessage ? replyToMessage.id : null,
 			message: content,
-			type: "message",
+			type: "reaction",
 			created_at: new Date(),
 		};
 
@@ -108,36 +113,6 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 
 		setInputMessage("");
 
-		setReplyToMessage(null);
-	};
-
-	const sendReaction = (emoji: string) => {
-		console.log("Reaction to: ", replyToMessage ? replyToMessage.id : "null");
-		setInputMessage("");
-
-		if (!publicKey) {
-			console.log("No public key found");
-			return;
-		}
-
-		// ! Encrypt the emoji
-		emoji = Encryption.encryptWithPublic(emoji, publicKey);
-
-		const newMessageObject: BaseNewMessage = {
-			room_id,
-			display_name,
-			reply_to: replyToMessage ? replyToMessage.id : null,
-			message: emoji,
-			type: "reaction",
-			created_at: new Date(),
-		};
-
-		if (socket) {
-			console.log("Emitting new reaction");
-
-			// Emit to socket
-			socket.emit(MESSAGE_EVENTS.MESSAGE_NEW, newMessageObject);
-		}
 		setReplyToMessage(null);
 	};
 
@@ -260,7 +235,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 		// }
 
 		if (inputMessage.length > 0) {
-			sendMessage(inputMessage);
+			sendMessage(inputMessage, "message");
 		}
 
 		setInputFocused(false);
@@ -268,7 +243,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 	};
 
 	const handleReaction = (emoji: string) => {
-		sendReaction(emoji);
+		sendMessage(emoji, "reaction");
 	};
 
 	const handleTyping = (e: any) => {
@@ -313,7 +288,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 
 	const handleSelectGif = (url: string) => {
 		console.log(url);
-		sendMessage(url);
+		sendMessage(url, "message");
 		setShowGifPicker(false);
 	};
 
