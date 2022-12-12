@@ -29,7 +29,7 @@ export function useSocket(token: string) {
 		console.log("USESOCKET: Client Socket Initializer Ran");
 		const url = process.env.NEXT_PUBLIC_SERVICES_URL!;
 		const s = io(url, {
-			auth: {
+			extraHeaders: {
 				token,
 			},
 		});
