@@ -302,9 +302,9 @@ const gameHandler = (io: Server, socket: Socket) => {
 			return;
 		}
 
-		// ! Check if the player is the current player
+		// ! Check if the player is the current player or is a party leader
 		if (
-			socket.data.player_id !== current_player_id ||
+			socket.data.player_id !== current_player_id &&
 			!playerWhoSentTheRequest.is_party_leader
 		) {
 			logger.error(
