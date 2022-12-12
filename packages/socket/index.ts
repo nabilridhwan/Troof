@@ -169,17 +169,13 @@ export interface ClientToServerEvents {
 
 	[TRUTH_OR_DARE_GAME.LEAVE_GAME]: (obj: RoomIDObject & PlayerIDObject) => void;
 
-	[TRUTH_OR_DARE_GAME.SELECT_TRUTH]: (
-		obj: RoomIDObject & PlayerIDObject
-	) => void;
+	[TRUTH_OR_DARE_GAME.SELECT_TRUTH]: (obj: RoomIDObject) => void;
 
-	[TRUTH_OR_DARE_GAME.SELECT_DARE]: (
-		obj: RoomIDObject & PlayerIDObject
-	) => void;
+	[TRUTH_OR_DARE_GAME.SELECT_DARE]: (obj: RoomIDObject) => void;
 
 	[TRUTH_OR_DARE_GAME.CONTINUE]: (obj: RoomIDObject) => void;
 
-	[TRUTH_OR_DARE_GAME.JOINED]: (obj: RoomIDObject & PlayerIDObject) => void;
+	[TRUTH_OR_DARE_GAME.JOINED]: (obj: RoomIDObject) => void;
 
 	// Messages
 	[MESSAGE_EVENTS.MESSAGE_NEW]: (obj: BaseNewMessage) => void;
