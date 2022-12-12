@@ -92,7 +92,12 @@ const messageHandler = (io: Server, socket: Socket) => {
 			keyRes.private
 		);
 
-		logger.warn(decryptedMessage);
+		if (decryptedMessage.length > 150) {
+			logger.error(
+				"Won't do anything to this message because it is longer than 150 characters"
+			);
+			return;
+		}
 
 		// Encrypt the message with the private key
 		const privateEncryptedMessage = Encryption.encryptWithPrivate(
@@ -130,7 +135,7 @@ const messageHandler = (io: Server, socket: Socket) => {
 	const isTypingHandler = (
 		data: PlayerIDObject & RoomIDObject & { is_typing: boolean }
 	) => {
-		socket.broadcast.emit(MESSAGE_EVENTS.IS_TYPING, {
+		socket.broadcast.to(data.room_id).emit(MESSAGE_EVENTS.IS_TYPING, {
 			...data,
 		});
 	};

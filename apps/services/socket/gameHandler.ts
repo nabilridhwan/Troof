@@ -23,21 +23,20 @@ import Sequence from "../model/sequence";
 const gameHandler = (io: Server, socket: Socket) => {
 	logger.info("Registering game handler");
 
-	const joinHandler = async (obj: RoomIDObject & PlayerIDObject) => {
+	const joinHandler = async (obj: RoomIDObject) => {
 		logger.info(
 			`Received joined room ${obj.room_id} from player ${socket.data.player_id}`
 		);
 
 		// ! Check if the player is already in the room
-
 		const p = await PlayerModel.getPlayer({
-			player_id: obj.player_id,
+			player_id: socket.data.player_id,
 			game_room_id: obj.room_id,
 		});
 
 		if (!p) {
 			logger.error(
-				`Join Handler: Player ${obj.player_id} is not in room ${obj.room_id}`
+				`Join Handler: Player ${socket.data.player_id} is not in room ${obj.room_id}`
 			);
 			return;
 		}
@@ -65,7 +64,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 
 		// Find the player who joined
 		const playerWhoJoined = PlayerModel.getPlayer({
-			player_id: obj.player_id,
+			player_id: socket.data.player_id,
 		});
 
 		// Broadcast the log to the room
@@ -126,7 +125,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 		);
 	};
 
-	const selectTruthHandler = async (obj: RoomIDObject & PlayerIDObject) => {
+	const selectTruthHandler = async (obj: RoomIDObject) => {
 		logger.info(`Received select truth ${obj.room_id}`);
 		// Emit a dare to the room for the player
 		const truth = await get_truth();
@@ -205,7 +204,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 		ChatModel.pushSystemMessage(dataSystemMessageToSend);
 	};
 
-	const selectDareHandler = async (obj: RoomIDObject & PlayerIDObject) => {
+	const selectDareHandler = async (obj: RoomIDObject) => {
 		logger.info(`Received select dare ${obj.room_id}`);
 
 		// Emit a dare to the room for the player
