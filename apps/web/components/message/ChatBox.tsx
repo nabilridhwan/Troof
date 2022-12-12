@@ -604,6 +604,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 
 						<div className="relative flex flex-1 items-center justify-center gap-3">
 							<input
+								maxLength={150}
 								ref={inputElementRef}
 								onFocus={handleFocus}
 								onBlur={handleBlur}
@@ -615,6 +616,8 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 								onChange={handleTyping}
 							/>
 
+							{/* Character limit */}
+
 							<button
 								type="submit"
 								disabled={inputMessage.length === 0}
@@ -624,6 +627,10 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 							</button>
 						</div>
 					</div>
+
+					<p className="mb-5 text-right text-xs text-black/50">
+						{inputMessage.length}/150
+					</p>
 				</motion.form>
 			</LayoutGroup>
 		</div>
