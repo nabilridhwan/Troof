@@ -9,8 +9,7 @@ export namespace Encryption {
 	const key = new NodeRSA();
 
 	export async function generateKeyPair(): Promise<GeneratedKeyPair> {
-		const k = key.generateKeyPair();
-
+		const k = key.generateKeyPair(1024);
 		const priv = k.exportKey("private");
 		const pub = k.exportKey("public");
 
