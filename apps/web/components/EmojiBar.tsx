@@ -90,7 +90,7 @@ const EmojiReactionBar = ({ handleReaction }: EmojiReactionBarProps) => {
 		handleReaction(emoji);
 		setTimeout(() => {
 			setDisabled(false);
-		}, 1500);
+		}, 2000);
 	};
 
 	return (

@@ -22,7 +22,7 @@ import EmojiPicker, {
 	SuggestionMode,
 } from "emoji-picker-react";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useId, useRef, useState } from "react";
 import {
 	PublicKeyProviderContext,
 	UsePublicKeyType,
@@ -45,6 +45,10 @@ let doneTypingTimeout: NodeJS.Timeout;
 const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 	const [replyToMessage, setReplyToMessage] =
 		useState<MessageUpdatedFromServer | null>(null);
+
+	const emojiPickerBlockScreenId = useId();
+
+	const [emojiDisabled, setEmojiDisabled] = useState(false);
 
 	const { publicKey } = useContext(
 		PublicKeyProviderContext
@@ -82,7 +86,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 			return;
 		}
 
-		// ! Encrypt the emoji
+		// ! Encrypt the content
 		content = Encryption.encryptWithPublic(content, publicKey);
 
 		const newMessageObject: BaseNewMessage = {
@@ -245,6 +249,12 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 	const handleReaction = (emoji: string) => {
 		console.log("Handle reaction called");
 		sendMessage(emoji, "reaction");
+
+		setEmojiDisabled(true);
+
+		setTimeout(() => {
+			setEmojiDisabled(false);
+		}, 2000);
 	};
 
 	const handleTyping = (e: any) => {
@@ -456,6 +466,22 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 					{showEmojiPicker && (
 						<>
 							<div className="absolute bottom-14 -left-3 z-30">
+								{/* Emoji blocking screen */}
+								<AnimatePresence>
+									{emojiDisabled && (
+										<motion.div
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+											transition={{ ease: "easeOut" }}
+											id={emojiPickerBlockScreenId}
+											className="absolute top-0 left-0 z-50 flex h-full w-full items-center justify-center rounded-lg bg-white/50 backdrop-blur-sm"
+										>
+											Please Wait!
+										</motion.div>
+									)}
+								</AnimatePresence>
+
 								<EmojiPicker
 									lazyLoadEmojis={true}
 									previewConfig={{
