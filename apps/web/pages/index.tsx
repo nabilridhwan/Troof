@@ -89,12 +89,12 @@ export default function Home() {
 		setShowCautions(!show);
 	}, []);
 
-	const getPlayerFromAPI = async (player_id: string) => {
+	const getPlayerFromAPI = async (token: string) => {
 		let playerAPIData;
 
 		try {
 			// Find the player using the API
-			playerAPIData = await getPlayer(player_id);
+			playerAPIData = await getPlayer(token);
 
 			const player: Player = playerAPIData.data.data;
 
@@ -120,12 +120,12 @@ export default function Home() {
 	useEffect(() => {
 		(async () => {
 			const roomIDFromCookies = Cookie.getRoomId();
-			const playerIDFromCookies = Cookie.getPlayerID();
+			const token = Cookie.getToken();
 
-			if (roomIDFromCookies && playerIDFromCookies) {
+			if (roomIDFromCookies && token) {
 				console.log("Room ID and player ID found in cookies");
 				// Get these data from API
-				const playerPromise = getPlayerFromAPI(playerIDFromCookies);
+				const playerPromise = getPlayerFromAPI(token);
 				const roomPromise = getRoomFromAPI(roomIDFromCookies);
 
 				await Promise.all([playerPromise, roomPromise]).then((values) => {
