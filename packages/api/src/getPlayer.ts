@@ -1,9 +1,9 @@
 import axiosInstance from "./axiosInstance";
 
-const getPlayer = async (player_id: string) => {
+const getPlayer = async (token: string) => {
 	const res = await axiosInstance.get("/api/player", {
-		params: {
-			player_id,
+		headers: {
+			token,
 		},
 	});
 

@@ -41,25 +41,27 @@ export async function getServerSideProps(context: NextPageContext) {
 
 	let player_id = Cookie.getPlayerID(context.req, context.res);
 
-	if (!player_id) {
+	let token = Cookie.getToken(context.req, context.res);
+
+	if (!player_id || !token) {
 		return {
 			redirect: {
 				destination: "/?room_id=" + room_id,
-				permanent: false,
+				permanent: true,
 			},
 		};
 	}
 
 	try {
 		// Find the player using the API
-		const playerAPIData = await getPlayer(player_id);
+		const playerAPIData = await getPlayer(token);
 		const player = playerAPIData.data.data;
 
 		if (!player) {
 			return {
 				redirect: {
 					destination: "/",
-					permanent: false,
+					permanent: true,
 				},
 			};
 		}
@@ -94,7 +96,7 @@ export async function getServerSideProps(context: NextPageContext) {
 					redirect: {
 						destination:
 							"/?error=An unknown error occurred. Please try again later. (No connection to server)",
-						permanent: false,
+						permanent: true,
 					},
 				};
 			}
@@ -105,7 +107,7 @@ export async function getServerSideProps(context: NextPageContext) {
 			return {
 				redirect: {
 					destination: `/?error=${message}`,
-					permanent: false,
+					permanent: true,
 				},
 			};
 		}
