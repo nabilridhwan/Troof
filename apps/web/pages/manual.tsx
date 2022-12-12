@@ -160,15 +160,12 @@ export default function ManualPage() {
 				<h3>Legal</h3>
 
 				<p>
-					<p>
-						Please note that Troof and its creator are not legally responsible
-						for any actions or consequences resulting from players not
-						exercising their own responsibility. As a reminder, a warning has
-						been provided and it is the player&quot;s responsibility to exercise
-						caution while playing. By using Troof, players accept and
-						acknowledge this disclaimer and agree to be responsible for their
-						own actions.
-					</p>
+					Please note that Troof and its creator are not legally responsible for
+					any actions or consequences resulting from players not exercising
+					their own responsibility. As a reminder, a warning has been provided
+					and it is the player&quot;s responsibility to exercise caution while
+					playing. By using Troof, players accept and acknowledge this
+					disclaimer and agree to be responsible for their own actions.
 				</p>
 
 				<h3>Finally...</h3>

@@ -14,9 +14,10 @@ import {
 } from "@troof/socket";
 import { AxiosError, isAxiosError } from "axios";
 import classNames from "classnames";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { NextPageContext } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { PropagateLoader } from "react-spinners";
 import Container from "../../components/Container";
@@ -132,12 +133,45 @@ export default function GamePage({
 	r: string;
 	player: Player;
 }) {
+	const router = useRouter();
+
+	// ! ANIMATION
 	return (
-		<PublicKeyProvider>
-			<SocketProvider>
-				<GamePageContent r={roomID} player={player} />
-			</SocketProvider>
-		</PublicKeyProvider>
+		<>
+			<motion.div
+				key={router.route}
+				initial={{
+					x: "200%",
+					skewX: "-10deg",
+					scaleX: 2,
+				}}
+				animate={{
+					x: "-200%",
+					transition: {
+						duration: 2,
+						ease: "easeOut",
+					},
+				}}
+				transition={{ ease: "easeOut", type: "tween" }}
+				className="fixed left-0 top-0 z-[100] flex h-screen w-screen items-center justify-center bg-stone-300"
+			></motion.div>
+			<PublicKeyProvider>
+				<SocketProvider>
+					<motion.div
+						key={router.route}
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						transition={{
+							duration: 2.1,
+							easings: "easeIn",
+						}}
+					>
+						<GamePageContent r={roomID} player={player} />
+					</motion.div>
+				</SocketProvider>
+			</PublicKeyProvider>
+		</>
 	);
 }
 
@@ -368,10 +402,12 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 
 			<EmojiReactionScreen room_id={room_id} />
 
-			{!hasReceivedLatestLogItem &&
-				!hasReceivedGameStatus &&
-				!hasReceivedPlayers &&
-				!hasReceivedPublicKey && <FullScreenLoadingScreen />}
+			<AnimatePresence>
+				{!hasReceivedLatestLogItem &&
+					!hasReceivedGameStatus &&
+					!hasReceivedPlayers &&
+					!hasReceivedPublicKey && <FullScreenLoadingScreen />}
+			</AnimatePresence>
 
 			<div className="h-screen py-10 ">
 				<div className="h-full items-center justify-center gap-10 lg:grid lg:grid-cols-4">
