@@ -1,3 +1,22 @@
+## Version - 1.1.0
+
+### Client - 1.1.0
+
+- Add a loading screen while waiting for stuff to load when you create/join a game.
+- Fix a bug where users won't see the alert box if they left an ongoing game.
+- Disabled the "Skip" button when there is less than 2 players.
+- Changed the reaction sending limit from 1.5s to 2s.
+- Fixed the issue where users can still send reaction unlimited number of times via the Emoji Selector.
+- Fixed an issue where other players can't continue the game and the game will load after the first one/two questions.
+
+### Server - 1.0.1
+
+- Fixed an issue where other players can't continue the game and the game will load after the first one/two questions.
+
+### Packages
+
+- None
+
 ## Version - 1.0.0
 
 The stable version is finally here! I am proud to finally release a stable version of the game after weeks of hard work on security and optimizing the user interface and user experience. 🙂✌️
