@@ -20,6 +20,7 @@ import Head from "next/head";
 import { useContext, useEffect, useState } from "react";
 import { PropagateLoader } from "react-spinners";
 import Container from "../../components/Container";
+import FullScreenLoadingScreen from "../../components/FullScreenLoadingScreen";
 import RoomCodeSection from "../../components/game/RoomCodeSection";
 import ChatBox from "../../components/message/ChatBox";
 import EmojiReactionScreen from "../../components/message/EmojiReactionScreen";
@@ -158,6 +159,14 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 
 	const [isLoadingState, setLoadingState] = useState<boolean>(true);
 
+	const [hasReceivedLatestLogItem, setHasReceivedLatestLogData] =
+		useState<boolean>(false);
+	const [hasReceivedPlayers, setHasReceivedPlayers] = useState<boolean>(false);
+	const [hasReceivedGameStatus, setHasReceivedGameStatus] =
+		useState<boolean>(false);
+	const [hasReceivedPublicKey, setHasReceivedPublicKey] =
+		useState<boolean>(false);
+
 	const socket = useContext(SocketProviderContext);
 
 	useEffect(() => {
@@ -174,6 +183,7 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 				console.log(EVENTS.PLAYERS_UPDATE, " received");
 				console.log(data);
 				setPlayers(data);
+				setHasReceivedPlayers(true);
 
 				socket.emit(EVENTS.SELF_INFO, {
 					player_id: player.player_id,
@@ -183,6 +193,7 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 			socket.on(EVENTS.GAME_UPDATE, (data) => {
 				console.log("Status change received");
 				setGameStatus(data.status);
+				setHasReceivedGameStatus(true);
 			});
 
 			socket.on(TRUTH_OR_DARE_GAME.CONTINUE, (log: Log, player: Player) => {
@@ -206,6 +217,7 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 					setAction(
 						(log.action as Action) ?? (Action.Waiting_For_Selection as Action)
 					);
+					setHasReceivedLatestLogData(true);
 
 					setLoadingState(false);
 				}
@@ -213,6 +225,7 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 
 			socket.on(SECURITY_EVENTS.PUBLIC_KEY, (publicKey: string) => {
 				setPublicKey(publicKey);
+				setHasReceivedPublicKey(true);
 				console.log("Set public key in game page");
 			});
 
@@ -354,6 +367,11 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 			</Head>
 
 			<EmojiReactionScreen room_id={room_id} />
+
+			{!hasReceivedLatestLogItem &&
+				!hasReceivedGameStatus &&
+				!hasReceivedPlayers &&
+				!hasReceivedPublicKey && <FullScreenLoadingScreen />}
 
 			<div className="h-screen py-10 ">
 				<div className="h-full items-center justify-center gap-10 lg:grid lg:grid-cols-4">
