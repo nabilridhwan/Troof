@@ -2,6 +2,7 @@
 
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+import { Cookie } from "../../utils/Cookie";
 
 interface AccidentallyLeftGameProps {
 	show: boolean;
@@ -81,6 +82,12 @@ const AccidentallyLeftGame = ({
 											className="inline-flex justify-center rounded-md border border-transparent bg-red-300 px-4 py-2 text-sm font-medium text-red-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
 											onClick={() => {
 												setShow(false);
+												// Remove cookies
+
+												Cookie.removePlayerID();
+												Cookie.removeRoomId();
+												Cookie.removeToken();
+
 												onClickNo();
 											}}
 										>
