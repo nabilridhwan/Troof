@@ -11,6 +11,7 @@
 - Add a whole lot of truths/would you rather questions.
   - Now we're up to 1000+ questions!
 - Changed color of the Room code section button.
+- Changed animation of the home page "Troof!" text.
 
 ### Server
 

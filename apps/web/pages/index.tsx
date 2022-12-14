@@ -169,21 +169,23 @@ export default function Home() {
 				<div>
 					<div className="my-10 grid gap-10 lg:grid-cols-2">
 						<div className="lg:text-left">
-							<motion.h1
-								initial={{ opacity: 0, fontSize: 0, y: 1 }}
-								animate={{
-									opacity: 1,
-									y: 0,
-									fontSize: "6.5rem",
-								}}
-								transition={{
-									duration: 0.8,
-									ease: "easeInOut",
-									delay: 0.1,
-								}}
-								className="my-10 h-[150px] font-Playfair font-black "
-							>
-								Troof!
+							<motion.h1 className="my-10 h-auto items-center font-Playfair text-8xl font-black ">
+								{"Troof!".split("").map((char, index) => (
+									<motion.span
+										key={index}
+										initial={{ opacity: 0, y: 30 }}
+										animate={{
+											opacity: 1,
+											y: 0,
+										}}
+										transition={{
+											delay: 0.2 + index * 0.1,
+										}}
+										className="inline-block"
+									>
+										{char}
+									</motion.span>
+								))}
 							</motion.h1>
 
 							<p className="mb-5 text-lg">
