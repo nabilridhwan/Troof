@@ -54,6 +54,22 @@ export namespace RegexHelper {
 		return false;
 	}
 
+	export function extractUserIdPattern(text: string): string | false {
+		const regex: RegExp = new RegExp(
+			/^<@([a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12})>$/g
+		);
+
+		const match = regex.exec(text);
+
+		console.log(match);
+
+		if (match && match[1]) {
+			return match[1];
+		}
+
+		return false;
+	}
+
 	export function globalReplaceLinksAndImages(text: string): string {
 		// Check if the end of the string is a link or image
 

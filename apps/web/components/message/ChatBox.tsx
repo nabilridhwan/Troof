@@ -332,105 +332,114 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 				ref={messagesBoxRefElement}
 				className="relative mb-2 h-[450px] overflow-auto rounded-xl border border-black/10 bg-black/5 p-2 lg:min-h-[85%]"
 			>
-				{!messages.length && (
-					<p className="text-center text-sm text-gray-500">
-						No messages yet. Say something!
-					</p>
-				)}
-				{messages.map(
-					(message: MessageUpdatedFromServer | SystemMessage, index) => {
-						return (
-							<div
-								key={index}
-								ref={
-									index === messages.length - 1 ? lastMessageElementRef : null
-								}
-							>
-								{message.type === "message" && (
-									<>
-										{message.display_name === display_name ? (
-											<SelfChatBubble
-												onReply={handleReply}
-												asReply={!!message.reply_to}
-												replyMessage={
-													!!message.reply_to
-														? findMessageById(
-																message.reply_to,
-																messages as MessageUpdatedFromServer[]
-														  )
-														: undefined
-												}
-												displayName={message.display_name}
-												message={message}
-											/>
-										) : (
-											<OtherPlayerChatBubble
-												onReply={handleReply}
-												asReply={!!message.reply_to}
-												replyMessage={
-													!!message.reply_to
-														? findMessageById(
-																message.reply_to,
-																messages as MessageUpdatedFromServer[]
-														  )
-														: undefined
-												}
-												displayName={message.display_name}
-												message={message}
-											/>
-										)}
-									</>
-								)}
+				<AnimatePresence>
+					{!messages.length && (
+						<p className="text-center text-sm text-gray-500">
+							No messages yet. Say something!
+						</p>
+					)}
+					{messages.map(
+						(message: MessageUpdatedFromServer | SystemMessage, index) => {
+							return (
+								<motion.div
+									initial={{ opacity: 0, y: 20 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{
+										duration: 0.4,
+										layout: index * 10 + 1,
+									}}
+									layout="position"
+									key={index}
+									ref={
+										index === messages.length - 1 ? lastMessageElementRef : null
+									}
+								>
+									{message.type === "message" && (
+										<>
+											{message.display_name === display_name ? (
+												<SelfChatBubble
+													onReply={handleReply}
+													asReply={!!message.reply_to}
+													replyMessage={
+														!!message.reply_to
+															? findMessageById(
+																	message.reply_to,
+																	messages as MessageUpdatedFromServer[]
+															  )
+															: undefined
+													}
+													displayName={message.display_name}
+													message={message}
+												/>
+											) : (
+												<OtherPlayerChatBubble
+													onReply={handleReply}
+													asReply={!!message.reply_to}
+													replyMessage={
+														!!message.reply_to
+															? findMessageById(
+																	message.reply_to,
+																	messages as MessageUpdatedFromServer[]
+															  )
+															: undefined
+													}
+													displayName={message.display_name}
+													message={message}
+												/>
+											)}
+										</>
+									)}
 
-								{message.type === "reaction" && (
-									<>
-										{message.display_name === display_name ? (
-											<SelfChatBubble
-												asEmoji={message.type === "reaction"}
-												onReply={handleReply}
-												asReply={!!message.reply_to}
-												replyMessage={
-													!!message.reply_to
-														? findMessageById(
-																message.reply_to,
-																messages as MessageUpdatedFromServer[]
-														  )
-														: undefined
-												}
-												displayName={message.display_name}
-												message={message}
-											/>
-										) : (
-											<OtherPlayerChatBubble
-												asEmoji={message.type === "reaction"}
-												onReply={handleReply}
-												asReply={!!message.reply_to}
-												replyMessage={
-													!!message.reply_to
-														? findMessageById(
-																message.reply_to,
-																messages as MessageUpdatedFromServer[]
-														  )
-														: undefined
-												}
-												displayName={message.display_name}
-												message={message}
-											/>
-										)}
-									</>
-								)}
+									{message.type === "reaction" && (
+										<>
+											{message.display_name === display_name ? (
+												<SelfChatBubble
+													asEmoji={message.type === "reaction"}
+													onReply={handleReply}
+													asReply={!!message.reply_to}
+													replyMessage={
+														!!message.reply_to
+															? findMessageById(
+																	message.reply_to,
+																	messages as MessageUpdatedFromServer[]
+															  )
+															: undefined
+													}
+													displayName={message.display_name}
+													message={message}
+												/>
+											) : (
+												<OtherPlayerChatBubble
+													asEmoji={message.type === "reaction"}
+													onReply={handleReply}
+													asReply={!!message.reply_to}
+													replyMessage={
+														!!message.reply_to
+															? findMessageById(
+																	message.reply_to,
+																	messages as MessageUpdatedFromServer[]
+															  )
+															: undefined
+													}
+													displayName={message.display_name}
+													message={message}
+												/>
+											)}
+										</>
+									)}
 
-								{message.type === "system" && (
-									<div className="my-5 flex flex-row justify-center text-xs">
-										<div className="w-fit rounded-lg bg-black/10 p-2 text-center">
-											<p>{message.message}</p>
+									{message.type === "system" && (
+										<div className="my-5 flex flex-row justify-center text-xs">
+											<div className="w-fit rounded-lg bg-black/10 p-2 text-center">
+												<p>{message.message}</p>
+											</div>
 										</div>
-									</div>
-								)}
-							</div>
-						);
-					}
-				)}
+									)}
+								</motion.div>
+							);
+						}
+					)}
+				</AnimatePresence>
 			</div>
 
 			<div className="h-4">

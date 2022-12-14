@@ -23,76 +23,84 @@ const OtherPlayerChatBubble = ({
 	onReply,
 	replyMessage,
 }: OtherPlayerChatBubbleProps) => (
-	<motion.div className="my-2 flex flex-row items-end justify-start gap-2 text-sm">
+	<motion.div
+		transition={{ duration: 1 }}
+		onDoubleClick={() => onReply(message.id)}
+		whileTap={{
+			scale: [1, 0.9, 1],
+			transition: {
+				duration: 0.2,
+				ease: "easeIn",
+			},
+		}}
+		style={{
+			originX: 0,
+		}}
+		className="mb-2.5 flex flex-row items-end justify-start gap-2 text-sm"
+	>
 		<ProfilePictureFromName name={displayName} />
-		<motion.div
-			onDoubleClick={() => onReply(message.id)}
-			whileHover={{ scale: 1.05 }}
-			whileTap={{
-				scale: [0.95, 1],
-				transition: {
-					duration: 0.2,
-					ease: "easeIn",
-				},
-			}}
-			className="max-w-[80%] cursor-pointer rounded-lg rounded-bl-none bg-blue-300 p-2 px-3 text-blue-900"
-		>
-			<p className="mb-1 text-xs font-semibold">{message.display_name}</p>
 
-			{/* This is a message that needs reply */}
-			{asReply && (
-				<div className="mb-1">
-					{replyMessage ? (
-						<>
+		<div className="max-w-[80%]">
+			<p className="mb-1 text-xs font-medium text-black/80">
+				{message.display_name}
+			</p>
+
+			<motion.div className="max-w-fit cursor-pointer rounded-2xl rounded-bl-none border border-black/10 bg-neutral-100 p-1.5 px-3 text-black">
+				{/* This is a message that needs reply */}
+				{asReply && (
+					<div className="mb-1">
+						{replyMessage ? (
+							<>
+								<div className="rounded-lg bg-gray-200 p-2">
+									<p className="mb-1 text-xs font-semibold">
+										{replyMessage?.display_name}
+									</p>
+
+									{replyMessage.type === "reaction" ? (
+										<Emoji
+											unified={replyMessage.message}
+											emojiStyle={EmojiStyle.APPLE}
+											size={20}
+										/>
+									) : (
+										<p
+											className="break-words"
+											dangerouslySetInnerHTML={{
+												__html: RegexHelper.globalReplaceLinksAndImages(
+													replyMessage!.message
+												),
+											}}
+										/>
+									)}
+								</div>
+							</>
+						) : (
 							<div className="rounded-lg bg-gray-200 p-2">
-								<p className="mb-1 text-xs font-semibold">
-									{replyMessage?.display_name}
+								<p className="break-words text-xs italic">
+									Couldn&apos;t find the message
 								</p>
-
-								{replyMessage.type === "reaction" ? (
-									<Emoji
-										unified={replyMessage.message}
-										emojiStyle={EmojiStyle.APPLE}
-										size={20}
-									/>
-								) : (
-									<p
-										className="break-words"
-										dangerouslySetInnerHTML={{
-											__html: RegexHelper.globalReplaceLinksAndImages(
-												replyMessage!.message
-											),
-										}}
-									/>
-								)}
 							</div>
-						</>
-					) : (
-						<div className="rounded-lg bg-gray-200 p-2">
-							<p className="break-words text-xs italic">
-								Couldn&apos;t find the message
-							</p>
-						</div>
-					)}
-				</div>
-			)}
+						)}
+					</div>
+				)}
 
-			{asEmoji ? (
-				<Emoji
-					unified={message.message}
-					emojiStyle={EmojiStyle.APPLE}
-					size={30}
-				/>
-			) : (
-				<p
-					className="break-words"
-					dangerouslySetInnerHTML={{
-						__html: RegexHelper.globalReplaceLinksAndImages(message.message),
-					}}
-				/>
-			)}
-			<div />
-		</motion.div>
+				{asEmoji ? (
+					<Emoji
+						unified={message.message}
+						emojiStyle={EmojiStyle.APPLE}
+						size={30}
+					/>
+				) : (
+					<p
+						className="break-words"
+						dangerouslySetInnerHTML={{
+							__html: RegexHelper.globalReplaceLinksAndImages(message.message),
+						}}
+					/>
+				)}
+				<div />
+			</motion.div>
+		</div>
 	</motion.div>
 );
 

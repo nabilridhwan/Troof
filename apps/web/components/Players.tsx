@@ -76,7 +76,7 @@ const Players = ({
 				<div className="max-h-full ">
 					{players.map((player, index) => (
 						<div
-							className="flex w-full flex-wrap items-center gap-2 px-4 py-5 even:bg-black/5"
+							className="flex min-h-[50px] w-full flex-wrap items-center gap-2 px-4 py-2 even:bg-black/5"
 							key={index}
 						>
 							<div className="mr-2">
@@ -90,8 +90,7 @@ const Players = ({
 									// "font-bold": player.player_id === p.player_id,
 
 									"transition-all duration-100 ease-out": true,
-									"text-lg font-bold":
-										currentPlayer.player_id === player.player_id,
+									"font-semibold": currentPlayer.player_id === player.player_id,
 								})}
 							>
 								{player.display_name}{" "}
@@ -179,7 +178,7 @@ const Players = ({
 					<motion.button
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.9 }}
-						className="btn my-2 flex items-center gap-2 border border-red-900/30 bg-red-300 text-sm text-red-900"
+						className="btn my-2 flex items-center gap-2 border border-red-900/30 bg-red-100 text-sm text-red-900"
 						onClick={() => removePlayer(p.player_id)}
 					>
 						<IconLogout size={16} />

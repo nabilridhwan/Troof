@@ -12,7 +12,7 @@ module.exports = {
 	theme: {
 		extend: {
 			fontFamily: {
-				Poppins: ["Poppins"],
+				Poppins: ["Plus Jakarta Sans"],
 				Playfair: ["Playfair Display"],
 				mono: ["Azeret Mono"],
 			},

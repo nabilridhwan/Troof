@@ -1,3 +1,22 @@
+## Version - 1.1.1
+
+### Client - 1.1.1
+
+- Changed the design and added animations in the chat box.
+- Changed the color of the page transition to game page.
+- Made individual players in the player list to be smaller.
+- Changed color of the 'Leave Game' button.
+- Added nice animations when you select a truth or dare and etc.
+- Changed Sans Serif font to Plus Jakarta Sans.
+
+### Server
+
+- None
+
+### Packages
+
+- None
+
 ## Version - 1.1.0
 
 ### Client - 1.1.0

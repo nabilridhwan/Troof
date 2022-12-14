@@ -74,7 +74,7 @@ const ChatModel = {
 				id: true,
 				reply_to: true,
 			},
-			take: 50,
+			take: 30,
 			orderBy: {
 				created_at: "desc",
 			},
