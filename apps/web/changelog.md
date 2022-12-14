@@ -8,6 +8,9 @@
 - Changed color of the 'Leave Game' button.
 - Added nice animations when you select a truth or dare and etc.
 - Changed Sans Serif font to Plus Jakarta Sans.
+- Add a whole lot of truths/would you rather questions.
+  - Now we're up to 1000+ questions!
+- Changed color of the Room code section button.
 
 ### Server
 

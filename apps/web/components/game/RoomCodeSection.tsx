@@ -25,7 +25,7 @@ const RoomCodeSection = ({ room_id }: RoomCodeSectionProps) => {
 			{/* Room code */}
 			<div className="my-5 flex flex-col gap-5 text-center">
 				<p className="flex items-center justify-center text-xs font-semibold">
-					Room Code (Send it to your friends!)
+					Room Link (Send it to your friends!)
 				</p>
 
 				{/* Room Code */}
@@ -35,7 +35,7 @@ const RoomCodeSection = ({ room_id }: RoomCodeSectionProps) => {
 					className="cursor-pointer text-center font-mono text-sm font-bold"
 					onClick={handleCopyRoomCode}
 				>
-					<span className="mx-auto flex w-fit items-center gap-1 rounded-lg bg-black py-1 px-2 text-xs text-white">
+					<span className="mx-auto flex w-fit items-center gap-1 rounded-lg border border-stone-800/30 bg-stone-200 py-1 px-2 text-xs text-stone-900">
 						<IconLink size={16} />
 						{roomCodeText}
 					</span>
