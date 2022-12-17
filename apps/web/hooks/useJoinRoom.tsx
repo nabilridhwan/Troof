@@ -10,9 +10,17 @@ import { Cookie } from "../utils/Cookie";
 export default function useJoinRoom() {
 	const router = useRouter();
 
-	async function join(display_name: string, room_id: string) {
+	async function join(
+		display_name: string,
+		room_id: string,
+		captchaToken: string
+	) {
 		try {
-			const res = await joinRoom(room_id as string, display_name as string);
+			const res = await joinRoom(
+				room_id as string,
+				display_name as string,
+				captchaToken
+			);
 
 			const {
 				data: {
@@ -33,7 +41,7 @@ export default function useJoinRoom() {
 
 			console.log(room_status);
 
-			router.push(`/game/${room_id}`);
+			window.location.href = `/game/${room_id}`;
 			return;
 		} catch (error) {
 			if (isAxiosError(error)) {
@@ -56,7 +64,7 @@ export default function useJoinRoom() {
 				console.log(status);
 				console.log(JSON.stringify(e.response?.data.data));
 
-				router.push(`/?error=${message}`);
+				window.location.href = `/?error=${message}`;
 				return;
 			}
 

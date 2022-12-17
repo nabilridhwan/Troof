@@ -32,6 +32,7 @@ import {
 	SocketProvider,
 	SocketProviderContext,
 } from "../../context/SocketProvider";
+import usePlayerNotification from "../../hooks/usePlayerNotification";
 import { Cookie } from "../../utils/Cookie";
 
 export async function getServerSideProps(context: NextPageContext) {
@@ -182,6 +183,11 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 
 	const [player, setPlayer] = useState<Player>(p);
 
+	// This state is for the notification
+
+	// ! Notification service
+	const _ = usePlayerNotification(player, players);
+
 	const [gameStatus, setGameStatus] = useState<string>("in_lobby");
 
 	const [currentPlayer, setCurrentPlayer] = useState<Partial<Player>>({});
@@ -239,6 +245,10 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 					console.log("Left game");
 					// Removing cookies
 					Cookie.removePlayerID();
+					Cookie.removeRoomId();
+					Cookie.removeToken();
+
+					// Redirecting back to home page
 					window.location.href = "/";
 				}
 
@@ -288,6 +298,7 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 			setGameStatus(Status.In_Game);
 
 			console.log("There are 2 or more players, starting game");
+
 			socket.emit(EVENTS.START_GAME, {
 				room_id,
 			});

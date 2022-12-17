@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import SyncLoader from "react-spinners/SyncLoader";
+import Reaptcha from "reaptcha";
 import useJoinRoom from "../../hooks/useJoinRoom";
 
 interface JoinRoomInterface {
@@ -23,11 +24,22 @@ const JoinRoomSection = ({
 	const { join } = useJoinRoom();
 
 	const [loading, setLoading] = useState(false);
+	const [captchaVerified, setCaptchaVerified] = useState(false);
+	const [captchaToken, setCaptchaToken] = useState("");
 
 	const handleJoinRoom = async () => {
 		setLoading(true);
-		await join(displayName, roomIDInput);
+		await join(displayName, roomIDInput, captchaToken);
 		setLoading(false);
+	};
+
+	const handleRecaptchaError = () => {
+		setCaptchaVerified(false);
+		window.location.href = "/?error=Please verify that you are not a robot.";
+	};
+
+	const handleRecaptchaVerified = (recaptchaToken: string) => {
+		setCaptchaToken(recaptchaToken);
 	};
 
 	return (
@@ -62,6 +74,16 @@ const JoinRoomSection = ({
 				onChange={(e) => setRoomIDInput(e.target.value.toLowerCase())}
 			/>
 
+			<div className="flex justify-center">
+				<Reaptcha
+					sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+					size="normal"
+					onVerify={handleRecaptchaVerified}
+					onError={handleRecaptchaError}
+					onExpire={handleRecaptchaError}
+				/>
+			</div>
+
 			<motion.button
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
@@ -78,7 +100,7 @@ const JoinRoomSection = ({
 						ease: "easeOut",
 					},
 				}}
-				disabled={loading}
+				disabled={loading || !captchaToken}
 				className="btn-huge m-10 disabled:opacity-50"
 				onClick={handleJoinRoom}
 			>

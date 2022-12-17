@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { SyncLoader } from "react-spinners";
+import Reaptcha from "reaptcha";
 import useCreateRoom from "../../hooks/useCreateRoom";
 
 interface CreateRoomSectionProps {
@@ -20,10 +21,22 @@ const CreateRoomSection = ({
 
 	const [loading, setLoading] = useState(false);
 
+	const [captchaVerified, setCaptchaVerified] = useState(false);
+	const [captchaToken, setCaptchaToken] = useState("");
+
 	async function handleCreateRoom() {
 		setLoading(true);
-		await create(displayName);
+		await create(displayName, captchaToken);
 	}
+
+	const handleRecaptchaError = () => {
+		setCaptchaVerified(false);
+		window.location.href = "/?error=Please verify that you are not a robot.";
+	};
+
+	const handleRecaptchaVerified = (recaptchaToken: string) => {
+		setCaptchaToken(recaptchaToken);
+	};
 
 	return (
 		<form
@@ -45,6 +58,16 @@ const CreateRoomSection = ({
 				onChange={(e) => setDisplayName(e.target.value)}
 			/>
 
+			<div className="flex justify-center">
+				<Reaptcha
+					sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+					size="normal"
+					onVerify={handleRecaptchaVerified}
+					onError={handleRecaptchaError}
+					onExpire={handleRecaptchaError}
+				/>
+			</div>
+
 			<motion.button
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
@@ -61,7 +84,7 @@ const CreateRoomSection = ({
 						ease: "easeOut",
 					},
 				}}
-				disabled={loading}
+				disabled={loading || !captchaToken}
 				className="btn-huge m-10 disabled:opacity-50"
 				onClick={handleCreateRoom}
 			>

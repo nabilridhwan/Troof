@@ -14,9 +14,11 @@ import { Cookie } from "../utils/Cookie";
 
 import Image from "next/image";
 import AccidentallyLeftGame from "../components/home/AccidentallyLeftGameSection";
+import RequestForNotificationSection from "../components/home/RequestForNotificationSection";
 import ServerErrorSection from "../components/home/ServerErrorSection";
 import VersionSection from "../components/home/VersionSection";
 import troofPromoImage from "../public/troof_promo_new_new.png";
+import { Notify } from "../utils/Notify";
 
 type MainScreenAction = "create" | "join" | "existing_game" | "none";
 
@@ -117,6 +119,10 @@ export default function Home() {
 		}
 	};
 
+	async function getNotifyPermission() {
+		return Notify.requestForNotificationPermission();
+	}
+
 	useEffect(() => {
 		(async () => {
 			const roomIDFromCookies = Cookie.getRoomId();
@@ -164,6 +170,9 @@ export default function Home() {
 
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
+
+			{/* TODO: Re-enable notification section */}
+			<RequestForNotificationSection />
 
 			<main className="mx-auto w-[90%] text-center lg:w-[55%]">
 				<div>

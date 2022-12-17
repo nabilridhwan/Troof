@@ -106,6 +106,7 @@ const Room = {
 
 		// Limit the number of players
 		if (playerCount >= 8) {
+			logger.error("Room is full!");
 			// Tell the users that the room is full
 			return new NotFoundResponse(
 				"Room is full. Maximum of 8 players allowed.",
@@ -161,7 +162,6 @@ const Room = {
 
 		const room_id = generateRoomID();
 
-		// TODO: Verification of the display name
 		// Get the display name
 		const { display_name } = req.body;
 

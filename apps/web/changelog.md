@@ -1,3 +1,22 @@
+## Version - 1.2.0
+
+### Client - 1.2.0
+
+- Added re-captcha for joining and creating room :)
+- Now, when there is an error from joining/creating rooms, it won't use server side route pushing but instead, it will use client side route pushing. (`window.location.href`)
+- Fixed an issue where users are being prompted if they've accidentally left the game even though they pressed the 'Leave Game' button.
+- **[TESTING]** Added a new notification feature where we will notify you if another player joins the room (if you're waiting for the other player).
+  - This feature is only available to Desktops: Chrome, Edge, Firefox, Opera, Safari and Firefox for Android. This feature is experimental and might be removed in the future.
+  - To enable this feature, go to your browser settings and enable notifications for this page! (Process might change in the future!)
+
+### Server - 1.1.0
+
+- Added support for re-captcha v2 server side validation!
+
+### Packages
+
+- None
+
 ## Version - 1.1.1
 
 ### Client - 1.1.1
@@ -531,7 +550,7 @@ Keep an eye out for future updates and let us know if you have any feedback or s
 - The force button is now shown every time (it will only work if you are the Party Leader.)
 - Proper error message when trying to join a game that doesn't exist or among other errors.
 - Clicking on the Room Code in-game will copy the room code only to your clipboard.
-- You can now send a person to join a game by clicking on the "Invite" button in the lobby. This will copy the link to your clipboard (in the form of `https://troof.nabilridhwan.com/join/55NKJ4`).
+- You can now send a person to join a game by clicking on the "Invite" button in the lobby. This will copy the link to your clipboard (in the form of `https://[...].com/join/55NKJ4`).
   - If the user is already in the game, they will be redirected to the game.
   - If the user is not in the game, they will to enter their display name and then be redirected to the game.
 - Fixed an issue where chat messages were being sent to all games.
