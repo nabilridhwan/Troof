@@ -11,12 +11,10 @@ interface JoinRoomInterface {
 	roomIDInput: string;
 	setRoomIDInput: (roomIDInput: string) => void;
 	setDisplayName: (displayName: string) => void;
-	disabled: boolean;
 }
 
 const JoinRoomSection = ({
 	displayName,
-	disabled,
 	setDisplayName,
 	roomIDInput,
 	setRoomIDInput,

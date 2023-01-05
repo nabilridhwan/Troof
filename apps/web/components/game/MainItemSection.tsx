@@ -31,7 +31,7 @@ const MainItemSection = ({
 	setAction,
 	setText,
 }: MainItemSectionProps) => {
-	const [isLoadingState, setLoadingState] = useState<boolean>(true);
+	const [isLoadingState, setLoadingState] = useState<boolean>(false);
 	const socket = useContext(SocketProviderContext);
 
 	useEffect(() => {

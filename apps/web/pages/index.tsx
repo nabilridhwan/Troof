@@ -8,24 +8,48 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CautionSection from "../components/home/CautionSection";
-import CreateRoomSection from "../components/home/CreateRoomSection";
-import JoinRoomSection from "../components/home/JoinRoomSection";
+// import CreateRoomSection from "../components/home/CreateRoomSection";
+// import JoinRoomSection from "../components/home/JoinRoomSection";
+const CreateRoomSection = dynamic(
+	() => import("../components/home/CreateRoomSection"),
+	{
+		ssr: false,
+	}
+);
+
+const JoinRoomSection = dynamic(
+	() => import("../components/home/JoinRoomSection"),
+	{
+		ssr: false,
+	}
+);
+
+const AccidentallyLeftGame = dynamic(
+	() => import("../components/home/AccidentallyLeftGameSection"),
+	{
+		ssr: false,
+	}
+);
+
 import { Cookie } from "../utils/Cookie";
 
 import Image from "next/image";
-import AccidentallyLeftGame from "../components/home/AccidentallyLeftGameSection";
-import RequestForNotificationSection from "../components/home/RequestForNotificationSection";
+// import AccidentallyLeftGame from "../components/home/AccidentallyLeftGameSection";
+import dynamic from "next/dist/shared/lib/dynamic";
 import ServerErrorSection from "../components/home/ServerErrorSection";
 import VersionSection from "../components/home/VersionSection";
 import troofPromoImage from "../public/troof_promo_new_new.png";
-import { Notify } from "../utils/Notify";
 
-type MainScreenAction = "create" | "join" | "existing_game" | "none";
+type MainScreenAction = "create" | "join";
 
 export default function Home() {
-	const { query } = useRouter();
+	// const RequestForNotificationSection = dynamic(
+	// 	() => import("../components/home/RequestForNotificationSection")
+	// );
 
-	const { room_id = "", error } = query;
+	const {
+		query: { room_id = "", error },
+	} = useRouter();
 
 	const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -36,32 +60,8 @@ export default function Home() {
 
 	const [showCautions, setShowCautions] = useState<boolean>(false);
 
-	// This state changes when the person presses the "Join" or "Create" button
-	const [clickedAlready, setClickedAlready] = useState<boolean>(false);
-
 	const [mainScreenAction, setMainScreenAction] =
 		useState<MainScreenAction>("join");
-
-	const [existingGameExists, setExistingGameExists] = useState<boolean>(false);
-
-	const [serverVersion, setServerVersion] = useState<string>("");
-	const [serverError, setServerError] = useState<string>("");
-
-	const handleJoinGameButtonClick = () => {
-		if (displayName.trim().length > 0 && roomIDInput.trim().length > 0) {
-			// Redirect to the join page
-			window.location.href = `/join/${roomIDInput}?display_name=${displayName}`;
-			setClickedAlready(true);
-		}
-	};
-
-	const handleCreateRoomButtonClick = () => {
-		if (displayName.trim().length > 0) {
-			// Redirect to the create page
-			window.location.href = "/create?display_name=" + displayName;
-			setClickedAlready(true);
-		}
-	};
 
 	const joinBackExistingGame = () => {
 		const roomIDFromCookies = Cookie.getRoomId();
@@ -119,10 +119,6 @@ export default function Home() {
 		}
 	};
 
-	async function getNotifyPermission() {
-		return Notify.requestForNotificationPermission();
-	}
-
 	useEffect(() => {
 		(async () => {
 			const roomIDFromCookies = Cookie.getRoomId();
@@ -140,7 +136,6 @@ export default function Home() {
 
 					if (player && room) {
 						console.log("The room and player is still valid");
-						setExistingGameExists(true);
 						setShowExistingGameModal(true);
 						// Redirect to the game page
 						// window.location.href = `/game/${roomIDFromCookies}`;
@@ -172,7 +167,7 @@ export default function Home() {
 			</Head>
 
 			{/* TODO: Re-enable notification section */}
-			<RequestForNotificationSection />
+			{/* <RequestForNotificationSection /> */}
 
 			<main className="mx-auto w-[90%] text-center lg:w-[55%]">
 				<div>
@@ -267,7 +262,6 @@ export default function Home() {
 								transition={{ duration: 0.7, ease: "easeOut" }}
 							>
 								<CreateRoomSection
-									disabled={clickedAlready}
 									displayName={displayName}
 									setDisplayName={setDisplayName}
 								/>
@@ -282,7 +276,6 @@ export default function Home() {
 								transition={{ duration: 0.7, ease: "easeOut" }}
 							>
 								<JoinRoomSection
-									disabled={clickedAlready}
 									roomIDInput={roomIDInput}
 									setRoomIDInput={setRoomIDInput}
 									displayName={displayName}

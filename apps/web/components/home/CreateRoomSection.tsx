@@ -9,12 +9,10 @@ import useCreateRoom from "../../hooks/useCreateRoom";
 interface CreateRoomSectionProps {
 	displayName: string;
 	setDisplayName: (displayName: string) => void;
-	disabled: boolean;
 }
 
 const CreateRoomSection = ({
 	displayName,
-	disabled,
 	setDisplayName,
 }: CreateRoomSectionProps) => {
 	const { create } = useCreateRoom();

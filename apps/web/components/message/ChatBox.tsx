@@ -8,20 +8,30 @@ import {
 	IconX,
 } from "@tabler/icons";
 import { Encryption } from "@troof/encrypt";
-import GifPicker from "@troof/gifpicker";
 import {
 	BaseNewMessage,
 	MessageUpdatedFromServer,
 	MESSAGE_EVENTS,
 	SystemMessage,
 } from "@troof/socket";
-import EmojiPicker, {
+import {
 	Emoji,
 	EmojiClickData,
 	EmojiStyle,
 	SuggestionMode,
 } from "emoji-picker-react";
+
+// Dynamic imports
+const EmojiPicker = dynamic(() => import("emoji-picker-react"), {
+	ssr: false,
+});
+
+const GifPicker = dynamic(() => import("@troof/gifpicker"), {
+	ssr: false,
+});
+
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import { useContext, useEffect, useId, useRef, useState } from "react";
 import {
 	PublicKeyProviderContext,

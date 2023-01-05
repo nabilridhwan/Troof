@@ -13,16 +13,38 @@ import {
 import { AxiosError, isAxiosError } from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { NextPageContext } from "next";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import Container from "../../components/Container";
 import FullScreenLoadingScreen from "../../components/FullScreenLoadingScreen";
-import MainItemSection from "../../components/game/MainItemSection";
-import RoomCodeSection from "../../components/game/RoomCodeSection";
-import ChatBox from "../../components/message/ChatBox";
-import EmojiReactionScreen from "../../components/message/EmojiReactionScreen";
-import Players from "../../components/Players";
+// import MainItemSection from "../../components/game/MainItemSection";
+// import RoomCodeSection from "../../components/game/RoomCodeSection";
+// import ChatBox from "../../components/message/ChatBox";
+
+// Dynamically imported components
+// https://nextjs.org/docs/advanced-features/dynamic-import
+const ChatBox = dynamic(() => import("../../components/message/ChatBox"), {
+	ssr: false,
+});
+const MainItemSection = dynamic(
+	() => import("../../components/game/MainItemSection"),
+	{ ssr: false }
+);
+const RoomCodeSection = dynamic(
+	() => import("../../components/game/RoomCodeSection"),
+	{ ssr: false }
+);
+const EmojiReactionScreen = dynamic(
+	() => import("../../components/message/EmojiReactionScreen"),
+	{ ssr: false }
+);
+const Players = dynamic(() => import("../../components/Players"), {
+	ssr: false,
+});
+// import EmojiReactionScreen from "../../components/message/EmojiReactionScreen";
+// import Players from "../../components/Players";
 import {
 	PublicKeyProvider,
 	PublicKeyProviderContext,
