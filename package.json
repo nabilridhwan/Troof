@@ -22,8 +22,8 @@
 		"dev": "turbo run dev"
 	},
 	"devDependencies": {
-		"turbo": "^1.6.3",
-		"@troof/config": "*"
+		"@troof/config": "*",
+		"turbo": "^1.6.3"
 	},
 	"engines": {
 		"node": ">=18 <19"
