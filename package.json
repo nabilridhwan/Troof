@@ -16,7 +16,8 @@
 		"dev": "turbo run dev",
 		"build:troof": "pnpm i && pnpm turbo run build --scope=web",
 		"build:services": "pnpm i && pnpm turbo run build --scope=services",
-		"build:all": "pnpm i && pnpm turbo run build"
+		"build:all": "pnpm i && pnpm turbo run build",
+		"ci": "pnpm i --no-frozen-lockfile"
 	},
 	"devDependencies": {
 		"@troof/config": "*",
