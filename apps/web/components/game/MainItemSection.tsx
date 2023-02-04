@@ -176,6 +176,7 @@ const MainItemSection = ({
 											}}
 											transition={{
 												delay: 0.2 + index * 0.05,
+												opacity: 0.2 + index * 0.05,
 											}}
 										>
 											{word}
