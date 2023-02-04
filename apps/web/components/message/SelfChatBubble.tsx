@@ -43,7 +43,7 @@ const SelfChatBubble = ({
 				<div className="mb-1">
 					{replyMessage ? (
 						<>
-							<div className="rounded-lg bg-gray-200 p-2">
+							<div className="rounded-lg bg-blue-400 p-2">
 								<p className="mb-1 text-xs font-semibold">
 									{replyMessage?.display_name}
 								</p>
