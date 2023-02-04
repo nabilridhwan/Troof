@@ -6,20 +6,17 @@
 	"repository": "https://github.com/nabilridhwan/GameNight.git",
 	"author": "Nabil Ridhwan <nabridhwan@gmail.com>",
 	"license": "MIT",
-	"workspaces": [
-		"packages/*",
-		"apps/*"
-	],
 	"scripts": {
+		"preinstall": "npx only-allow pnpm",
 		"start:services": "turbo run start --scope=services",
 		"start:troof": "turbo run start --scope=web",
 		"start:all": "turbo run start",
 		"start:clean": "turbo start --no-cache --force",
-		"build:troof": "yarn install && yarn turbo run build --scope=web",
-		"build:services": "yarn install && yarn turbo run build --scope=services",
-		"build:all": "yarn install && yarn turbo run build",
 		"prettier": "prettier --write .",
-		"dev": "turbo run dev"
+		"dev": "turbo run dev",
+		"build:troof": "pnpm i && pnpm turbo run build --scope=web",
+		"build:services": "pnpm i && pnpm turbo run build --scope=services",
+		"build:all": "pnpm i && pnpm turbo run build"
 	},
 	"devDependencies": {
 		"@troof/config": "*",
