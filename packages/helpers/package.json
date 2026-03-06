@@ -9,6 +9,7 @@
 		"dev": "tsc -w --preserveWatchOutput"
 	},
 	"dependencies": {
-		"@troof/truth-or-dare": "*"
+		"@troof/truth-or-dare": "*",
+		"nanoid": "^3.3.8"
 	}
 }

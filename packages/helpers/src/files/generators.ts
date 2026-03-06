@@ -1,4 +1,4 @@
-import * as nanoid from "nanoid";
+import { customAlphabet } from "nanoid";
 
 import randomWords from "random-words";
 
@@ -12,7 +12,7 @@ export const generateRoomID = () =>
 	});
 
 // Generates a user ID of 10 characters
-export const generateUserID = nanoid.customAlphabet(
+export const generateUserID = customAlphabet(
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_",
 	10
 );

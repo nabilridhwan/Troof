@@ -42,15 +42,15 @@ import { GameRoomProvider } from "../../context/GameRoomProvider";
 import { PublicKeyProvider } from "../../context/PublicKeyProvider";
 import { useRoomContext } from "../../context/RoomContext";
 import { SocketProvider } from "../../context/SocketProvider";
-import { Cookie } from "../../utils/Cookie";
 
 export async function getServerSideProps(context: NextPageContext) {
 	// get room_id from params
 	let { room_id } = context.query;
 
-	let player_id = Cookie.getPlayerID(context.req, context.res);
-
-	let token = Cookie.getToken(context.req, context.res);
+	const reqCookies: Record<string, string> =
+		(context.req as Record<string, any>)?.cookies ?? {};
+	let player_id: string | null = reqCookies["player_id"] ?? null;
+	let token: string | null = reqCookies["token"] ?? null;
 
 	if (!player_id || !token) {
 		return {
