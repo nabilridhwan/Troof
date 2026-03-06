@@ -3,7 +3,10 @@
 	"private": true,
 	"version": "1.0.0",
 	"main": "index.js",
-	"workspaces": ["apps/*", "packages/*"],
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
 	"repository": "https://github.com/nabilridhwan/GameNight.git",
 	"author": "Nabil Ridhwan <nabridhwan@gmail.com>",
 	"license": "MIT",
@@ -47,7 +50,7 @@
 		"url-loader": "^4.1.1"
 	},
 	"engines": {
-		"node": ">=18 <19"
+		"node": ">=18"
 	},
 	"dependencies": {
 		"@prisma/client": "^5.1.1",
