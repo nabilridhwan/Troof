@@ -3,13 +3,18 @@
 import { getPlayer, getRoom } from "@troof/api";
 import { Player } from "@troof/socket";
 import { AnimatePresence, motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CautionSection from "../components/home/CautionSection";
-// import CreateRoomSection from "../components/home/CreateRoomSection";
-// import JoinRoomSection from "../components/home/JoinRoomSection";
+import ServerErrorSection from "../components/home/ServerErrorSection";
+import VersionSection from "../components/home/VersionSection";
+import { Cookie } from "../utils/Cookie";
+import troofPromoImage from "../public/troof_promo_new_new.png";
+
 const CreateRoomSection = dynamic(
 	() => import("../components/home/CreateRoomSection"),
 	{
@@ -31,15 +36,6 @@ const AccidentallyLeftGame = dynamic(
 	}
 );
 
-import { Cookie } from "../utils/Cookie";
-
-import Image from "next/image";
-// import AccidentallyLeftGame from "../components/home/AccidentallyLeftGameSection";
-import dynamic from "next/dist/shared/lib/dynamic";
-import ServerErrorSection from "../components/home/ServerErrorSection";
-import VersionSection from "../components/home/VersionSection";
-import troofPromoImage from "../public/troof_promo_new_new.png";
-
 type MainScreenAction = "create" | "join";
 
 export default function Home() {
@@ -54,17 +50,11 @@ export default function Home() {
 	const [errorMessage, setErrorMessage] = useState<string>("");
 
 	const [roomIDInput, setRoomIDInput] = useState<string>(room_id as string);
-	const [displayName, setDisplayName] = useState<string>(() => {
-		if (typeof window === "undefined") return "";
-		return localStorage.getItem("displayName") || "";
-	});
+	const [displayName, setDisplayName] = useState<string>("");
 	const [showExistingGameModal, setShowExistingGameModal] =
 		useState<boolean>(false);
 
-	const [showCautions, setShowCautions] = useState<boolean>(() => {
-		if (typeof window === "undefined") return false;
-		return !localStorage.getItem("cautionDismissed");
-	});
+	const [showCautions, setShowCautions] = useState<boolean>(false);
 
 	const [mainScreenAction, setMainScreenAction] =
 		useState<MainScreenAction>("join");
@@ -87,8 +77,10 @@ export default function Home() {
 	useEffect(() => {
 		console.log(Cookie.getPlayerID());
 		console.log(Cookie.getRoomId());
-		const show = !!localStorage.getItem("cautionDismissed");
-		console.log("Show caution?", show);
+		const cautionDismissed = !!localStorage.getItem("cautionDismissed");
+		console.log("Show caution?", cautionDismissed);
+		setShowCautions(!cautionDismissed);
+		setDisplayName(localStorage.getItem("displayName") || "");
 	}, []);
 
 	const getPlayerFromAPI = async (token: string) => {

@@ -2,21 +2,14 @@
 
 import { getPlayer } from "@troof/api";
 import { BadRequest, NotFoundResponse } from "@troof/responses";
-import {
-	Action,
-	EVENTS,
-	Player,
-	SECURITY_EVENTS,
-	Status,
-	TRUTH_OR_DARE_GAME,
-} from "@troof/socket";
+import { Action, Player } from "@troof/socket";
 import { AxiosError, isAxiosError } from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { NextPageContext } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import Container from "../../components/Container";
 import FullScreenLoadingScreen from "../../components/FullScreenLoadingScreen";
 // import MainItemSection from "../../components/game/MainItemSection";
@@ -50,10 +43,8 @@ import {
 	PublicKeyProviderContext,
 	UsePublicKeyType,
 } from "../../context/PublicKeyProvider";
-import {
-	SocketProvider,
-	SocketProviderContext,
-} from "../../context/SocketProvider";
+import { SocketProvider } from "../../context/SocketProvider";
+import { useGameRoom } from "../../hooks/useGameRoom";
 import usePlayerNotification from "../../hooks/usePlayerNotification";
 import { Cookie } from "../../utils/Cookie";
 
@@ -197,147 +188,23 @@ export default function GamePage({
 
 function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 	const [room_id] = useState<string>(roomID);
-	const [players, setPlayers] = useState<Player[]>([]);
 
 	const { publicKey, setPublicKey } = useContext(
 		PublicKeyProviderContext
 	) as UsePublicKeyType;
 
-	const [player, setPlayer] = useState<Player>(p);
-
-	// This state is for the notification
+	const { players, player, gameStatus, hasReceivedPlayers, hasReceivedGameStatus, hasReceivedPublicKey } = useGameRoom({
+		room_id,
+		initialPlayer: p,
+		setPublicKey,
+	});
 
 	// ! Notification service
 	const _ = usePlayerNotification(player, players);
 
-	const [gameStatus, setGameStatus] = useState<string>("in_lobby");
-
 	const [currentPlayer, setCurrentPlayer] = useState<Partial<Player>>({});
 	const [text, setText] = useState<string>("");
 	const [action, setAction] = useState<Action>(Action.Waiting_For_Selection);
-
-	const [hasReceivedLatestLogItem, setHasReceivedLatestLogData] =
-		useState<boolean>(false);
-	const [hasReceivedPlayers, setHasReceivedPlayers] = useState<boolean>(false);
-	const [hasReceivedGameStatus, setHasReceivedGameStatus] =
-		useState<boolean>(false);
-	const [hasReceivedPublicKey, setHasReceivedPublicKey] =
-		useState<boolean>(false);
-
-	const socket = useContext(SocketProviderContext);
-
-	useEffect(() => {
-		localStorage.setItem("displayName", player.display_name);
-
-		if (socket) {
-			console.log("Emitting joined truth or dare game");
-
-			socket.emit(TRUTH_OR_DARE_GAME.JOINED, {
-				room_id: room_id,
-			});
-
-			socket.on(EVENTS.PLAYERS_UPDATE, (data) => {
-				console.log(EVENTS.PLAYERS_UPDATE, " received");
-				console.log(data);
-				setPlayers(data);
-				setHasReceivedPlayers(true);
-
-				socket.emit(EVENTS.SELF_INFO, {
-					player_id: player.player_id,
-				});
-			});
-
-			socket.on(EVENTS.GAME_UPDATE, (data) => {
-				console.log("Status change received");
-				setGameStatus(data.status);
-				setHasReceivedGameStatus(true);
-			});
-
-			socket.on(SECURITY_EVENTS.PUBLIC_KEY, (publicKey: string) => {
-				setPublicKey(publicKey);
-				setHasReceivedPublicKey(true);
-				console.log("Set public key in game page");
-			});
-
-			// Handles if the user successfully left the game
-			socket.on(EVENTS.LEFT_GAME, (playerRemoved: Player) => {
-				console.log(playerRemoved);
-				if (playerRemoved.player_id === player.player_id) {
-					console.log("Redirecting to home page");
-					console.log("Left game");
-					// Removing cookies
-					Cookie.removePlayerID();
-					Cookie.removeRoomId();
-					Cookie.removeToken();
-
-					// Redirecting back to home page
-					window.location.href = "/";
-				}
-
-				// socket.disconnect();
-			});
-
-			socket.on(EVENTS.SELF_INFO, (player: Player) => {
-				console.log("Self info received");
-				console.log(player);
-				setPlayer(player);
-			});
-
-			socket.on("disconnect", (reason) => {
-				console.log(reason);
-				console.log("Disconnected");
-				console.log("You are disconnected");
-
-				if (reason === "transport close") {
-					setTimeout(() => {
-						window.location.reload();
-					}, 1500);
-
-					return;
-				}
-
-				setTimeout(() => {
-					window.location.reload();
-				}, 2500);
-
-				return;
-
-				// Refresh the page
-				// window.location.reload();
-				// Tell the server that they have been disconnected
-				// socket.emit(EVENTS.DISCONNECTED, {
-				// 	room_id: room_id,
-				// 	player_id,
-				// });
-			});
-		}
-	}, [socket, room_id, player.player_id, player.display_name, setPublicKey]);
-
-	useEffect(() => {
-		if (!socket) return;
-
-		if (players.length >= 2) {
-			// eslint-disable-next-line react-hooks/set-state-in-effect
-			setGameStatus(Status.In_Game);
-
-			console.log("There are 2 or more players, starting game");
-
-			socket.emit(EVENTS.START_GAME, {
-				room_id,
-			});
-		} else {
-			setGameStatus(Status.In_Lobby);
-			setGameStatus(Status.In_Game);
-
-			console.log(
-				"There is less than 2 players, waiting for more. Changing status to in lobby"
-			);
-			socket.emit(EVENTS.GAME_UPDATE, {
-				room_id,
-				status: Status.In_Lobby,
-			});
-		}
-	}, [players, room_id, socket]);
 
 	return (
 		<Container>
@@ -361,8 +228,7 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 			<EmojiReactionScreen room_id={room_id} />
 
 			<AnimatePresence>
-				{!hasReceivedLatestLogItem &&
-					!hasReceivedGameStatus &&
+				{!hasReceivedGameStatus &&
 					!hasReceivedPlayers &&
 					!hasReceivedPublicKey && <FullScreenLoadingScreen />}
 			</AnimatePresence>

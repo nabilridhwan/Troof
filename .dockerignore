@@ -1,0 +1,16 @@
+.git
+.gitignore
+
+# Exclude existing node_modules (will be installed fresh in container)
+node_modules
+apps/*/node_modules
+packages/*/node_modules
+
+# Exclude existing build artifacts (will be built fresh in container)
+apps/web/.next
+apps/services/dist
+
+*.log
+npm-debug.log*
+.DS_Store
+.turbo

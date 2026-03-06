@@ -1,10 +1,55 @@
 version: '3.8'
+
 services:
   db:
-    image: postgres:latest
+    image: postgres:16
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+#   api:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     image: troof-app
+#     working_dir: /app/apps/services
+#     # Push schema to db then start the server.
+#     # We cd back to /app so prisma.config.ts is found, then return to the
+#     # services dir so process.cwd() resolves ../../.env correctly to /app/.env.
+#     command: >
+#       sh -c "cd /app &&
+#              /app/node_modules/.bin/prisma db push --config=./prisma.config.ts &&
+#              cd /app/apps/services &&
+#              node dist/index.js"
+#     ports:
+#       - "4000:4000"
+#     depends_on:
+#       db:
+#         condition: service_healthy
+#     environment:
+#       # Override the DATABASE_URL from .env so the container reaches the 'db' service
+#       DATABASE_URL: postgresql://postgres:postgres@db:5432/postgres?schema=public
+
+#   web:
+#     # Reuses the image already built by the 'api' service above
+#     image: troof-app
+#     working_dir: /app/apps/web
+#     command: npm run start
+#     ports:
+#       - "3000:3000"
+#     depends_on:
+#       - api
+
+volumes:
+  postgres_data:
