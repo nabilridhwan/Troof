@@ -12,9 +12,9 @@
 	},
 	"dependencies": {
 		"@troof/logger": "*",
-		"jsonwebtoken": "^8.5.1"
+		"jsonwebtoken": "^9.0.2"
 	},
 	"devDependencies": {
-		"@types/jsonwebtoken": "^8.5.9"
+		"@types/jsonwebtoken": "^9.0.7"
 	}
 }

@@ -1,24 +1,24 @@
 /** @format */
 
 import {
-	IconLock,
-	IconMessage,
-	IconMoodHappy,
-	IconSend,
-	IconX,
+    IconLock,
+    IconMessage,
+    IconMoodHappy,
+    IconSend,
+    IconX,
 } from "@tabler/icons";
 import { Encryption } from "@troof/encrypt";
 import {
-	BaseNewMessage,
-	MessageUpdatedFromServer,
-	MESSAGE_EVENTS,
-	SystemMessage,
+    BaseNewMessage,
+    MESSAGE_EVENTS,
+    MessageUpdatedFromServer,
+    SystemMessage,
 } from "@troof/socket";
 import {
-	Emoji,
-	EmojiClickData,
-	EmojiStyle,
-	SuggestionMode,
+    Emoji,
+    EmojiClickData,
+    EmojiStyle,
+    SuggestionMode,
 } from "emoji-picker-react";
 
 // Dynamic imports
@@ -26,7 +26,7 @@ const EmojiPicker = dynamic(() => import("emoji-picker-react"), {
 	ssr: false,
 });
 
-const GifPicker = dynamic(() => import("@troof/gifpicker"), {
+const GifPicker = dynamic(() => import("../GifPicker"), {
 	ssr: false,
 });
 
@@ -34,8 +34,8 @@ import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useContext, useEffect, useId, useRef, useState } from "react";
 import {
-	PublicKeyProviderContext,
-	UsePublicKeyType,
+    PublicKeyProviderContext,
+    UsePublicKeyType,
 } from "../../context/PublicKeyProvider";
 import { SocketProviderContext } from "../../context/SocketProvider";
 import findMessageById from "../../utils/findMessageById";

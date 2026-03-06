@@ -1,13 +1,13 @@
 /** @format */
 
 import { IconSearch, IconX } from "@tabler/icons";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BarLoader } from "react-spinners";
 
 import {
-	getFeaturedCategories,
-	getFeaturedGifs,
-	searchForGifs,
+    getFeaturedCategories,
+    getFeaturedGifs,
+    searchForGifs,
 } from "@troof/api";
 import { motion } from "framer-motion";
 
