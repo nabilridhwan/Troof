@@ -20,7 +20,8 @@
 		"build:troof": "npm install && turbo run build --scope=web",
 		"build:services": "npm install && turbo run build --scope=services",
 		"build:all": "npm install && turbo run build",
-		"ci": "npm ci"
+		"ci": "npm ci",
+		"prisma:generate": "prisma generate --config=./prisma.config.ts"
 	},
 	"devDependencies": {
 		"@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
@@ -40,22 +41,26 @@
 		"jest-environment-node": "^29.4.1",
 		"next": "13.0.4",
 		"prettier": "^2.8.3",
-		"prisma": "^5.1.1",
+		"prisma": "7.4.2",
 		"react-refresh": "^0.10.0",
 		"ts-jest": "^29.1.0",
 		"ts-node": "10.9.1",
 		"tsconfig-paths": "^4.2.0",
 		"turbo": "^1.6.3",
-		"typescript": "~5.2.2",
+		"typescript": "^5.9.3",
 		"url-loader": "^4.1.1"
 	},
 	"engines": {
 		"node": ">=18"
 	},
 	"dependencies": {
-		"@prisma/client": "^5.1.1",
+		"@prisma/client": "7.4.2",
 		"axios": "^1.0.0",
 		"cookie-parser": "^1.4.6",
 		"tslib": "^2.3.0"
+	},
+	"overrides": {
+		"prisma": "7.4.2",
+		"@prisma/client": "7.4.2"
 	}
 }

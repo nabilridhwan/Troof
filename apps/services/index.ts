@@ -16,6 +16,7 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import helmet from "helmet";
 import hpp from "hpp";
+import path from "path";
 import dareRouter from "./routers/dareRouter";
 import playerRouter from "./routers/playerRouter";
 import roomRouter from "./routers/roomRouter";
@@ -34,6 +35,7 @@ const io = new Server<ServerToClientEvents>(server, {
 });
 
 // Config dotenv
+dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 dotenv.config();
 
 let mStreamer = new MorganStreamer();
