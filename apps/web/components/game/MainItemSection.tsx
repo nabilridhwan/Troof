@@ -1,104 +1,37 @@
 import { IconArrowNarrowRight, IconDice } from "@tabler/icons";
-import { Action, Log, Player, TRUTH_OR_DARE_GAME } from "@troof/socket";
+import { Action, Player } from "@troof/socket";
 import classNames from "classnames";
 import { motion } from "framer-motion";
-import { useContext, useEffect, useState } from "react";
 import { PropagateLoader } from "react-spinners";
-import { SocketProviderContext } from "../../context/SocketProvider";
+import { useTruthOrDare } from "../../hooks/useTruthOrDare";
 
 interface MainItemSectionProps {
 	player: Player;
 	players: Player[];
 	room_id: string;
-
-	currentPlayer: Player;
-	action: Action;
-	text: string;
-
-	setCurrentPlayer: (player: Player) => void;
-	setAction: (action: Action) => void;
-	setText: (text: string) => void;
 }
 
 const MainItemSection = ({
 	room_id,
 	player,
-	currentPlayer,
 	players,
-	action,
-	text,
-	setCurrentPlayer,
-	setAction,
-	setText,
 }: MainItemSectionProps) => {
-	const [isLoadingState, setLoadingState] = useState<boolean>(false);
-	const socket = useContext(SocketProviderContext);
+	const {
+		isLoadingState,
+		currentPlayer,
+		text,
+		action,
+		selectTruth,
+		selectDare,
+		handleContinue,
+	} = useTruthOrDare({ room_id });
 
-	useEffect(() => {
-		if (!socket) return;
-
-		socket.on(TRUTH_OR_DARE_GAME.CONTINUE, (log: Log, player: Player) => {
-			console.log("Continue game received");
-			console.log(log, player);
-			setCurrentPlayer(player);
-			setText("");
-			setAction(log.action as Action);
-
-			setLoadingState(false);
-		});
-
-		socket.on(TRUTH_OR_DARE_GAME.INCOMING_DATA, (log: Log, player: Player) => {
-			console.log("New data received");
-			console.log(log, player);
-
-			setText(log.data);
-			setCurrentPlayer(player ?? {});
-			setAction(
-				(log.action as Action) ?? (Action.Waiting_For_Selection as Action)
-			);
-
-			setLoadingState(false);
-		});
-	}, [socket, setAction, setCurrentPlayer, setText]);
-
-	const selectTruth = () => {
-		console.log("Selecting truth");
-		console.log(!!socket);
-
-		setLoadingState(true);
-		if (!socket) return;
-		console.log("Emitting to server to select truth");
-		socket.emit(TRUTH_OR_DARE_GAME.SELECT_TRUTH, {
-			room_id: room_id,
-		});
-	};
-
-	const selectDare = () => {
-		if (!socket) return;
-		setLoadingState(true);
-		socket.emit(TRUTH_OR_DARE_GAME.SELECT_DARE, {
-			room_id: room_id,
-		});
-	};
-
-	const handleContinue = () => {
-		if (!socket) return;
-		setLoadingState(true);
-		socket.emit(TRUTH_OR_DARE_GAME.CONTINUE, {
-			room_id: room_id,
-		});
-	};
-
-	// Handling of re-rolling
 	const handleReroll = () => {
 		if (action === Action.Dare) {
-			console.log("Re-rolling dare");
 			selectDare();
-			return;
+		} else {
+			selectTruth();
 		}
-
-		console.log("Re-rolling dare");
-		selectTruth();
 	};
 
 	return (

@@ -12,8 +12,8 @@ import { useEffect, useState } from "react";
 import CautionSection from "../components/home/CautionSection";
 import ServerErrorSection from "../components/home/ServerErrorSection";
 import VersionSection from "../components/home/VersionSection";
-import { Cookie } from "../utils/Cookie";
 import troofPromoImage from "../public/troof_promo_new_new.png";
+import { Cookie } from "../utils/Cookie";
 
 const CreateRoomSection = dynamic(
 	() => import("../components/home/CreateRoomSection"),

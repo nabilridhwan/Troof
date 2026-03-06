@@ -2,7 +2,7 @@
 
 import { getPlayer } from "@troof/api";
 import { BadRequest, NotFoundResponse } from "@troof/responses";
-import { Action, Player } from "@troof/socket";
+import { Player } from "@troof/socket";
 import { AxiosError, isAxiosError } from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { NextPageContext } from "next";
@@ -202,10 +202,6 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 	// ! Notification service
 	const _ = usePlayerNotification(player, players);
 
-	const [currentPlayer, setCurrentPlayer] = useState<Partial<Player>>({});
-	const [text, setText] = useState<string>("");
-	const [action, setAction] = useState<Action>(Action.Waiting_For_Selection);
-
 	return (
 		<Container>
 			<Head>
@@ -250,7 +246,6 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 								player={player}
 								players={players}
 								room_id={roomID}
-								currentPlayer={currentPlayer}
 							/>
 						</div>
 					</div>
@@ -259,15 +254,9 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 					<div className="col-span-2 rounded-2xl border-black/10 lg:h-full lg:border lg:px-10">
 						<div className="flex h-full w-full items-center justify-center">
 							<MainItemSection
-								action={action}
 								room_id={roomID}
 								player={player}
 								players={players}
-								text={text}
-								currentPlayer={currentPlayer as Player}
-								setAction={setAction}
-								setCurrentPlayer={setCurrentPlayer}
-								setText={setText}
 							/>
 						</div>
 					</div>

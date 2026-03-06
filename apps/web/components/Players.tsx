@@ -10,17 +10,17 @@ import {
 	IconUserMinus,
 } from "@tabler/icons";
 
-import { EVENTS, Player, TRUTH_OR_DARE_GAME } from "@troof/socket";
+import { Player } from "@troof/socket";
 import cx from "classnames";
 import { motion } from "framer-motion";
-import { Fragment, useContext, useState } from "react";
-import { SocketProviderContext } from "../context/SocketProvider";
+import { Fragment, useState } from "react";
+import { usePlayers } from "../hooks/usePlayers";
+import { useTruthOrDare } from "../hooks/useTruthOrDare";
 import ProfilePictureFromName from "./ProfilePictureFromName";
 
 interface PlayersProps {
 	players: Player[];
 	player: Omit<Player, "game_room_id" | "joined_at">;
-	currentPlayer: Partial<Player>;
 	room_id: string;
 }
 
@@ -28,45 +28,19 @@ const Players = ({
 	players,
 	player: p,
 	room_id,
-	currentPlayer,
 }: PlayersProps) => {
-	const socket = useContext(SocketProviderContext);
-
 	let [menuOpen, setMenuOpen] = useState(false);
 	const [newName, setNewName] = useState(p.display_name);
 
-	const removePlayer = (player_id: string) => {
-		if (!socket) return;
-		socket.emit(TRUTH_OR_DARE_GAME.LEAVE_GAME, {
-			room_id: room_id,
-			player_id: player_id,
-		});
-	};
+	const { currentPlayer } = useTruthOrDare({ room_id });
 
-	const handleContinue = () => {
-		if (!socket) return;
-		socket.emit(TRUTH_OR_DARE_GAME.CONTINUE, {
-			room_id: room_id,
-		});
-	};
-
-	const transferPartyLeader = (transferToPlayerID: string) => {
-		socket?.emit(EVENTS.TRANSFER_PARTY_LEADER, {
-			room_id: room_id,
-			player_id: transferToPlayerID,
-		});
-	};
-
-	const changeName = () => {
-		// console.log("The changing name function is retracted back.");
-		if (!socket) return;
-		socket.emit(EVENTS.CHANGE_NAME, {
-			room_id: room_id,
+	const { removePlayer, handleContinue, transferPartyLeader, changeName } =
+		usePlayers({
+			room_id,
 			player_id: p.player_id,
 			display_name: p.display_name,
-			new_name: newName,
+			newName,
 		});
-	};
 
 	return (
 		<div className="my-2 max-h-full w-full">
@@ -87,8 +61,6 @@ const Players = ({
 								className={cx({
 									"flex-1": true,
 									"break-all": true,
-									// "font-bold": player.player_id === p.player_id,
-
 									"transition-all duration-100 ease-out": true,
 									"font-semibold": currentPlayer.player_id === player.player_id,
 								})}
