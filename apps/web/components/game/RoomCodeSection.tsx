@@ -1,12 +1,10 @@
 import { IconCornerLeftUp, IconLink } from "@tabler/icons";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useRoomContext } from "../../context/RoomContext";
 
-interface RoomCodeSectionProps {
-	room_id: string;
-}
-
-const RoomCodeSection = ({ room_id }: RoomCodeSectionProps) => {
+const RoomCodeSection = () => {
+	const { room_id } = useRoomContext();
 	// This state below is for the Room code text. after copying, it will change to "Copied!"
 	const [roomCodeText, setRoomCodeText] = useState<string>(`${room_id}`);
 

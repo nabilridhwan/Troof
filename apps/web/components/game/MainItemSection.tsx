@@ -1,21 +1,13 @@
 import { IconArrowNarrowRight, IconDice } from "@tabler/icons";
-import { Action, Player } from "@troof/socket";
+import { Action } from "@troof/socket";
 import classNames from "classnames";
 import { motion } from "framer-motion";
 import { PropagateLoader } from "react-spinners";
+import { useRoomContext } from "../../context/RoomContext";
 import { useTruthOrDare } from "../../hooks/useTruthOrDare";
 
-interface MainItemSectionProps {
-	player: Player;
-	players: Player[];
-	room_id: string;
-}
-
-const MainItemSection = ({
-	room_id,
-	player,
-	players,
-}: MainItemSectionProps) => {
+const MainItemSection = () => {
+	const { room_id, player, players } = useRoomContext();
 	const {
 		isLoadingState,
 		currentPlayer,

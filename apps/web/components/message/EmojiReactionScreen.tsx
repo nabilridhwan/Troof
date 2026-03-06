@@ -1,14 +1,12 @@
 /** @format */
 
 import { Emoji, EmojiStyle } from "emoji-picker-react";
+import { useRoomContext } from "../../context/RoomContext";
 import { useEmojiReaction } from "../../hooks/useEmojiReaction";
 import Container from "../Container";
 
-interface EmojiReactionScreenProps {
-	room_id: string;
-}
-
-const EmojiReactionScreen = ({ room_id }: EmojiReactionScreenProps) => {
+const EmojiReactionScreen = () => {
+	const { room_id } = useRoomContext();
 	const { emojis } = useEmojiReaction({ room_id });
 
 	return (

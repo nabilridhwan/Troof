@@ -9,26 +9,16 @@ import {
 	IconPlayerTrackNext,
 	IconUserMinus,
 } from "@tabler/icons";
-
-import { Player } from "@troof/socket";
 import cx from "classnames";
 import { motion } from "framer-motion";
 import { Fragment, useState } from "react";
+import { useRoomContext } from "../context/RoomContext";
 import { usePlayers } from "../hooks/usePlayers";
 import { useTruthOrDare } from "../hooks/useTruthOrDare";
 import ProfilePictureFromName from "./ProfilePictureFromName";
 
-interface PlayersProps {
-	players: Player[];
-	player: Omit<Player, "game_room_id" | "joined_at">;
-	room_id: string;
-}
-
-const Players = ({
-	players,
-	player: p,
-	room_id,
-}: PlayersProps) => {
+const Players = () => {
+	const { players, player: p, room_id } = useRoomContext();
 	let [menuOpen, setMenuOpen] = useState(false);
 	const [newName, setNewName] = useState(p.display_name);
 

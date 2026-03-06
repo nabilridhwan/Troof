@@ -1,18 +1,18 @@
 /** @format */
 
 import {
-    IconLock,
-    IconMessage,
-    IconMoodHappy,
-    IconSend,
-    IconX,
+	IconLock,
+	IconMessage,
+	IconMoodHappy,
+	IconSend,
+	IconX,
 } from "@tabler/icons";
 import { MessageUpdatedFromServer, SystemMessage } from "@troof/socket";
 import {
-    Emoji,
-    EmojiClickData,
-    EmojiStyle,
-    SuggestionMode,
+	Emoji,
+	EmojiClickData,
+	EmojiStyle,
+	SuggestionMode,
 } from "emoji-picker-react";
 
 // Dynamic imports
@@ -27,19 +27,17 @@ const GifPicker = dynamic(() => import("../GifPicker"), {
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useEffect, useId, useRef, useState } from "react";
+import { useRoomContext } from "../../context/RoomContext";
 import { useChat } from "../../hooks/useChat";
 import findMessageById from "../../utils/findMessageById";
 import EmojiReactionBar from "../EmojiBar";
 import OtherPlayerChatBubble from "./OtherPlayerChatBubble";
 import SelfChatBubble from "./SelfChatBubble";
 
-interface ChatBoxProps {
-	room_id: string;
-	player_id: string;
-	display_name: string;
-}
+const ChatBox = () => {
+	const { room_id, player } = useRoomContext();
+	const display_name = player.display_name;
 
-const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 	const [replyToMessage, setReplyToMessage] =
 		useState<MessageUpdatedFromServer | null>(null);
 

@@ -9,7 +9,6 @@ import { NextPageContext } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
 import Container from "../../components/Container";
 import FullScreenLoadingScreen from "../../components/FullScreenLoadingScreen";
 // import MainItemSection from "../../components/game/MainItemSection";
@@ -38,14 +37,11 @@ const Players = dynamic(() => import("../../components/Players"), {
 });
 // import EmojiReactionScreen from "../../components/message/EmojiReactionScreen";
 // import Players from "../../components/Players";
-import {
-	PublicKeyProvider,
-	PublicKeyProviderContext,
-	UsePublicKeyType,
-} from "../../context/PublicKeyProvider";
+import { useGameContext } from "../../context/GameContext";
+import { GameRoomProvider } from "../../context/GameRoomProvider";
+import { PublicKeyProvider } from "../../context/PublicKeyProvider";
+import { useRoomContext } from "../../context/RoomContext";
 import { SocketProvider } from "../../context/SocketProvider";
-import { useGameRoom } from "../../hooks/useGameRoom";
-import usePlayerNotification from "../../hooks/usePlayerNotification";
 import { Cookie } from "../../utils/Cookie";
 
 export async function getServerSideProps(context: NextPageContext) {
@@ -135,8 +131,6 @@ export async function getServerSideProps(context: NextPageContext) {
 	}
 }
 
-type GamePageProps = Parameters<typeof GamePage>[0];
-
 export default function GamePage({
 	r: roomID,
 	player,
@@ -168,6 +162,7 @@ export default function GamePage({
 			></motion.div>
 			<PublicKeyProvider>
 				<SocketProvider>
+					<GameRoomProvider room_id={roomID} initialPlayer={player}>
 					<motion.div
 						key={router.route}
 						initial={{ opacity: 0 }}
@@ -178,34 +173,23 @@ export default function GamePage({
 							easings: "easeIn",
 						}}
 					>
-						<GamePageContent r={roomID} player={player} />
+						<GamePageContent />
 					</motion.div>
+					</GameRoomProvider>
 				</SocketProvider>
 			</PublicKeyProvider>
 		</>
 	);
 }
 
-function GamePageContent({ r: roomID, player: p }: GamePageProps) {
-	const [room_id] = useState<string>(roomID);
-
-	const { publicKey, setPublicKey } = useContext(
-		PublicKeyProviderContext
-	) as UsePublicKeyType;
-
-	const { players, player, gameStatus, hasReceivedPlayers, hasReceivedGameStatus, hasReceivedPublicKey } = useGameRoom({
-		room_id,
-		initialPlayer: p,
-		setPublicKey,
-	});
-
-	// ! Notification service
-	const _ = usePlayerNotification(player, players);
+function GamePageContent() {
+	const { room_id, players } = useRoomContext();
+	const { hasReceivedPlayers, hasReceivedGameStatus, hasReceivedPublicKey } = useGameContext();
 
 	return (
 		<Container>
 			<Head>
-				<title>Troof! ({roomID})</title>
+				<title>Troof! ({room_id})</title>
 				{/* meta description */}
 
 				{players.length < 2 ? (
@@ -221,7 +205,7 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<EmojiReactionScreen room_id={room_id} />
+			<EmojiReactionScreen />
 
 			<AnimatePresence>
 				{!hasReceivedGameStatus &&
@@ -234,7 +218,7 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 					<div className="col-span-1 rounded-2xl border-black/10 px-1 lg:h-full lg:border">
 						{players.length < 8 && (
 							<div className="m-2 mb-6 rounded-xl border border-black/25 bg-white/30">
-								<RoomCodeSection room_id={roomID} />
+								<RoomCodeSection />
 							</div>
 						)}
 
@@ -242,31 +226,19 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 							<h2 className={`my-5 text-center text-lg font-bold`}>
 								Players ({players.length}/8)
 							</h2>
-							<Players
-								player={player}
-								players={players}
-								room_id={roomID}
-							/>
+							<Players />
 						</div>
 					</div>
 
 					{/* Main Content */}
 					<div className="col-span-2 rounded-2xl border-black/10 lg:h-full lg:border lg:px-10">
 						<div className="flex h-full w-full items-center justify-center">
-							<MainItemSection
-								room_id={roomID}
-								player={player}
-								players={players}
-							/>
+							<MainItemSection />
 						</div>
 					</div>
 
 					<div className="col-span-1 py-5 lg:h-full lg:py-0">
-						<ChatBox
-							player_id={player.player_id}
-							room_id={roomID}
-							display_name={player.display_name}
-						/>
+						<ChatBox />
 					</div>
 				</div>
 			</div>
