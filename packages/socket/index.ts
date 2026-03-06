@@ -1,4 +1,6 @@
 export enum EVENTS {
+	ROOM_INFO = "game:room_info",
+
 	JOIN_ROOM = "join_room",
 	PLAYERS_UPDATE = "event:players_update",
 	DISCONNECTED = "disconnected",
@@ -117,6 +119,7 @@ export interface MessageUpdatedFromServer extends BaseNewMessage {
 
 // This interface represents the events that are from server to clients when you use socket.emit/io.emit
 export interface ServerToClientEvents {
+	[EVENTS.ROOM_INFO]: (room: Room) => void;
 	[EVENTS.PLAYERS_UPDATE]: (players: Player[]) => void;
 	[EVENTS.GAME_UPDATE]: (room: Room) => void;
 	[EVENTS.LEFT_GAME]: (playerRemoved: Player) => void;

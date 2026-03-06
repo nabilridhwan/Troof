@@ -1,6 +1,8 @@
 /** @format */
 
+// @ts-ignore
 import { get_dare, get_truth } from "@troof/helpers";
+// @ts-ignore
 import { logger } from "@troof/logger";
 import {
 	Action,

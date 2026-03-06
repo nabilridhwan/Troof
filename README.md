@@ -81,8 +81,8 @@ Since this project is built using TypeScript, it is important to add the `tsconf
 3.  Back in the `package.json` file, add the `build` and `dev` scripts. The `build` script will be used to compile the TypeScript code to JavaScript and the `dev` script will be used to watch for changes in the TypeScript code and compile it to JavaScript.
 4.  Add the `main` and `types` fields to the `package.json` file. The `main` field will be used to reference the compiled JavaScript code and the `types` field will be used to reference the TypeScript type definitions.
 5.  Add the `private` field to the `package.json` file and set it to `true`. This will prevent the package from being published to the npm registry and also to allow for successful installation of the package in other packages.
-6.  Run `yarn dev` in the root folder of the package to start watching for changes in the TypeScript code and compile it to JavaScript.
-7.  In another package that needs `@troof/math`, include it in the `package.json` file and run `yarn` to install the package.
+6.  Run `npm run dev` in the root folder of the package to start watching for changes in the TypeScript code and compile it to JavaScript.
+7.  In another package that needs `@troof/math`, include it in the `package.json` file and run `npm install` to install the package.
 
 ```json
 {
