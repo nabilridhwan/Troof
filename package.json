@@ -42,6 +42,7 @@
 		"turbo": "^2.3.3",
 		"typescript": "^5.9.3"
 	},
+	"packageManager": "npm@11.9.0",
 	"engines": {
 		"node": ">=18"
 	},
@@ -51,6 +52,7 @@
 	},
 	"overrides": {
 		"prisma": "7.4.2",
-		"@prisma/client": "7.4.2"
+		"@prisma/client": "7.4.2",
+		"@types/express-serve-static-core": "5.1.1"
 	}
 }

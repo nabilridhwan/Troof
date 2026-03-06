@@ -130,7 +130,6 @@ const Players = ({
 												player.player_id !== p.player_id && (
 													<Menu.Item
 														as="div"
-														role="button"
 														className="flex cursor-pointer items-center gap-2 rounded-lg p-2 px-2 hover:bg-yellow-200 hover:text-yellow-900"
 														onClick={() =>
 															transferPartyLeader(player.player_id)

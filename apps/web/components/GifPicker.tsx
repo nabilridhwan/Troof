@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import { BarLoader } from "react-spinners";
 
 import {
-    getFeaturedCategories,
-    getFeaturedGifs,
-    searchForGifs,
+	getFeaturedCategories,
+	getFeaturedGifs,
+	searchForGifs,
 } from "@troof/api";
 import { motion } from "framer-motion";
 
@@ -96,19 +96,10 @@ const GifPicker = ({ onSelectGif }: GifSelectorProps) => {
 
 			setFeaturedCategories(mappedCategories.slice(0, 10));
 
-			// If there is no search query, fetch the featured gifs and featured categories
-			if (searchQuery === "") {
-				setLoading(true);
-				const { results } = await getFeaturedGifs();
-				setLoading(false);
-
-				setGifsData(results);
-			} else {
-				setLoading(true);
-				const { results } = await searchForGifs(searchQuery);
-				setLoading(false);
-				setGifsData(results);
-			}
+			setLoading(true);
+			const { results } = await getFeaturedGifs();
+			setLoading(false);
+			setGifsData(results);
 		})();
 	}, []);
 

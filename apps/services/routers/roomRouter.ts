@@ -1,10 +1,10 @@
 /** @format */
 
-import express from "express";
+import { Router } from "express";
 import Room from "../controllers/room";
 import VerifyCaptcha from "../middleware/VerifyCaptcha";
 
-const roomRouter = express.Router();
+const roomRouter: Router = Router();
 
 roomRouter.get("/", Room.Get);
 

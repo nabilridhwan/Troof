@@ -1,9 +1,9 @@
 /** @format */
 
-import express from "express";
+import express, { Router } from "express";
 import TruthDare from "../controllers/truth-dare";
 
-const truthRouter = express.Router();
+const truthRouter: Router = express.Router();
 
 truthRouter.get("/", TruthDare.GetAllTruths);
 

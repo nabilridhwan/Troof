@@ -311,12 +311,13 @@ function GamePageContent({ r: roomID, player: p }: GamePageProps) {
 				// });
 			});
 		}
-	}, [socket, room_id, player.player_id]);
+	}, [socket, room_id, player.player_id, player.display_name, setPublicKey]);
 
 	useEffect(() => {
 		if (!socket) return;
 
 		if (players.length >= 2) {
+			// eslint-disable-next-line react-hooks/set-state-in-effect
 			setGameStatus(Status.In_Game);
 
 			console.log("There are 2 or more players, starting game");

@@ -15,6 +15,19 @@ export function useSocket(token: string) {
 	useEffect(() => {
 		console.log("USESOCKET: USEEFFECT RUNNING");
 		if (effectRan || socket) return;
+
+		const clientSocketInitializer = async () => {
+			console.log("USESOCKET: Client Socket Initializer Ran");
+			const url = process.env.NEXT_PUBLIC_SERVICES_URL!;
+			const s = io(url, {
+				extraHeaders: {
+					token,
+				},
+			});
+			setSocket(s);
+			setEffectRan(true);
+		};
+
 		clientSocketInitializer();
 
 		return () => {
@@ -23,19 +36,7 @@ export function useSocket(token: string) {
 				(socket as Socket).disconnect();
 			}
 		};
-	}, [socket, effectRan]);
-
-	const clientSocketInitializer = async () => {
-		console.log("USESOCKET: Client Socket Initializer Ran");
-		const url = process.env.NEXT_PUBLIC_SERVICES_URL!;
-		const s = io(url, {
-			extraHeaders: {
-				token,
-			},
-		});
-		setSocket(s);
-		setEffectRan(true);
-	};
+	}, [socket, effectRan, token]);
 
 	return { socket };
 }

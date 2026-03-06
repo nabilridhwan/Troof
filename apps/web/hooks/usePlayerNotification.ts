@@ -23,7 +23,6 @@ const usePlayerNotification = (player: Player, players: Player[]) => {
 				if (!notified.current) {
 					Notify.createNewNotification("Game has started", {
 						body: `Hey ${player.display_name}, Someone else has joined, the game has started!`,
-						renotify: false,
 						requireInteraction: false,
 					});
 
@@ -34,7 +33,7 @@ const usePlayerNotification = (player: Player, players: Player[]) => {
 			// If the players ever fall under 2, set notified to false
 			notified.current = false;
 		}
-	}, [players]);
+	}, [players, player.display_name, player.player_id]);
 };
 
 export default usePlayerNotification;

@@ -59,7 +59,7 @@ const MainItemSection = ({
 
 			setLoadingState(false);
 		});
-	}, [socket]);
+	}, [socket, setAction, setCurrentPlayer, setText]);
 
 	const selectTruth = () => {
 		console.log("Selecting truth");

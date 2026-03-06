@@ -54,11 +54,17 @@ export default function Home() {
 	const [errorMessage, setErrorMessage] = useState<string>("");
 
 	const [roomIDInput, setRoomIDInput] = useState<string>(room_id as string);
-	const [displayName, setDisplayName] = useState<string>("");
+	const [displayName, setDisplayName] = useState<string>(() => {
+		if (typeof window === "undefined") return "";
+		return localStorage.getItem("displayName") || "";
+	});
 	const [showExistingGameModal, setShowExistingGameModal] =
 		useState<boolean>(false);
 
-	const [showCautions, setShowCautions] = useState<boolean>(false);
+	const [showCautions, setShowCautions] = useState<boolean>(() => {
+		if (typeof window === "undefined") return false;
+		return !localStorage.getItem("cautionDismissed");
+	});
 
 	const [mainScreenAction, setMainScreenAction] =
 		useState<MainScreenAction>("join");
@@ -69,10 +75,12 @@ export default function Home() {
 	};
 
 	useEffect(() => {
+		// eslint-disable-next-line react-hooks/set-state-in-effect
 		setRoomIDInput(room_id as string);
 	}, [room_id]);
 
 	useEffect(() => {
+		// eslint-disable-next-line react-hooks/set-state-in-effect
 		setErrorMessage(error as string);
 	}, [error]);
 
@@ -81,14 +89,6 @@ export default function Home() {
 		console.log(Cookie.getRoomId());
 		const show = !!localStorage.getItem("cautionDismissed");
 		console.log("Show caution?", show);
-
-		const displayName = localStorage.getItem("displayName");
-
-		if (displayName) {
-			setDisplayName(displayName);
-		}
-
-		setShowCautions(!show);
 	}, []);
 
 	const getPlayerFromAPI = async (token: string) => {

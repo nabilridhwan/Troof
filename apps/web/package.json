@@ -6,11 +6,11 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint"
+		"lint": "eslint . --ext .js,.jsx,.ts,.tsx"
 	},
 	"dependencies": {
 		"@headlessui/react": "^1.7.4",
-		"@next/bundle-analyzer": "^14.2.21",
+		"@next/bundle-analyzer": "^16.1.6",
 		"@reacticons/ionicons": "^6.0.4",
 		"@tabler/icons": "^1.113.0",
 		"@tailwindcss/typography": "^0.5.8",
@@ -30,10 +30,10 @@
 		"gray-matter": "^4.0.3",
 		"markdown-it": "^13.0.1",
 		"nanoid": "^4.0.0",
-		"next": "^14.2.21",
+		"next": "^16.1.6",
 		"node-rsa": "^1.1.1",
-		"react": "^18.3.1",
-		"react-dom": "^18.3.1",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
 		"react-spinners": "^0.13.7",
 		"reaptcha": "^1.12.1",
 		"socket.io-client": "^4.8.0",
@@ -48,8 +48,8 @@
 		"@types/react-dom": "^18.3.0",
 		"@types/validator": "^13.7.10",
 		"autoprefixer": "^10.4.13",
-		"eslint": "~8.57.0",
-		"eslint-config-next": "^14.2.21",
+		"eslint": "^9.39.1",
+		"eslint-config-next": "^16.1.6",
 		"postcss": "^8.4.19",
 		"prettier-plugin-tailwindcss": "^0.6.11",
 		"tailwindcss": "^3.4.17"

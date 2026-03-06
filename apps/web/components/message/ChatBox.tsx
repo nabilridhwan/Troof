@@ -1,24 +1,24 @@
 /** @format */
 
 import {
-    IconLock,
-    IconMessage,
-    IconMoodHappy,
-    IconSend,
-    IconX,
+	IconLock,
+	IconMessage,
+	IconMoodHappy,
+	IconSend,
+	IconX,
 } from "@tabler/icons";
 import { Encryption } from "@troof/encrypt";
 import {
-    BaseNewMessage,
-    MESSAGE_EVENTS,
-    MessageUpdatedFromServer,
-    SystemMessage,
+	BaseNewMessage,
+	MESSAGE_EVENTS,
+	MessageUpdatedFromServer,
+	SystemMessage,
 } from "@troof/socket";
 import {
-    Emoji,
-    EmojiClickData,
-    EmojiStyle,
-    SuggestionMode,
+	Emoji,
+	EmojiClickData,
+	EmojiStyle,
+	SuggestionMode,
 } from "emoji-picker-react";
 
 // Dynamic imports
@@ -34,8 +34,8 @@ import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useContext, useEffect, useId, useRef, useState } from "react";
 import {
-    PublicKeyProviderContext,
-    UsePublicKeyType,
+	PublicKeyProviderContext,
+	UsePublicKeyType,
 } from "../../context/PublicKeyProvider";
 import { SocketProviderContext } from "../../context/SocketProvider";
 import findMessageById from "../../utils/findMessageById";
@@ -227,7 +227,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 				}
 			});
 		}
-	}, [socket, publicKey]);
+	}, [socket, publicKey, room_id]);
 
 	useEffect(() => {
 		console.log("Messages");
@@ -295,7 +295,7 @@ const ChatBox = ({ room_id, player_id, display_name }: ChatBoxProps) => {
 				}, 100);
 			}
 		}
-	}, [inputMessage, inputFocused]);
+	}, [inputMessage, inputFocused, display_name, room_id, socket]);
 
 	const handleFocus = () => {
 		setInputFocused(true);

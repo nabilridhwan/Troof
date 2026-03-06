@@ -2,7 +2,7 @@
 
 import { Emoji, EmojiStyle } from "emoji-picker-react";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const OriginalEmojiBar = [
 	{
@@ -55,35 +55,17 @@ const EmojiReactionBar = ({ handleReaction }: EmojiReactionBarProps) => {
 	const [disabled, setDisabled] = useState(false);
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-	const [emojiBar, setEmojiBar] = useState<EmojiInBar>(OriginalEmojiBar);
-
-	const updateEmojiBar = () => {
-		// EPR data is the data for emoji picker react, which is the library we use to display the emoji picker.
+	const [emojiBar, setEmojiBar] = useState<EmojiInBar>(() => {
+		if (typeof window === "undefined") return OriginalEmojiBar;
 		const eprData = localStorage.getItem("epr_suggested");
-
-		if (!eprData) return;
-
+		if (!eprData) return OriginalEmojiBar;
 		const eprDataJSON: EmojiInBar = JSON.parse(eprData);
-
-		// Sort the eprDataJSON by count, so that the top emoji is at the top
-		const sortedEprDataJSon = eprDataJSON
+		const sortedEprDataJSON = eprDataJSON
 			.sort((a, b) => b.count - a.count)
 			.slice(0, 7);
-
-		if (sortedEprDataJSon.length === 7) {
-			// Replace the whole emoji bar with the new one
-			setEmojiBar(sortedEprDataJSon);
-			return;
-		}
-
-		// Append it to emojiBar and take the last 8 of the whole emoji bar
-		const newEmojiBar = [...emojiBar, ...sortedEprDataJSon].slice(-7);
-		setEmojiBar(newEmojiBar);
-	};
-
-	useEffect(() => {
-		updateEmojiBar();
-	}, []);
+		if (sortedEprDataJSON.length === 7) return sortedEprDataJSON;
+		return [...OriginalEmojiBar, ...sortedEprDataJSON].slice(-7);
+	});
 
 	const handleOnClick = (emoji: string) => {
 		setDisabled(true);

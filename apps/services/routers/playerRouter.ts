@@ -1,9 +1,9 @@
 /** @format */
 
-import express from "express";
+import express, { Router } from "express";
 import Player from "../controllers/player";
 
-const playerRouter = express.Router();
+const playerRouter: Router = express.Router();
 
 playerRouter.get("/", Player.Find);
 
