@@ -15,18 +15,21 @@ const getOrderedPlayersInRoom = async (roomId: string) => {
 	});
 };
 
-const getNextPlayerId = async (roomId: string) => {
-	const currentPlayer = await prisma.player_sequence.findFirst({
-		where: {
-			game_room_id: roomId,
-		},
-		select: {
-			current_player_id: true,
-		},
-	});
+const getCurrentPlayerId = async (roomId: string) => {
+	const currentPlayer = await Sequence.getCurrentPlayer(roomId);
 
 	if (!currentPlayer) {
 		logger.error("No current player found in sequence");
+		return;
+	}
+
+	return currentPlayer.current_player_id;
+};
+
+const getNextPlayerId = async (roomId: string) => {
+	const currentPlayerId = await getCurrentPlayerId(roomId);
+
+	if (!currentPlayerId) {
 		return;
 	}
 
@@ -38,18 +41,29 @@ const getNextPlayerId = async (roomId: string) => {
 	}
 
 	const currentPlayerIndex = players.findIndex(
-		(player) => player.player_id === currentPlayer.current_player_id
+		(player) => player.player_id === currentPlayerId
 	);
 
 	if (currentPlayerIndex === -1) {
 		logger.warn(
-			`Current player ${currentPlayer.current_player_id} is not active in room ${roomId}; wrapping to first active player`
+			`Current player ${currentPlayerId} is not active in room ${roomId}; wrapping to first active player`
 		);
 		return players[0].player_id;
 	}
 
 	const nextPlayerIndex = (currentPlayerIndex + 1) % players.length;
 	return players[nextPlayerIndex].player_id;
+};
+
+const resolveNextPlayerId = async (roomId: string, caller: string) => {
+	const nextPlayerId = await getNextPlayerId(roomId);
+
+	if (!nextPlayerId) {
+		logger.error(`No next player found. Aborting ${caller}`);
+		return;
+	}
+
+	return nextPlayerId;
 };
 
 const Sequence = {
@@ -83,26 +97,17 @@ const Sequence = {
 
 	setNextPlayer: async (roomId: string) => {
 		logger.info("Set next player model called");
-		const nextPlayerId = await getNextPlayerId(roomId);
-
-		if (!nextPlayerId) {
-			logger.error("No next player found. Aborting setNextPlayer");
-			return;
-		}
+		const nextPlayerId = await resolveNextPlayerId(roomId, "setNextPlayer");
+		if (!nextPlayerId) return;
 
 		logger.info(`Next player: ${nextPlayerId}`);
 		return await Sequence.setCurrentPlayer(roomId, nextPlayerId);
 	},
 
-	// TODO: Export this to external place
 	getNextPlayerID: async (roomId: string) => {
 		logger.info("Get next player model called");
-		const nextPlayerId = await getNextPlayerId(roomId);
-
-		if (!nextPlayerId) {
-			logger.error("No next player found. Aborting getNextPlayerID");
-			return;
-		}
+		const nextPlayerId = await resolveNextPlayerId(roomId, "getNextPlayerID");
+		if (!nextPlayerId) return;
 
 		logger.info(`Next player id: ${nextPlayerId}`);
 		return nextPlayerId;
