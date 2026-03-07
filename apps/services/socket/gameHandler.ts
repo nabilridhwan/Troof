@@ -45,6 +45,19 @@ const gameHandler = (io: Server, socket: Socket) => {
 		// Let the socket join the room
 		socket.join(obj.room_id);
 
+		// Keep room members in sync after first-render bootstrap by always
+		// broadcasting the latest room state when someone joins.
+		const [playersInRoom, room] = await Promise.all([
+			PlayerModel.getPlayersInRoom(obj.room_id),
+			RoomModel.getRoom({ room_id: obj.room_id }),
+		]);
+
+		io.to(obj.room_id).emit(ROOM_EVENTS.PLAYERS_UPDATE, playersInRoom);
+
+		if (room) {
+			io.to(obj.room_id).emit(ROOM_EVENTS.GAME_UPDATE, room);
+		}
+
 		// Find the player who joined
 		const playerWhoJoined = PlayerModel.getPlayer({
 			player_id: socket.data.player_id,
@@ -364,23 +377,6 @@ const gameHandler = (io: Server, socket: Socket) => {
 				`Player ${obj.player_id} is the current player and is leaving. Skipping the user's turn.`
 			);
 
-			if (player?.is_party_leader) {
-				logger.info(
-					"Player is the party leader. Setting the next player as the party leader"
-				);
-
-				// Set the next player as the party leader
-				const nextPlayerId = await Sequence.getNextPlayerID(obj.room_id);
-
-				if (!nextPlayerId) {
-					logger.error("Found no next player. Aborting");
-					return;
-				}
-
-				await PlayerModel.setPlayerAsPartyLeader(nextPlayerId);
-				logger.info("Next player set as party leader successfully");
-			}
-
 			const remainingPlayersIfCurrentPlayerIsRemoved =
 				await PlayerModel.getPlayers({
 					game: {
@@ -440,6 +436,34 @@ const gameHandler = (io: Server, socket: Socket) => {
 			// });
 
 			// socket.emit(TRUTH_OR_DARE_EVENTS.INCOMING_DATA, logData, player!);
+		}
+
+		if (player?.is_party_leader) {
+			logger.info(
+				"Player is the party leader. Setting a remaining player as the party leader"
+			);
+
+			// Pick a leader from players that will remain after this leave action.
+			// Using sequence-based "next player" can incorrectly select the player who is leaving.
+			const playersWhoWillRemain = await PlayerModel.getPlayers({
+				game_room_id: obj.room_id,
+				player_id: {
+					not: obj.player_id,
+				},
+			});
+
+			const nextLeader = playersWhoWillRemain[0];
+
+			if (!nextLeader) {
+				logger.info(
+					"No remaining players found for leader transfer. Skipping leader reassignment"
+				);
+			} else {
+				await RoomModel.updateRoomLeader(obj.room_id, nextLeader.player_id);
+				logger.info(
+					`Party leader set to remaining player ${nextLeader.player_id}`
+				);
+			}
 		}
 
 		try {
