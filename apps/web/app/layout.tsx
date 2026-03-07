@@ -1,11 +1,12 @@
 /** @format */
 
 import type { Metadata } from "next";
-import "../styles/globals.css";
 import PageTransitionWrapper from "../components/PageTransitionWrapper";
+import "../styles/globals.css";
 
 export const metadata: Metadata = {
-	title: "Troof! - Experience the ultimate social truth or dare game - see, chat, and react together with your friends!",
+	title:
+		"Troof! - Experience the ultimate social truth or dare game - see, chat, and react together with your friends!",
 	description:
 		"Experience the ultimate social truth or dare game - see, chat, and react together with your friends!",
 	openGraph: {

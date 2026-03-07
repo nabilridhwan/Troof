@@ -1,9 +1,9 @@
 /** @format */
 
-import type { Metadata } from "next";
 import fs from "fs/promises";
 import matter from "gray-matter";
 import md from "markdown-it";
+import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "../../components/Container";
 

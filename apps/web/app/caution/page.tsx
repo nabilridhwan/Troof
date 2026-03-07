@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function CautionPage() {
 	return (
 		<Container>
-			<div className="prose my-10 mx-auto">
+			<div className="prose mx-auto my-10">
 				<h1>Notice</h1>
 
 				<p>

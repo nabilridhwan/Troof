@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function ManualPage() {
 	return (
 		<Container>
-			<div className="prose my-5 mx-auto">
+			<div className="prose mx-auto my-5">
 				<Link href="/">Go home</Link>
 
 				<h2>The handbook of troof!</h2>

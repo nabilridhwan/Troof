@@ -23,21 +23,20 @@ export default function TermsPage() {
 				<h3>1. Rights and Responsibilities.</h3>
 
 				<p>
-					As a user of our game, you have the right to access and play the
-					game in accordance with these TOS. You are responsible for ensuring
-					that you do not abuse our servers or engage in any other activities
-					that may interfere with the operation of the game. If we determine
-					that you have abused our servers or otherwise violated these TOS, we
-					reserve the right to ban you from the game indefinitely.
+					As a user of our game, you have the right to access and play the game
+					in accordance with these TOS. You are responsible for ensuring that
+					you do not abuse our servers or engage in any other activities that
+					may interfere with the operation of the game. If we determine that you
+					have abused our servers or otherwise violated these TOS, we reserve
+					the right to ban you from the game indefinitely.
 				</p>
 				<h3>2. Limitations of Liability.</h3>
 
 				<p>
 					We are not liable for any damages or losses that may arise from your
-					use of our game. The game may contain mature content and
-					participants are responsible for exercising caution while playing
-					and should not participate if they feel uncomfortable due to this
-					content.
+					use of our game. The game may contain mature content and participants
+					are responsible for exercising caution while playing and should not
+					participate if they feel uncomfortable due to this content.
 				</p>
 				<h3>3. Dispute Resolution.</h3>
 
@@ -51,18 +50,18 @@ export default function TermsPage() {
 				<h3>4. Modification of TOS.</h3>
 
 				<p>
-					We reserve the right to modify these TOS at any time and without
-					prior notice. Your continued use of our game after any changes have
-					been made will constitute your acceptance of the revised TOS.
+					We reserve the right to modify these TOS at any time and without prior
+					notice. Your continued use of our game after any changes have been
+					made will constitute your acceptance of the revised TOS.
 				</p>
 				<h3>5. Data Collection and Use.</h3>
 
 				<p>
 					We collect and use certain data in connection with your use of our
 					game. This data is used to provide and improve our services and for
-					other purposes as described in our Privacy Policy. By using our
-					game, you consent to the collection and use of this data in
-					accordance with our Privacy Policy.
+					other purposes as described in our Privacy Policy. By using our game,
+					you consent to the collection and use of this data in accordance with
+					our Privacy Policy.
 				</p>
 				<Link href="/">Go home</Link>
 			</div>

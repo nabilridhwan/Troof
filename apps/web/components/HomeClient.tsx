@@ -10,25 +10,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import troofPromoImage from "../public/troof_promo_new_new.png";
+import { Cookie } from "../utils/Cookie";
 import CautionSection from "./home/CautionSection";
 import ServerErrorSection from "./home/ServerErrorSection";
 import VersionSection from "./home/VersionSection";
-import troofPromoImage from "../public/troof_promo_new_new.png";
-import { Cookie } from "../utils/Cookie";
 
-const CreateRoomSection = dynamic(
-	() => import("./home/CreateRoomSection"),
-	{
-		ssr: false,
-	}
-);
+const CreateRoomSection = dynamic(() => import("./home/CreateRoomSection"), {
+	ssr: false,
+});
 
-const JoinRoomSection = dynamic(
-	() => import("./home/JoinRoomSection"),
-	{
-		ssr: false,
-	}
-);
+const JoinRoomSection = dynamic(() => import("./home/JoinRoomSection"), {
+	ssr: false,
+});
 
 const AccidentallyLeftGame = dynamic(
 	() => import("./home/AccidentallyLeftGameSection"),
@@ -144,7 +138,7 @@ export default function HomeClient() {
 				<div>
 					<div className="my-10 grid gap-10 lg:grid-cols-2">
 						<div className="lg:text-left">
-							<motion.h1 className="my-10 h-auto items-center font-Playfair text-8xl font-black ">
+							<motion.h1 className="my-10 h-auto items-center font-Playfair text-8xl font-black">
 								{"Troof!".split("").map((char, index) => (
 									<motion.span
 										key={index}

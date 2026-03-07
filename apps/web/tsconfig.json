@@ -6,10 +6,7 @@
 		"module": "esnext",
 		"baseUrl": ".",
 		"paths": {
-			"@troof/*": [
-				"../../packages/*/index.ts",
-				"../../packages/*/src/index.ts"
-			]
+			"@troof/*": ["../../packages/*/index.ts", "../../packages/*/src/index.ts"]
 		},
 		"declaration": false,
 		"allowJs": true,

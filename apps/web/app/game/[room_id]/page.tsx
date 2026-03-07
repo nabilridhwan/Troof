@@ -4,8 +4,8 @@ import { getPlayer } from "@troof/api";
 import { BadRequest, NotFoundResponse } from "@troof/responses";
 import { Player } from "@troof/socket";
 import { AxiosError, isAxiosError } from "axios";
-import { cookies } from "next/headers";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { permanentRedirect, redirect } from "next/navigation";
 import GamePageClient from "../../../components/GamePageClient";
 
@@ -75,8 +75,6 @@ export default async function GamePage({
 			permanentRedirect(`/?error=${message}`);
 		}
 
-		redirect(
-			"/?error=An unknown error occurred. Please try again later."
-		);
+		redirect("/?error=An unknown error occurred. Please try again later.");
 	}
 }
