@@ -1,6 +1,6 @@
 /** @format */
 
-import { MESSAGE_EVENTS } from "@troof/socket";
+import { CHAT_EVENTS } from "@troof/socket";
 import { useContext, useEffect, useState } from "react";
 import { SocketProviderContext } from "../context/SocketProvider";
 
@@ -24,9 +24,9 @@ export function useEmojiReaction({ room_id }: UseEmojiReactionOptions) {
 	useEffect(() => {
 		if (!socket) return;
 
-		socket.emit(MESSAGE_EVENTS.JOIN, { room_id });
+		socket.emit(CHAT_EVENTS.JOIN, { room_id });
 
-		socket.on(MESSAGE_EVENTS.MESSAGE_REACTION, (data) => {
+		socket.on(CHAT_EVENTS.MESSAGE_REACTION, (data) => {
 			const burst = Array.from({ length: NUMBER_OF_EMOJIS }).map(() => ({
 				emoji: data.message,
 				positionX: Math.floor(Math.random() * window.innerWidth),

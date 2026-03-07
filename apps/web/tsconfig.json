@@ -4,6 +4,13 @@
 		"target": "es5",
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"module": "esnext",
+		"baseUrl": ".",
+		"paths": {
+			"@troof/*": [
+				"../../packages/*/index.ts",
+				"../../packages/*/src/index.ts"
+			]
+		},
 		"declaration": false,
 		"allowJs": true,
 		"noEmit": true,

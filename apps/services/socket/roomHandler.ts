@@ -1,12 +1,12 @@
 /** @format */
 
 import {
+	CHAT_EVENTS,
 	ClientToServerEvents,
 	DisconnectedRoomObject,
-	EVENTS,
-	MESSAGE_EVENTS,
 	PlayerIDObject,
 	Room,
+	ROOM_EVENTS,
 	RoomIDObject,
 	ServerToClientEvents,
 	Status,
@@ -42,10 +42,10 @@ const roomHandler = (
 		const [playersInRoom, roomData] = await Promise.all([players, room]);
 
 		// Broadcast back the room, updating the players
-		io.to(obj.room_id).emit(EVENTS.PLAYERS_UPDATE, playersInRoom);
+		io.to(obj.room_id).emit(ROOM_EVENTS.PLAYERS_UPDATE, playersInRoom);
 
 		// Broadcast back the room, updating the game status
-		io.to(obj.room_id).emit(EVENTS.GAME_UPDATE, {
+		io.to(obj.room_id).emit(ROOM_EVENTS.GAME_UPDATE, {
 			...(roomData as Room),
 		});
 	};
@@ -63,7 +63,7 @@ const roomHandler = (
 		// 	);
 
 		// 	// Broadcast back to each room the latest players
-		// 	io.to(obj.room_id).emit(EVENTS.PLAYERS_UPDATE, players);
+		// 	io.to(obj.room_id).emit(ROOM_EVENTS.PLAYERS_UPDATE, players);
 		// } catch (error) {
 		// 	logger.info(
 		// 		"Cannot remove player from room. Maybe they're disconnected already!"
@@ -77,7 +77,7 @@ const roomHandler = (
 		const room = await RoomModel.updateRoomStatus(obj.room_id, obj.status);
 
 		// Broadcast to the room that the game has started
-		io.to(obj.room_id).emit(EVENTS.GAME_UPDATE, {
+		io.to(obj.room_id).emit(ROOM_EVENTS.GAME_UPDATE, {
 			...room,
 		});
 	};
@@ -89,13 +89,13 @@ const roomHandler = (
 		const room = await RoomModel.updateRoomStatus(obj.room_id, Status.In_Game);
 
 		// Broadcast to the room that the game has started
-		io.to(obj.room_id).emit(EVENTS.GAME_UPDATE, {
+		io.to(obj.room_id).emit(ROOM_EVENTS.GAME_UPDATE, {
 			...room,
 		});
 	};
 
 	const changeUserDisplayName = async (
-		obj: Parameters<ClientToServerEvents[EVENTS.CHANGE_NAME]>[0]
+		obj: Parameters<ClientToServerEvents[ROOM_EVENTS.CHANGE_NAME]>[0]
 	) => {
 		logger.info(`Change name received for ${obj.player_id} ${obj.room_id}`);
 
@@ -124,11 +124,11 @@ const roomHandler = (
 		};
 
 		// Broadcast back to the room the latest players
-		io.to(obj.room_id).emit(EVENTS.PLAYERS_UPDATE, players);
+		io.to(obj.room_id).emit(ROOM_EVENTS.PLAYERS_UPDATE, players);
 
 		socket.broadcast
 			.to(obj.room_id)
-			.emit(MESSAGE_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
+			.emit(CHAT_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
 
 		// Write to database
 		ChatModel.pushSystemMessage(systemMessageToSend);
@@ -157,7 +157,7 @@ const roomHandler = (
 		// Update the room leader
 		const p = await RoomModel.updateRoomLeader(obj.room_id, obj.player_id);
 
-		io.to(obj.room_id).emit(EVENTS.PLAYERS_UPDATE, p.player);
+		io.to(obj.room_id).emit(ROOM_EVENTS.PLAYERS_UPDATE, p.player);
 	};
 
 	const getSelfInfo = async (obj: PlayerIDObject) => {
@@ -184,20 +184,20 @@ const roomHandler = (
 		});
 
 		if (!p) {
-			logger.error(`[${EVENTS.SELF_INFO}] Player not found`);
+			logger.error(`[${ROOM_EVENTS.SELF_INFO}] Player not found`);
 			return;
 		}
 
-		socket.emit(EVENTS.SELF_INFO, p);
+		socket.emit(ROOM_EVENTS.SELF_INFO, p);
 	};
 
-	socket.on(EVENTS.GAME_UPDATE, statusChangeHandler);
-	socket.on(EVENTS.DISCONNECTED, disconnectedHandler);
-	socket.on(EVENTS.JOIN_ROOM, joinRoomHandler);
-	socket.on(EVENTS.START_GAME, startGameHandler);
-	socket.on(EVENTS.CHANGE_NAME, changeUserDisplayName);
-	socket.on(EVENTS.TRANSFER_PARTY_LEADER, transferPartyLeaderHandler);
-	socket.on(EVENTS.SELF_INFO, getSelfInfo);
+	socket.on(ROOM_EVENTS.GAME_UPDATE, statusChangeHandler);
+	socket.on(ROOM_EVENTS.DISCONNECTED, disconnectedHandler);
+	socket.on(ROOM_EVENTS.JOIN_ROOM, joinRoomHandler);
+	socket.on(ROOM_EVENTS.START_GAME, startGameHandler);
+	socket.on(ROOM_EVENTS.CHANGE_NAME, changeUserDisplayName);
+	socket.on(ROOM_EVENTS.TRANSFER_PARTY_LEADER, transferPartyLeaderHandler);
+	socket.on(ROOM_EVENTS.SELF_INFO, getSelfInfo);
 };
 
 export default roomHandler;

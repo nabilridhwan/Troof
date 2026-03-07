@@ -1,36 +1,37 @@
 /** @format */
 
+"use client";
+
 import { getPlayer, getRoom } from "@troof/api";
 import { Player } from "@troof/socket";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
-import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import CautionSection from "../components/home/CautionSection";
-import ServerErrorSection from "../components/home/ServerErrorSection";
-import VersionSection from "../components/home/VersionSection";
+import CautionSection from "./home/CautionSection";
+import ServerErrorSection from "./home/ServerErrorSection";
+import VersionSection from "./home/VersionSection";
 import troofPromoImage from "../public/troof_promo_new_new.png";
 import { Cookie } from "../utils/Cookie";
 
 const CreateRoomSection = dynamic(
-	() => import("../components/home/CreateRoomSection"),
+	() => import("./home/CreateRoomSection"),
 	{
 		ssr: false,
 	}
 );
 
 const JoinRoomSection = dynamic(
-	() => import("../components/home/JoinRoomSection"),
+	() => import("./home/JoinRoomSection"),
 	{
 		ssr: false,
 	}
 );
 
 const AccidentallyLeftGame = dynamic(
-	() => import("../components/home/AccidentallyLeftGameSection"),
+	() => import("./home/AccidentallyLeftGameSection"),
 	{
 		ssr: false,
 	}
@@ -38,18 +39,15 @@ const AccidentallyLeftGame = dynamic(
 
 type MainScreenAction = "create" | "join";
 
-export default function Home() {
-	// const RequestForNotificationSection = dynamic(
-	// 	() => import("../components/home/RequestForNotificationSection")
-	// );
+export default function HomeClient() {
+	const searchParams = useSearchParams();
 
-	const {
-		query: { room_id = "", error },
-	} = useRouter();
+	const room_id = searchParams.get("room_id") ?? "";
+	const error = searchParams.get("error") ?? "";
 
 	const [errorMessage, setErrorMessage] = useState<string>("");
 
-	const [roomIDInput, setRoomIDInput] = useState<string>(room_id as string);
+	const [roomIDInput, setRoomIDInput] = useState<string>(room_id);
 	const [displayName, setDisplayName] = useState<string>("");
 	const [showExistingGameModal, setShowExistingGameModal] =
 		useState<boolean>(false);
@@ -66,12 +64,12 @@ export default function Home() {
 
 	useEffect(() => {
 		// eslint-disable-next-line react-hooks/set-state-in-effect
-		setRoomIDInput(room_id as string);
+		setRoomIDInput(room_id);
 	}, [room_id]);
 
 	useEffect(() => {
 		// eslint-disable-next-line react-hooks/set-state-in-effect
-		setErrorMessage(error as string);
+		setErrorMessage(error);
 	}, [error]);
 
 	useEffect(() => {
@@ -139,25 +137,6 @@ export default function Home() {
 
 	return (
 		<div>
-			<Head>
-				<title>
-					Troof! - Experience the ultimate social truth or dare game - see,
-					chat, and react together with your friends!
-				</title>
-				<meta
-					name="description"
-					content="Experience the ultimate social truth or dare game - see, chat, and react together with your friends!"
-				/>
-
-				{/* Og image */}
-				<meta
-					property="og:image"
-					content={`https://troof.nabilridhwan.com/troof_promo_new.png`}
-				/>
-
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
-
 			{/* TODO: Re-enable notification section */}
 			{/* <RequestForNotificationSection /> */}
 

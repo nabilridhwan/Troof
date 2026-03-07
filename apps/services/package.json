@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node ./dist/index.js",
 		"build": "tsc",
-		"dev": "nodemon index.ts"
+		"dev": "nodemon --watch . --watch ../../packages --ext ts,json --exec \"node -r ts-node/register/transpile-only -r tsconfig-paths/register ./index.ts\""
 	},
 	"keywords": [],
 	"author": "",

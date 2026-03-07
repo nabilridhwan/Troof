@@ -1,6 +1,6 @@
 /** @format */
 
-import { Action, Log, Player, TRUTH_OR_DARE_GAME } from "@troof/socket";
+import { Action, Log, Player, TRUTH_OR_DARE_EVENTS } from "@troof/socket";
 import { useContext, useEffect, useState } from "react";
 import { SocketProviderContext } from "../context/SocketProvider";
 
@@ -19,14 +19,14 @@ export function useTruthOrDare({ room_id }: UseTruthOrDareOptions) {
 	useEffect(() => {
 		if (!socket) return;
 
-		socket.on(TRUTH_OR_DARE_GAME.CONTINUE, (log: Log, player: Player) => {
+		socket.on(TRUTH_OR_DARE_EVENTS.CONTINUE, (log: Log, player: Player) => {
 			setCurrentPlayer(player);
 			setText("");
 			setAction(log.action as Action);
 			setLoadingState(false);
 		});
 
-		socket.on(TRUTH_OR_DARE_GAME.INCOMING_DATA, (log: Log, player: Player) => {
+		socket.on(TRUTH_OR_DARE_EVENTS.INCOMING_DATA, (log: Log, player: Player) => {
 			setText(log.data);
 			setCurrentPlayer(player ?? {});
 			setAction(
@@ -39,19 +39,19 @@ export function useTruthOrDare({ room_id }: UseTruthOrDareOptions) {
 	const selectTruth = () => {
 		setLoadingState(true);
 		if (!socket) return;
-		socket.emit(TRUTH_OR_DARE_GAME.SELECT_TRUTH, { room_id });
+		socket.emit(TRUTH_OR_DARE_EVENTS.SELECT_TRUTH, { room_id });
 	};
 
 	const selectDare = () => {
 		if (!socket) return;
 		setLoadingState(true);
-		socket.emit(TRUTH_OR_DARE_GAME.SELECT_DARE, { room_id });
+		socket.emit(TRUTH_OR_DARE_EVENTS.SELECT_DARE, { room_id });
 	};
 
 	const handleContinue = () => {
 		if (!socket) return;
 		setLoadingState(true);
-		socket.emit(TRUTH_OR_DARE_GAME.CONTINUE, { room_id });
+		socket.emit(TRUTH_OR_DARE_EVENTS.CONTINUE, { room_id });
 	};
 
 	return {

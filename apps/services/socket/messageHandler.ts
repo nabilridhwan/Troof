@@ -1,11 +1,11 @@
 /** @format */
 
 import {
-	BaseNewMessage,
-	MessageUpdatedFromServer,
-	MESSAGE_EVENTS,
-	PlayerIDObject,
-	RoomIDObject,
+    BaseNewMessage,
+    CHAT_EVENTS,
+    MessageUpdatedFromServer,
+    PlayerIDObject,
+    RoomIDObject,
 } from "@troof/socket";
 
 import { Server, Socket } from "socket.io";
@@ -40,7 +40,7 @@ const messageHandler = (io: Server, socket: Socket) => {
 
 		// Send the messages back to the client
 		// The messages will be decrypted on the client side
-		socket.emit(MESSAGE_EVENTS.LATEST_MESSAGES, messages);
+		socket.emit(CHAT_EVENTS.LATEST_MESSAGES, messages);
 	};
 
 	// This method handles new message/reaction
@@ -122,11 +122,11 @@ const messageHandler = (io: Server, socket: Socket) => {
 			};
 
 			// 3. Broadcast it back
-			io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_REACTION, d);
+			io.to(obj.room_id).emit(CHAT_EVENTS.MESSAGE_REACTION, d);
 		}
 
 		// 3. Broadcast it back
-		io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_NEW, privateEncryptedObj);
+		io.to(obj.room_id).emit(CHAT_EVENTS.MESSAGE_NEW, privateEncryptedObj);
 
 		// 4. Save it to the database (The private encrypted message)
 		await ChatModel.pushMessage(privateEncryptedObj);
@@ -135,14 +135,14 @@ const messageHandler = (io: Server, socket: Socket) => {
 	const isTypingHandler = (
 		data: PlayerIDObject & RoomIDObject & { is_typing: boolean }
 	) => {
-		socket.broadcast.to(data.room_id).emit(MESSAGE_EVENTS.IS_TYPING, {
+		socket.broadcast.to(data.room_id).emit(CHAT_EVENTS.IS_TYPING, {
 			...data,
 		});
 	};
 
-	socket.on(MESSAGE_EVENTS.IS_TYPING, isTypingHandler);
-	socket.on(MESSAGE_EVENTS.JOIN, joinMessageHandler);
-	socket.on(MESSAGE_EVENTS.MESSAGE_NEW, newMessageHandler);
+	socket.on(CHAT_EVENTS.IS_TYPING, isTypingHandler);
+	socket.on(CHAT_EVENTS.JOIN, joinMessageHandler);
+	socket.on(CHAT_EVENTS.MESSAGE_NEW, newMessageHandler);
 };
 
 export default messageHandler;

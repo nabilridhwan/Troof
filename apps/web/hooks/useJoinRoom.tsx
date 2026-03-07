@@ -3,7 +3,7 @@
 import { joinRoom } from "@troof/api";
 import { BadRequest, NotFoundResponse } from "@troof/responses";
 import { AxiosError, isAxiosError } from "axios";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { Cookie } from "../utils/Cookie";
 
 // Export getServerSideProps to get the query string

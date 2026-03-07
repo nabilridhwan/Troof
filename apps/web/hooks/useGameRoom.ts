@@ -1,11 +1,11 @@
 /** @format */
 
 import {
-	EVENTS,
 	Player,
+	ROOM_EVENTS,
 	SECURITY_EVENTS,
 	Status,
-	TRUTH_OR_DARE_GAME,
+	TRUTH_OR_DARE_EVENTS
 } from "@troof/socket";
 import { useContext, useEffect, useState } from "react";
 import { SocketProviderContext } from "../context/SocketProvider";
@@ -39,15 +39,15 @@ export function useGameRoom({
 
 		if (!socket) return;
 
-		socket.emit(TRUTH_OR_DARE_GAME.JOINED, { room_id });
+		socket.emit(TRUTH_OR_DARE_EVENTS.JOINED, { room_id });
 
-		socket.on(EVENTS.PLAYERS_UPDATE, (data) => {
+		socket.on(ROOM_EVENTS.PLAYERS_UPDATE, (data) => {
 			setPlayers(data);
 			setHasReceivedPlayers(true);
-			socket.emit(EVENTS.SELF_INFO, { player_id: initialPlayer.player_id });
+			socket.emit(ROOM_EVENTS.SELF_INFO, { player_id: initialPlayer.player_id });
 		});
 
-		socket.on(EVENTS.GAME_UPDATE, (data) => {
+		socket.on(ROOM_EVENTS.GAME_UPDATE, (data) => {
 			setGameStatus(data.status);
 			setHasReceivedGameStatus(true);
 		});
@@ -57,7 +57,7 @@ export function useGameRoom({
 			setHasReceivedPublicKey(true);
 		});
 
-		socket.on(EVENTS.LEFT_GAME, (playerRemoved: Player) => {
+		socket.on(ROOM_EVENTS.LEFT_GAME, (playerRemoved: Player) => {
 			if (playerRemoved.player_id === initialPlayer.player_id) {
 				Cookie.removePlayerID();
 				Cookie.removeRoomId();
@@ -66,7 +66,7 @@ export function useGameRoom({
 			}
 		});
 
-		socket.on(EVENTS.SELF_INFO, (updatedPlayer: Player) => {
+		socket.on(ROOM_EVENTS.SELF_INFO, (updatedPlayer: Player) => {
 			setPlayer(updatedPlayer);
 		});
 
@@ -89,11 +89,11 @@ export function useGameRoom({
 
 		if (players.length >= 2) {
 			setGameStatus(Status.In_Game);
-			socket.emit(EVENTS.START_GAME, { room_id });
+			socket.emit(ROOM_EVENTS.START_GAME, { room_id });
 		} else {
 			setGameStatus(Status.In_Lobby);
 			setGameStatus(Status.In_Game);
-			socket.emit(EVENTS.GAME_UPDATE, { room_id, status: Status.In_Lobby });
+			socket.emit(ROOM_EVENTS.GAME_UPDATE, { room_id, status: Status.In_Lobby });
 		}
 	}, [players, room_id, socket]);
 

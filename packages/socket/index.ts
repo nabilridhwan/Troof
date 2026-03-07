@@ -1,43 +1,68 @@
-export enum EVENTS {
-	ROOM_INFO = "game:room_info",
+export enum ROOM_EVENTS {
+	// Server → Client: sends the current room details (status, creation time, etc.)
+	ROOM_INFO = "room:room_info",
 
-	JOIN_ROOM = "join_room",
-	PLAYERS_UPDATE = "event:players_update",
-	DISCONNECTED = "disconnected",
-	GAME_UPDATE = "event:game_update",
+	// Client → Server: client requests to join a specific room by room_id
+	JOIN_ROOM = "room:join_room",
+	// Bidirectional: client triggers a refresh; server broadcasts the updated player list to all room members
+	PLAYERS_UPDATE = "room:players_update",
+	// Client → Server: notifies the server that this client has disconnected from a room
+	DISCONNECTED = "room:disconnected",
+	// Bidirectional: client triggers a status change; server broadcasts the updated room state (e.g. lobby → in-game)
+	GAME_UPDATE = "room:game_update",
 
-	START_GAME = "start_game",
-	LEFT_GAME = "left_game",
+	// Client → Server: party leader requests the game to start
+	START_GAME = "room:start_game",
+	// Server → Client: broadcasts to the room when a player has left the game
+	LEFT_GAME = "room:left_game",
 
-	CHANGE_NAME = "change_name",
-	TRANSFER_PARTY_LEADER = "transfer_party_leader",
+	// Client → Server: player requests to change their display name
+	CHANGE_NAME = "room:change_name",
+	// Client → Server: party leader transfers the party leader role to another player
+	TRANSFER_PARTY_LEADER = "room:transfer_party_leader",
 
-	// This is a event to let users get their own details
-	SELF_INFO = "self_info",
+	// Bidirectional: client requests its own player details; server responds with the Player object
+	SELF_INFO = "room:self_info",
 }
 
-export enum MESSAGE_EVENTS {
-	LATEST_MESSAGES = "event:latest_messages",
-	MESSAGE_NEW = "message:new",
-	MESSAGE_ANSWER = "message:answer",
-	MESSAGE_REACTION = "message:reaction",
-	MESSAGE_UPDATE = "message:update",
-	MESSAGE_DELETE = "message:delete",
-	MESSAGE_SYSTEM = "message:system",
-	IS_TYPING = "is_typing",
-	JOIN = "join",
+export enum CHAT_EVENTS {
+	// Server → Client: sends the full message history when a client joins the chat room
+	LATEST_MESSAGES = "chat:latest_messages",
+	// Bidirectional: client sends a new chat message; server broadcasts it to all room members
+	MESSAGE_NEW = "chat:message_new",
+	// Bidirectional: client sends a reply to an existing message; server broadcasts it
+	MESSAGE_ANSWER = "chat:message_answer",
+	// Server → Client: broadcasts an updated message when a reaction is added/removed
+	MESSAGE_REACTION = "chat:message_reaction",
+	// Server → Client: broadcasts the edited content of an existing message
+	MESSAGE_UPDATE = "chat:message_update",
+	// Server → Client: broadcasts a message deletion to all room members
+	MESSAGE_DELETE = "chat:message_delete",
+	// Server → Client: server-generated messages (e.g. "Player X joined the room")
+	MESSAGE_SYSTEM = "chat:message_system",
+	// Bidirectional: client notifies the room it is typing; server broadcasts the typing state to other members
+	IS_TYPING = "chat:is_typing",
+	// Client → Server: client joins the chat channel for a specific room
+	JOIN = "chat:join",
 }
 
-export enum TRUTH_OR_DARE_GAME {
-	INCOMING_DATA = "incoming_data",
-	SELECT_DARE = "select_dare",
-	SELECT_TRUTH = "select_truth",
-	JOINED = "truth_or_dare_joined",
-	CONTINUE = "continue",
-	LEAVE_GAME = "leave_game",
+export enum TRUTH_OR_DARE_EVENTS {
+	// Server → Client: pushes the current turn's log entry and the player whose turn it is
+	INCOMING_DATA = "truth_or_dare:incoming_data",
+	// Bidirectional: client selects "dare" for their turn; server broadcasts the updated room state
+	SELECT_DARE = "truth_or_dare:select_dare",
+	// Bidirectional: client selects "truth" for their turn; server broadcasts the updated room state
+	SELECT_TRUTH = "truth_or_dare:select_truth",
+	// Bidirectional: client signals it has joined an active game session; server broadcasts to the room
+	JOINED = "truth_or_dare:joined",
+	// Bidirectional: client advances to the next turn; server broadcasts the updated log and next player
+	CONTINUE = "truth_or_dare:continue",
+	// Bidirectional: client leaves an active game mid-session; server broadcasts the updated room state
+	LEAVE_GAME = "truth_or_dare:leave_game",
 }
 
 export enum SECURITY_EVENTS {
+	// Server → Client: sends the server's public key used for end-to-end encryption of messages
 	PUBLIC_KEY = "security:public_key",
 }
 
@@ -119,34 +144,34 @@ export interface MessageUpdatedFromServer extends BaseNewMessage {
 
 // This interface represents the events that are from server to clients when you use socket.emit/io.emit
 export interface ServerToClientEvents {
-	[EVENTS.ROOM_INFO]: (room: Room) => void;
-	[EVENTS.PLAYERS_UPDATE]: (players: Player[]) => void;
-	[EVENTS.GAME_UPDATE]: (room: Room) => void;
-	[EVENTS.LEFT_GAME]: (playerRemoved: Player) => void;
+	[ROOM_EVENTS.ROOM_INFO]: (room: Room) => void;
+	[ROOM_EVENTS.PLAYERS_UPDATE]: (players: Player[]) => void;
+	[ROOM_EVENTS.GAME_UPDATE]: (room: Room) => void;
+	[ROOM_EVENTS.LEFT_GAME]: (playerRemoved: Player) => void;
 
-	[EVENTS.SELF_INFO]: (obj: Player) => void;
+	[ROOM_EVENTS.SELF_INFO]: (obj: Player) => void;
 
-	[TRUTH_OR_DARE_GAME.INCOMING_DATA]: (log: Log, player: Player) => void;
+	[TRUTH_OR_DARE_EVENTS.INCOMING_DATA]: (log: Log, player: Player) => void;
 
-	[TRUTH_OR_DARE_GAME.LEAVE_GAME]: (room: Room) => void;
-	[TRUTH_OR_DARE_GAME.SELECT_TRUTH]: (room: Room) => void;
-	[TRUTH_OR_DARE_GAME.SELECT_DARE]: (room: Room) => void;
-	[TRUTH_OR_DARE_GAME.CONTINUE]: (log: Log, player: Player) => void;
-	[TRUTH_OR_DARE_GAME.JOINED]: (log: Log, player: Player) => void;
+	[TRUTH_OR_DARE_EVENTS.LEAVE_GAME]: (room: Room) => void;
+	[TRUTH_OR_DARE_EVENTS.SELECT_TRUTH]: (room: Room) => void;
+	[TRUTH_OR_DARE_EVENTS.SELECT_DARE]: (room: Room) => void;
+	[TRUTH_OR_DARE_EVENTS.CONTINUE]: (log: Log, player: Player) => void;
+	[TRUTH_OR_DARE_EVENTS.JOINED]: (log: Log, player: Player) => void;
 
 	// Messages
-	[MESSAGE_EVENTS.MESSAGE_NEW]: (message: MessageUpdatedFromServer) => void;
-	[MESSAGE_EVENTS.MESSAGE_ANSWER]: (message: MessageUpdatedFromServer) => void;
-	[MESSAGE_EVENTS.MESSAGE_SYSTEM]: (message: SystemMessage) => void;
-	[MESSAGE_EVENTS.LATEST_MESSAGES]: (
+	[CHAT_EVENTS.MESSAGE_NEW]: (message: MessageUpdatedFromServer) => void;
+	[CHAT_EVENTS.MESSAGE_ANSWER]: (message: MessageUpdatedFromServer) => void;
+	[CHAT_EVENTS.MESSAGE_SYSTEM]: (message: SystemMessage) => void;
+	[CHAT_EVENTS.LATEST_MESSAGES]: (
 		messages: MessageUpdatedFromServer[]
 	) => void;
 
-	[MESSAGE_EVENTS.MESSAGE_REACTION]: (
+	[CHAT_EVENTS.MESSAGE_REACTION]: (
 		message: MessageUpdatedFromServer
 	) => void;
 
-	[MESSAGE_EVENTS.IS_TYPING]: (
+	[CHAT_EVENTS.IS_TYPING]: (
 		obj: PlayerDisplayNameObject & { is_typing: boolean }
 	) => void;
 
@@ -155,37 +180,37 @@ export interface ServerToClientEvents {
 
 // This interface represents the events that are from clients to server when you use socket.on/io.on
 export interface ClientToServerEvents {
-	[EVENTS.GAME_UPDATE]: (obj: StatusChangeObject) => void;
-	[EVENTS.PLAYERS_UPDATE]: (obj: StatusChangeObject) => void;
-	[EVENTS.DISCONNECTED]: (obj: DisconnectedRoomObject) => void;
-	[EVENTS.JOIN_ROOM]: (obj: RoomIDObject) => void;
-	[EVENTS.START_GAME]: (obj: RoomIDObject) => void;
+	[ROOM_EVENTS.GAME_UPDATE]: (obj: StatusChangeObject) => void;
+	[ROOM_EVENTS.PLAYERS_UPDATE]: (obj: StatusChangeObject) => void;
+	[ROOM_EVENTS.DISCONNECTED]: (obj: DisconnectedRoomObject) => void;
+	[ROOM_EVENTS.JOIN_ROOM]: (obj: RoomIDObject) => void;
+	[ROOM_EVENTS.START_GAME]: (obj: RoomIDObject) => void;
 
-	[EVENTS.SELF_INFO]: (obj: PlayerIDObject) => void;
+	[ROOM_EVENTS.SELF_INFO]: (obj: PlayerIDObject) => void;
 
-	[EVENTS.CHANGE_NAME]: (
+	[ROOM_EVENTS.CHANGE_NAME]: (
 		obj: RoomIDObject &
 			PlayerIDObject & { display_name: string; new_name: string }
 	) => void;
 
-	[EVENTS.TRANSFER_PARTY_LEADER]: (obj: RoomIDObject & PlayerIDObject) => void;
+	[ROOM_EVENTS.TRANSFER_PARTY_LEADER]: (obj: RoomIDObject & PlayerIDObject) => void;
 
-	[TRUTH_OR_DARE_GAME.LEAVE_GAME]: (obj: RoomIDObject & PlayerIDObject) => void;
+	[TRUTH_OR_DARE_EVENTS.LEAVE_GAME]: (obj: RoomIDObject & PlayerIDObject) => void;
 
-	[TRUTH_OR_DARE_GAME.SELECT_TRUTH]: (obj: RoomIDObject) => void;
+	[TRUTH_OR_DARE_EVENTS.SELECT_TRUTH]: (obj: RoomIDObject) => void;
 
-	[TRUTH_OR_DARE_GAME.SELECT_DARE]: (obj: RoomIDObject) => void;
+	[TRUTH_OR_DARE_EVENTS.SELECT_DARE]: (obj: RoomIDObject) => void;
 
-	[TRUTH_OR_DARE_GAME.CONTINUE]: (obj: RoomIDObject) => void;
+	[TRUTH_OR_DARE_EVENTS.CONTINUE]: (obj: RoomIDObject) => void;
 
-	[TRUTH_OR_DARE_GAME.JOINED]: (obj: RoomIDObject) => void;
+	[TRUTH_OR_DARE_EVENTS.JOINED]: (obj: RoomIDObject) => void;
 
 	// Messages
-	[MESSAGE_EVENTS.MESSAGE_NEW]: (obj: BaseNewMessage) => void;
-	[MESSAGE_EVENTS.MESSAGE_ANSWER]: (obj: BaseNewMessage) => void;
-	[MESSAGE_EVENTS.JOIN]: (obj: RoomIDObject) => void;
+	[CHAT_EVENTS.MESSAGE_NEW]: (obj: BaseNewMessage) => void;
+	[CHAT_EVENTS.MESSAGE_ANSWER]: (obj: BaseNewMessage) => void;
+	[CHAT_EVENTS.JOIN]: (obj: RoomIDObject) => void;
 
-	[MESSAGE_EVENTS.IS_TYPING]: (
+	[CHAT_EVENTS.IS_TYPING]: (
 		obj: RoomIDObject & PlayerDisplayNameObject & { is_typing: boolean }
 	) => void;
 }

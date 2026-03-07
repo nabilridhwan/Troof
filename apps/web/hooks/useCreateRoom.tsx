@@ -3,15 +3,15 @@
 import { createRoom } from "@troof/api";
 import { BadRequest, NotFoundResponse } from "@troof/responses";
 import { AxiosError, isAxiosError } from "axios";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { Cookie } from "../utils/Cookie";
 
 export default function useCreateRoom() {
 	const router = useRouter();
 
-	async function create(display_name: string, captchaToken: string) {
+	async function create(userDisplayName: string, captchaToken: string) {
 		try {
-			const res = await createRoom(display_name, captchaToken);
+			const res = await createRoom(userDisplayName, captchaToken);
 
 			const {
 				status,
@@ -33,7 +33,7 @@ export default function useCreateRoom() {
 			Cookie.setRoomID(room_id);
 			Cookie.setToken(token);
 
-			window.location.href = `/game/${room_id}`;
+			router.push(`/game/${room_id}`);
 			return;
 		} catch (error: any) {
 			if (isAxiosError(error)) {

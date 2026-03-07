@@ -3,7 +3,7 @@
 import { Encryption } from "@troof/encrypt";
 import {
 	BaseNewMessage,
-	MESSAGE_EVENTS,
+	CHAT_EVENTS,
 	MessageUpdatedFromServer,
 	SystemMessage,
 } from "@troof/socket";
@@ -36,9 +36,9 @@ export function useChat({ room_id, display_name, inputMessage }: UseChatOptions)
 	useEffect(() => {
 		if (!socket) return;
 
-		socket.emit(MESSAGE_EVENTS.JOIN, { room_id });
+		socket.emit(CHAT_EVENTS.JOIN, { room_id });
 
-		socket.on(MESSAGE_EVENTS.LATEST_MESSAGES, (data) => {
+		socket.on(CHAT_EVENTS.LATEST_MESSAGES, (data) => {
 			if (!publicKey) return;
 			const decrypted = data.reverse().map((d) => ({
 				...d,
@@ -47,7 +47,7 @@ export function useChat({ room_id, display_name, inputMessage }: UseChatOptions)
 			setMessages([...decrypted]);
 		});
 
-		socket.on(MESSAGE_EVENTS.MESSAGE_NEW, (data) => {
+		socket.on(CHAT_EVENTS.MESSAGE_NEW, (data) => {
 			if (!publicKey) return;
 			setMessages((old) => [
 				...old,
@@ -71,7 +71,7 @@ export function useChat({ room_id, display_name, inputMessage }: UseChatOptions)
 			setMessages((old) => [...old, systemMsg]);
 		});
 
-		socket.on(MESSAGE_EVENTS.IS_TYPING, (data) => {
+		socket.on(CHAT_EVENTS.IS_TYPING, (data) => {
 			if (data.is_typing) {
 				setPeopleTyping((old) => [...old, data.display_name]);
 			} else {
@@ -90,14 +90,14 @@ export function useChat({ room_id, display_name, inputMessage }: UseChatOptions)
 			clearTimeout(doneTypingTimeoutRef.current);
 
 		typingTimeoutRef.current = setTimeout(() => {
-			socket.emit(MESSAGE_EVENTS.IS_TYPING, {
+			socket.emit(CHAT_EVENTS.IS_TYPING, {
 				room_id,
 				display_name,
 				is_typing: true,
 			});
 
 			doneTypingTimeoutRef.current = setTimeout(() => {
-				socket.emit(MESSAGE_EVENTS.IS_TYPING, {
+				socket.emit(CHAT_EVENTS.IS_TYPING, {
 					room_id,
 					display_name,
 					is_typing: false,
@@ -125,12 +125,12 @@ export function useChat({ room_id, display_name, inputMessage }: UseChatOptions)
 			created_at: new Date(),
 		};
 
-		socket.emit(MESSAGE_EVENTS.IS_TYPING, {
+		socket.emit(CHAT_EVENTS.IS_TYPING, {
 			room_id,
 			display_name,
 			is_typing: false,
 		});
-		socket.emit(MESSAGE_EVENTS.MESSAGE_NEW, newMessage);
+		socket.emit(CHAT_EVENTS.MESSAGE_NEW, newMessage);
 	};
 
 	return {

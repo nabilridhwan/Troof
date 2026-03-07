@@ -1,7 +1,14 @@
 {
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"outDir": "./dist"
+		"outDir": "./dist",
+		"baseUrl": ".",
+		"paths": {
+			"@troof/*": [
+				"../../packages/*/index.ts",
+				"../../packages/*/src/index.ts"
+			]
+		}
 	},
 	"exclude": ["node_modules", "dist"]
 }

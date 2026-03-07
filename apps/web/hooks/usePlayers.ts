@@ -1,6 +1,6 @@
 /** @format */
 
-import { EVENTS, TRUTH_OR_DARE_GAME } from "@troof/socket";
+import { ROOM_EVENTS, TRUTH_OR_DARE_EVENTS } from "@troof/socket";
 import { useContext } from "react";
 import { SocketProviderContext } from "../context/SocketProvider";
 
@@ -21,7 +21,7 @@ export function usePlayers({
 
 	const removePlayer = (target_player_id: string) => {
 		if (!socket) return;
-		socket.emit(TRUTH_OR_DARE_GAME.LEAVE_GAME, {
+		socket.emit(TRUTH_OR_DARE_EVENTS.LEAVE_GAME, {
 			room_id,
 			player_id: target_player_id,
 		});
@@ -29,11 +29,11 @@ export function usePlayers({
 
 	const handleContinue = () => {
 		if (!socket) return;
-		socket.emit(TRUTH_OR_DARE_GAME.CONTINUE, { room_id });
+		socket.emit(TRUTH_OR_DARE_EVENTS.CONTINUE, { room_id });
 	};
 
 	const transferPartyLeader = (transferToPlayerID: string) => {
-		socket?.emit(EVENTS.TRANSFER_PARTY_LEADER, {
+		socket?.emit(ROOM_EVENTS.TRANSFER_PARTY_LEADER, {
 			room_id,
 			player_id: transferToPlayerID,
 		});
@@ -41,7 +41,7 @@ export function usePlayers({
 
 	const changeName = () => {
 		if (!socket) return;
-		socket.emit(EVENTS.CHANGE_NAME, {
+		socket.emit(ROOM_EVENTS.CHANGE_NAME, {
 			room_id,
 			player_id,
 			display_name,

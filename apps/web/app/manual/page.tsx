@@ -1,7 +1,12 @@
 /** @format */
 
+import type { Metadata } from "next";
 import Link from "next/link";
-import Container from "../components/Container";
+import Container from "../../components/Container";
+
+export const metadata: Metadata = {
+	title: "Game Manual | Troof!",
+};
 
 export default function ManualPage() {
 	return (

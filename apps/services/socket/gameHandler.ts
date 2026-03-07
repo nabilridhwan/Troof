@@ -6,14 +6,14 @@ import { get_dare, get_truth } from "@troof/helpers";
 import { logger } from "@troof/logger";
 import {
 	Action,
-	EVENTS,
-	MESSAGE_EVENTS,
+	CHAT_EVENTS,
 	PlayerIDObject,
+	ROOM_EVENTS,
 	RoomIDObject,
 	SECURITY_EVENTS,
 	Status,
 	SystemMessage,
-	TRUTH_OR_DARE_GAME,
+	TRUTH_OR_DARE_EVENTS
 } from "@troof/socket";
 import { Server, Socket } from "socket.io";
 import prisma from "../database/prisma";
@@ -101,7 +101,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 				logger.info("Promise all resolved");
 
 				// Broadcast the log to the room
-				socket.emit(TRUTH_OR_DARE_GAME.INCOMING_DATA, lastLogItem!, player!);
+				socket.emit(TRUTH_OR_DARE_EVENTS.INCOMING_DATA, lastLogItem!, player!);
 
 				const systemMessageToSend: SystemMessage = {
 					message: `${playerWhoJoinedData?.display_name} has joined the game`,
@@ -115,12 +115,12 @@ const gameHandler = (io: Server, socket: Socket) => {
 				// https://stackoverflow.com/questions/10058226/send-response-to-all-clients-except-sender
 				// sending to all clients in 'game' room(channel) except sender
 				io.to(obj.room_id).emit(
-					MESSAGE_EVENTS.MESSAGE_SYSTEM,
+					CHAT_EVENTS.MESSAGE_SYSTEM,
 					systemMessageToSend
 				);
 
 				// Broadcast the players in the room
-				io.to(obj.room_id).emit(EVENTS.PLAYERS_UPDATE, playersInRoom);
+				io.to(obj.room_id).emit(ROOM_EVENTS.PLAYERS_UPDATE, playersInRoom);
 
 				socket.emit(SECURITY_EVENTS.PUBLIC_KEY, keysData?.public);
 			}
@@ -192,14 +192,14 @@ const gameHandler = (io: Server, socket: Socket) => {
 			type: "system",
 		};
 
-		io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
+		io.to(obj.room_id).emit(CHAT_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
 
 		io.to(obj.room_id).emit(
-			MESSAGE_EVENTS.MESSAGE_SYSTEM,
+			CHAT_EVENTS.MESSAGE_SYSTEM,
 			dataSystemMessageToSend
 		);
 
-		io.to(obj.room_id).emit(TRUTH_OR_DARE_GAME.INCOMING_DATA, logData, player!);
+		io.to(obj.room_id).emit(TRUTH_OR_DARE_EVENTS.INCOMING_DATA, logData, player!);
 
 		// Write to database
 		ChatModel.pushSystemMessage(systemMessageToSend);
@@ -272,14 +272,14 @@ const gameHandler = (io: Server, socket: Socket) => {
 			type: "system",
 		};
 
-		io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
+		io.to(obj.room_id).emit(CHAT_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
 
 		io.to(obj.room_id).emit(
-			MESSAGE_EVENTS.MESSAGE_SYSTEM,
+			CHAT_EVENTS.MESSAGE_SYSTEM,
 			dataSystemMessageToSend
 		);
 
-		io.to(obj.room_id).emit(TRUTH_OR_DARE_GAME.INCOMING_DATA, logData, player!);
+		io.to(obj.room_id).emit(TRUTH_OR_DARE_EVENTS.INCOMING_DATA, logData, player!);
 
 		// Write to database
 		ChatModel.pushSystemMessage(systemMessageToSend);
@@ -364,9 +364,9 @@ const gameHandler = (io: Server, socket: Socket) => {
 			type: "system",
 		};
 
-		io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
+		io.to(obj.room_id).emit(CHAT_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
 
-		io.to(obj.room_id).emit(TRUTH_OR_DARE_GAME.CONTINUE, logData!, player!);
+		io.to(obj.room_id).emit(TRUTH_OR_DARE_EVENTS.CONTINUE, logData!, player!);
 
 		// Write to database
 		ChatModel.pushSystemMessage(systemMessageToSend);
@@ -398,14 +398,14 @@ const gameHandler = (io: Server, socket: Socket) => {
 			type: "system",
 		};
 
-		io.to(obj.room_id).emit(MESSAGE_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
+		io.to(obj.room_id).emit(CHAT_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
 
 		// Write to database
 		ChatModel.pushSystemMessage(systemMessageToSend);
 
 		// Emit to the room that the player has left, and hence the person sent back, if the ID matches, they will be redirected to home page
 		logger.warn("Emitting back to room that the player has left");
-		io.to(obj.room_id).emit(EVENTS.LEFT_GAME, player);
+		io.to(obj.room_id).emit(ROOM_EVENTS.LEFT_GAME, player);
 
 		// If the player leaving is the current player, then set the next player
 		if (current_player_id === obj.player_id) {
@@ -488,7 +488,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 			// 	player_id: current_player_id,
 			// });
 
-			// socket.emit(TRUTH_OR_DARE_GAME.INCOMING_DATA, logData, player!);
+			// socket.emit(TRUTH_OR_DARE_EVENTS.INCOMING_DATA, logData, player!);
 		}
 
 		try {
@@ -501,14 +501,14 @@ const gameHandler = (io: Server, socket: Socket) => {
 		// Get remaining players
 		const remainingPlayers = await PlayerModel.getPlayersInRoom(obj.room_id);
 
-		io.to(obj.room_id).emit(EVENTS.PLAYERS_UPDATE, remainingPlayers);
+		io.to(obj.room_id).emit(ROOM_EVENTS.PLAYERS_UPDATE, remainingPlayers);
 	};
 
-	socket.on(TRUTH_OR_DARE_GAME.LEAVE_GAME, leaveGameHandler);
-	socket.on(TRUTH_OR_DARE_GAME.SELECT_TRUTH, selectTruthHandler);
-	socket.on(TRUTH_OR_DARE_GAME.SELECT_DARE, selectDareHandler);
-	socket.on(TRUTH_OR_DARE_GAME.CONTINUE, continueHandler);
-	socket.on(TRUTH_OR_DARE_GAME.JOINED, joinHandler);
+	socket.on(TRUTH_OR_DARE_EVENTS.LEAVE_GAME, leaveGameHandler);
+	socket.on(TRUTH_OR_DARE_EVENTS.SELECT_TRUTH, selectTruthHandler);
+	socket.on(TRUTH_OR_DARE_EVENTS.SELECT_DARE, selectDareHandler);
+	socket.on(TRUTH_OR_DARE_EVENTS.CONTINUE, continueHandler);
+	socket.on(TRUTH_OR_DARE_EVENTS.JOINED, joinHandler);
 };
 
 export default gameHandler;
