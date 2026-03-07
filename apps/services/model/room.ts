@@ -1,7 +1,6 @@
 /** @format */
 
 import { Prisma } from "@prisma/client";
-import { Encryption } from "@troof/encrypt";
 import { logger } from "@troof/logger";
 import { Action, Status } from "@troof/socket";
 import prisma from "../database/prisma";
@@ -50,14 +49,6 @@ const RoomModel = {
 			"is_party_leader" | "game" | "player_id"
 		>
 	) => {
-		// ! Generate key pair
-
-		logger.warn("Generating key pair");
-		const keys = await Encryption.generateKeyPair();
-		logger.warn("Generated key pair");
-
-		const { private: privK, public: pubK } = keys;
-
 		// Create the game
 		const currentPlayersInGame = await prisma.game.create({
 			data: {
@@ -68,12 +59,6 @@ const RoomModel = {
 						...player,
 						is_party_leader: true,
 						turn_index: 0,
-					},
-				},
-				keys: {
-					create: {
-						private: privK,
-						public: pubK,
 					},
 				},
 			},

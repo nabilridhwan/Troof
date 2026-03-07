@@ -12,7 +12,7 @@ const MainItemSection = () => {
 	const initialAction =
 		(bootstrap.latest_log?.action as Action) ?? Action.Waiting_For_Selection;
 	const initialText = bootstrap.latest_log?.data ?? "";
-	const initialCurrentPlayer = bootstrap.current_player ?? {};
+	const initialCurrentPlayer = bootstrap.current_player ?? null;
 
 	const {
 		isLoadingState,
@@ -37,6 +37,8 @@ const MainItemSection = () => {
 		}
 	};
 
+	const isCurrentPlayerTurn = currentPlayer?.player_id === player.player_id;
+
 	return (
 		<>
 			{/* Main items */}
@@ -49,12 +51,11 @@ const MainItemSection = () => {
 					<motion.div
 						className={`rnd bdr w-fit px-10 py-5 ${classNames({
 							"animate-zoom":
-								currentPlayer.player_id === player.player_id &&
-								action === Action.Waiting_For_Selection,
+								isCurrentPlayerTurn && action === Action.Waiting_For_Selection,
 						})}`}
 					>
 						<h1 className="break-all text-center font-Playfair text-5xl font-black">
-							{currentPlayer.display_name}
+							{currentPlayer?.display_name ?? "Waiting..."}
 						</h1>
 					</motion.div>
 				</motion.main>
@@ -62,12 +63,11 @@ const MainItemSection = () => {
 				<p>{JSON.stringify(currentPlayer, null, 2)}</p>
 
 				{/* Show this below if the current player is not the player and that the action is waiting for selection */}
-				{currentPlayer.player_id !== player.player_id &&
-					action === Action.Waiting_For_Selection && (
-						<p className="text-center">
-							Waiting for {currentPlayer.display_name} to select
-						</p>
-					)}
+				{!isCurrentPlayerTurn && action === Action.Waiting_For_Selection && (
+					<p className="text-center">
+						Waiting for {currentPlayer?.display_name ?? "a player"} to select
+					</p>
+				)}
 
 				{/* The truth/dare box*/}
 				{action !== Action.Waiting_For_Selection && (
@@ -122,7 +122,7 @@ const MainItemSection = () => {
 									))}
 							</motion.div>
 
-							{player.player_id === currentPlayer.player_id && (
+							{isCurrentPlayerTurn && (
 								<motion.button
 									whileHover={{
 										scale: 1.1,
@@ -151,7 +151,7 @@ const MainItemSection = () => {
 
 				{/* If it is the current player and the action is to wait for a selection, Show the selection truth or dare buttons */}
 				{players.length >= 2 &&
-					currentPlayer.player_id === player.player_id &&
+					isCurrentPlayerTurn &&
 					action === Action.Waiting_For_Selection && (
 						<motion.div
 							initial={{
@@ -216,39 +216,38 @@ const MainItemSection = () => {
 				)}
 
 				{/* If it is the current player and they're not waiting for selection */}
-				{currentPlayer.player_id === player.player_id &&
-					action !== Action.Waiting_For_Selection && (
-						<div className="flex justify-center">
-							<motion.button
+				{isCurrentPlayerTurn && action !== Action.Waiting_For_Selection && (
+					<div className="flex justify-center">
+						<motion.button
+							animate={{
+								scale: 1.1,
+							}}
+							transition={{
+								repeat: Infinity,
+								repeatType: "mirror",
+								duration: 1,
+							}}
+							className="t my-1 mt-2 flex items-center gap-2 rounded-xl bg-green-300 px-5 py-3 text-sm font-semibold text-green-900 disabled:text-opacity-50"
+							onClick={handleContinue}
+							disabled={isLoadingState}
+						>
+							Continue
+							<motion.div
+								initial={{ x: 0 }}
 								animate={{
-									scale: 1.1,
+									x: 10,
 								}}
 								transition={{
 									repeat: Infinity,
 									repeatType: "mirror",
 									duration: 1,
 								}}
-								className="t my-1 mt-2 flex items-center gap-2 rounded-xl bg-green-300 px-5 py-3 text-sm font-semibold text-green-900 disabled:text-opacity-50"
-								onClick={handleContinue}
-								disabled={isLoadingState}
 							>
-								Continue
-								<motion.div
-									initial={{ x: 0 }}
-									animate={{
-										x: 10,
-									}}
-									transition={{
-										repeat: Infinity,
-										repeatType: "mirror",
-										duration: 1,
-									}}
-								>
-									<IconArrowNarrowRight size={16} />
-								</motion.div>
-							</motion.button>
-						</div>
-					)}
+								<IconArrowNarrowRight size={16} />
+							</motion.div>
+						</motion.button>
+					</div>
+				)}
 
 				<div className="flex h-[50px] items-center justify-center">
 					<PropagateLoader

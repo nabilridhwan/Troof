@@ -1,11 +1,11 @@
 /** @format */
 
 import {
-    BaseNewMessage,
-    CHAT_EVENTS,
-    MessageUpdatedFromServer,
-    PlayerIDObject,
-    RoomIDObject,
+	BaseNewMessage,
+	CHAT_EVENTS,
+	MessageUpdatedFromServer,
+	PlayerIDObject,
+	RoomIDObject,
 } from "@troof/socket";
 
 import { Server, Socket } from "socket.io";
@@ -13,9 +13,7 @@ import ChatModel from "../model/chat";
 
 import { v4 as generateUUIDv4 } from "uuid";
 
-import { Encryption } from "@troof/encrypt";
 import { logger } from "@troof/logger";
-import prisma from "../database/prisma";
 import PlayerModel from "../model/player";
 
 const messageHandler = (io: Server, socket: Socket) => {
@@ -39,7 +37,6 @@ const messageHandler = (io: Server, socket: Socket) => {
 		const messages = await ChatModel.getLatestMessagesByRoomID(obj.room_id);
 
 		// Send the messages back to the client
-		// The messages will be decrypted on the client side
 		socket.emit(CHAT_EVENTS.LATEST_MESSAGES, messages);
 	};
 
@@ -70,55 +67,25 @@ const messageHandler = (io: Server, socket: Socket) => {
 			id: u,
 		};
 
-		const keyRes = await prisma.keys.findFirst({
-			where: {
-				room_id: obj.room_id,
-			},
-			select: {
-				private: true,
-			},
-		});
-
-		if (!keyRes) {
-			logger.error(
-				`No private key found for ${obj.room_id} while trying to emit back new message to client`
-			);
-			return;
-		}
-
-		// Decrypt the message
-		const decryptedMessage = Encryption.decryptWithPrivate(
-			obj.message,
-			keyRes.private
-		);
-
-		if (decryptedMessage.length > 150) {
+		if (obj.message.length > 150) {
 			logger.error(
 				"Won't do anything to this message because it is longer than 150 characters"
 			);
 			return;
 		}
 
-		// Encrypt the message with the private key
-		const privateEncryptedMessage = Encryption.encryptWithPrivate(
-			decryptedMessage,
-			keyRes.private
-		);
-
-		logger.warn(privateEncryptedMessage);
-
-		let privateEncryptedObj = {
+		let outgoingMessage = {
 			...new_obj,
-			message: privateEncryptedMessage,
+			message: obj.message,
 		};
 
-		logger.warn(`Sending back ${JSON.stringify(privateEncryptedObj)}`);
+		logger.warn(`Sending back ${JSON.stringify(outgoingMessage)}`);
 
 		// ! if it is an reaction, send the unencrypted message to the client via MESSAGE_REACTION for EmojiReactionScreen to handle
 		if (obj.type === "reaction") {
 			let d = {
 				...new_obj,
-				message: decryptedMessage,
+				message: obj.message,
 			};
 
 			// 3. Broadcast it back
@@ -126,10 +93,10 @@ const messageHandler = (io: Server, socket: Socket) => {
 		}
 
 		// 3. Broadcast it back
-		io.to(obj.room_id).emit(CHAT_EVENTS.MESSAGE_NEW, privateEncryptedObj);
+		io.to(obj.room_id).emit(CHAT_EVENTS.MESSAGE_NEW, outgoingMessage);
 
-		// 4. Save it to the database (The private encrypted message)
-		await ChatModel.pushMessage(privateEncryptedObj);
+		// 4. Save it to the database
+		await ChatModel.pushMessage(outgoingMessage);
 	};
 
 	const isTypingHandler = (

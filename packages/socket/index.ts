@@ -61,11 +61,6 @@ export enum TRUTH_OR_DARE_EVENTS {
 	LEAVE_GAME = "truth_or_dare:leave_game",
 }
 
-export enum SECURITY_EVENTS {
-	// Server → Client: sends the server's public key used for end-to-end encryption of messages
-	PUBLIC_KEY = "security:public_key",
-}
-
 export enum Status {
 	In_Lobby = "in_lobby",
 	In_Game = "in_game",
@@ -149,7 +144,6 @@ export interface RoomBootstrapState {
 	current_player: Player | null;
 	latest_log: Log | null;
 	latest_messages: MessageUpdatedFromServer[];
-	public_key: string | null;
 }
 
 // This interface represents the events that are from server to clients when you use socket.emit/io.emit
@@ -180,8 +174,6 @@ export interface ServerToClientEvents {
 	[CHAT_EVENTS.IS_TYPING]: (
 		obj: PlayerDisplayNameObject & { is_typing: boolean }
 	) => void;
-
-	[SECURITY_EVENTS.PUBLIC_KEY]: (public_key: string) => void;
 }
 
 // This interface represents the events that are from clients to server when you use socket.on/io.on

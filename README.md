@@ -5,21 +5,21 @@
 <h1 align="center">Troof</h1>
 
 <p align="center">
-  Multiplayer truth-or-dare with rooms, live turns, and encrypted chat.
+  Multiplayer truth-or-dare with rooms, live turns, and realtime chat.
 </p>
 
 ## What this repo is
 Troof is a Turborepo monorepo with:
 - `apps/web`: Next.js frontend (home, join/create room, game UI)
 - `apps/services`: Express + Socket.IO backend (room lifecycle, game loop, chat, security)
-- `packages/*`: shared libs used by both apps (API client, socket contracts, helpers, auth, encryption, etc.)
+- `packages/*`: shared libs used by both apps (API client, socket contracts, helpers, auth, etc.)
 
 ## Current architecture
 - Frontend calls backend REST endpoints for create/join/room/player checks.
 - Frontend opens a Socket.IO connection using JWT from cookies.
 - Backend validates JWT in socket middleware and handles room/game/chat events.
-- PostgreSQL (via Prisma) stores rooms, players, logs, chat, and keypairs.
-- Chat messages are encrypted client->server with room public key and re-signed/encrypted by server before persistence/broadcast.
+- PostgreSQL (via Prisma) stores rooms, players, logs, and chat.
+- Chat messages are sent over authenticated Socket.IO + TLS transport and persisted server-side.
 
 ## Repository structure
 ```text
@@ -36,13 +36,12 @@ Troof is a Turborepo monorepo with:
 │       ├── app/                        # Next.js App Router routes
 │       ├── components/                 # UI
 │       ├── hooks/                      # realtime/game/chat hooks
-│       ├── context/                    # socket/game/public key providers
+│       ├── context/                    # socket/game providers
 │       └── utils/Cookie.ts             # player_id/room_id/token cookie helpers
 ├── packages
 │   ├── api/                            # Axios wrappers for backend endpoints
 │   ├── socket/                         # Shared socket event names + TypeScript types
 │   ├── helpers/                        # Room ID generator + truth/dare utilities
-│   ├── encrypt/                        # RSA helpers
 │   ├── jwt/                            # JWT helpers
 │   ├── responses/                      # Standard API response classes
 │   ├── logger/                         # Winston logger
@@ -64,7 +63,7 @@ Troof is a Turborepo monorepo with:
 5. Web stores `player_id`, `room_id`, `token` in cookies and redirects to `/game/[room_id]`.
 6. Game page validates token by calling `GET /api/player`; invalid state redirects home.
 7. Client opens socket with token header and emits `truth_or_dare:joined` + `chat:join`.
-8. Backend sends players list, game status, room public key, latest chat, and current turn log.
+8. Backend sends players list, game status, latest chat, and current turn log.
 9. During play:
    - current player emits `truth_or_dare:select_truth` or `truth_or_dare:select_dare`
    - clients emit `truth_or_dare:continue` to advance turn
@@ -87,7 +86,6 @@ Main groups:
 - `room:*` for room membership, player list, status, leader transfer, self info
 - `truth_or_dare:*` for turn/game actions
 - `chat:*` for chat history, new messages, reactions, typing
-- `security:public_key` for per-room public key delivery
 
 ## Local development
 ### Prerequisites
@@ -146,7 +144,6 @@ Defined in `prisma/schema.prisma`:
 - `player_sequence`: whose turn is current
 - `log`: truth/dare action history per room
 - `chat`: persisted messages (including system messages)
-- `keys`: per-room RSA keypair used by chat flow
 - `question`: truth/dare question data metadata
 
 ## Editing guide (for future maintenance)
@@ -156,10 +153,9 @@ Defined in `prisma/schema.prisma`:
 - Changing room/lobby behavior:
   - REST create/join/get: `apps/services/controllers/room.ts`
   - realtime room state: `apps/services/socket/roomHandler.ts`
-- Changing chat/encryption behavior:
+- Changing chat behavior:
   - backend handler: `apps/services/socket/messageHandler.ts`
   - frontend chat hook: `apps/web/hooks/useChat.ts`
-  - crypto helpers: `packages/encrypt`
 - Changing event names/contracts:
   - `packages/socket/index.ts` (update both web and services usage)
 - Changing truth/dare source data:

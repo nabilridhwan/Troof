@@ -209,23 +209,14 @@ const Room = {
 			},
 			orderBy: [{ created_at: "desc" }, { id: "desc" }],
 		});
-		const keyData = prisma.keys.findFirst({
-			where: {
-				room_id: room_id.toLowerCase(),
-			},
-			select: {
-				public: true,
-			},
-		});
 		const sequenceData = Sequence.getCurrentPlayer(room_id.toLowerCase());
 
-		const [room, players, latest_messages, latest_log, key, sequence] =
+		const [room, players, latest_messages, latest_log, sequence] =
 			await Promise.all([
 				roomData,
 				playersData,
 				messagesData,
 				latestLogData,
-				keyData,
 				sequenceData,
 			]);
 
@@ -249,7 +240,6 @@ const Room = {
 			current_player,
 			latest_log,
 			latest_messages,
-			public_key: key?.public ?? null,
 		}).handleResponse(req, res);
 	},
 

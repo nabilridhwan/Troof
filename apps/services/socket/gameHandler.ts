@@ -10,10 +10,9 @@ import {
 	PlayerIDObject,
 	ROOM_EVENTS,
 	RoomIDObject,
-	SECURITY_EVENTS,
 	Status,
 	SystemMessage,
-	TRUTH_OR_DARE_EVENTS
+	TRUTH_OR_DARE_EVENTS,
 } from "@troof/socket";
 import { Server, Socket } from "socket.io";
 import prisma from "../database/prisma";
@@ -75,29 +74,8 @@ const gameHandler = (io: Server, socket: Socket) => {
 		// Get players in room
 		const playersInRoom = PlayerModel.getPlayersInRoom(obj.room_id);
 
-		// Get the private
-		const keys = prisma.keys.findFirst({
-			where: {
-				room_id: obj.room_id,
-			},
-			select: {
-				public: true,
-			},
-		});
-
-		if (!keys) {
-			logger.error(`Public key not found for room ${obj.room_id}`);
-			return;
-		}
-
-		Promise.all([
-			lastLogItem,
-			player,
-			playersInRoom,
-			playerWhoJoined,
-			keys,
-		]).then(
-			([lastLogItem, player, playersInRoom, playerWhoJoinedData, keysData]) => {
+		Promise.all([lastLogItem, player, playersInRoom, playerWhoJoined]).then(
+			([lastLogItem, player, playersInRoom, playerWhoJoinedData]) => {
 				logger.info("Promise all resolved");
 
 				// Broadcast the log to the room
@@ -121,8 +99,6 @@ const gameHandler = (io: Server, socket: Socket) => {
 
 				// Broadcast the players in the room
 				io.to(obj.room_id).emit(ROOM_EVENTS.PLAYERS_UPDATE, playersInRoom);
-
-				socket.emit(SECURITY_EVENTS.PUBLIC_KEY, keysData?.public);
 			}
 		);
 	};
@@ -199,7 +175,11 @@ const gameHandler = (io: Server, socket: Socket) => {
 			dataSystemMessageToSend
 		);
 
-		io.to(obj.room_id).emit(TRUTH_OR_DARE_EVENTS.INCOMING_DATA, logData, player!);
+		io.to(obj.room_id).emit(
+			TRUTH_OR_DARE_EVENTS.INCOMING_DATA,
+			logData,
+			player!
+		);
 
 		// Write to database
 		ChatModel.pushSystemMessage(systemMessageToSend);
@@ -279,7 +259,11 @@ const gameHandler = (io: Server, socket: Socket) => {
 			dataSystemMessageToSend
 		);
 
-		io.to(obj.room_id).emit(TRUTH_OR_DARE_EVENTS.INCOMING_DATA, logData, player!);
+		io.to(obj.room_id).emit(
+			TRUTH_OR_DARE_EVENTS.INCOMING_DATA,
+			logData,
+			player!
+		);
 
 		// Write to database
 		ChatModel.pushSystemMessage(systemMessageToSend);

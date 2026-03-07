@@ -91,9 +91,9 @@ The stable version is finally here! I am proud to finally release a stable versi
 
 ### What's new (Client - 0.3.12)
 
-- _Not in the previous release notes_, but, we added a new badge to the Chat box that all messages are end-to-end encrypted.
+- _Not in the previous release notes_, but, we added a new badge to the Chat box that messages are encrypted.
 - All joining and creation of rooms are now handled by the frontend and not the serverless functions by Vercel.
-  - This is because due to the nature of the current E2EE implementation, the serverless function may timeout when trying to create a room!
+  - This is because due to the current encryption implementation, the serverless function may timeout when trying to create a room!
 - Now, when you click on "Join Room" or "Create Room", the button will be disabled and a loading spinner will be shown. This is to indicate to users that their request is being processed.
 - Changed the padding and margins of the RoomCodeSection.
 - Now, all invite links is now literally in the address bar. Copy and paste (or alternatively click on the nice shiny copy button) to share the link with your friends!
@@ -111,13 +111,13 @@ The stable version is finally here! I am proud to finally release a stable versi
 
 ### What's new (Client - 0.3.11)
 
-- **[NEW]** All your messages sent in chat are end to end encrypted! No one can read and snoop the message unless they're a participant of the room!
+- **[NEW]** All your messages sent in chat are encrypted!
   - Due to this feature, all system messages are not shown when someone joins the room! This will be looked into in the future.
 - When a user creates a room, it might take longer due to the system generating secret keys for your room!
 
 ### What's new (Server - 0.2.12)
 
-- Added support for end to end encryption.
+- Added support for encrypted chat messages.
 
 ### What's new (Packages)
 

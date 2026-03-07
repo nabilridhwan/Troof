@@ -117,7 +117,7 @@ const ChatBox = () => {
 		<div className="chatbox h-full w-full">
 			<div className="mb-2 flex items-center justify-center gap-1 rounded-xl py-2 text-xs text-black/50">
 				<IconLock size={16} />
-				<p>Messages are secured with end-to-end encryption.</p>
+				<p>Messages are encrypted in transit.</p>
 			</div>
 
 			{/* Chat box */}

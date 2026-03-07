@@ -8,7 +8,6 @@ import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useGameContext } from "../context/GameContext";
 import { GameRoomProvider } from "../context/GameRoomProvider";
-import { PublicKeyProvider } from "../context/PublicKeyProvider";
 import { useRoomContext } from "../context/RoomContext";
 import { SocketProvider } from "../context/SocketProvider";
 import Container from "./Container";
@@ -63,34 +62,31 @@ export default function GamePageClient({
 				transition={{ ease: "easeOut", type: "tween" }}
 				className="fixed left-0 top-0 z-[100] flex h-screen w-screen items-center justify-center bg-stone-400"
 			></motion.div>
-			<PublicKeyProvider>
-				<SocketProvider>
-					<GameRoomProvider
-						room_id={roomId}
-						initialPlayer={player}
-						initialBootstrap={bootstrap}
-					>
-						<GamePageContent />
-					</GameRoomProvider>
-				</SocketProvider>
-			</PublicKeyProvider>
+			<SocketProvider>
+				<GameRoomProvider
+					room_id={roomId}
+					initialPlayer={player}
+					initialBootstrap={bootstrap}
+				>
+					<GamePageContent />
+				</GameRoomProvider>
+			</SocketProvider>
 		</>
 	);
 }
 
 function GamePageContent() {
 	const { room_id, players } = useRoomContext();
-	const { hasReceivedPlayers, hasReceivedGameStatus, hasReceivedPublicKey } =
-		useGameContext();
+	const { hasReceivedPlayers, hasReceivedGameStatus } = useGameContext();
 
 	return (
 		<Container>
 			<EmojiReactionScreen />
 
 			<AnimatePresence>
-				{!hasReceivedGameStatus &&
-					!hasReceivedPlayers &&
-					!hasReceivedPublicKey && <FullScreenLoadingScreen />}
+				{!hasReceivedGameStatus && !hasReceivedPlayers && (
+					<FullScreenLoadingScreen />
+				)}
 			</AnimatePresence>
 
 			<div className="h-screen py-10">

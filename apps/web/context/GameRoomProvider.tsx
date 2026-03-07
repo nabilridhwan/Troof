@@ -1,14 +1,9 @@
 /** @format */
 
 import { Player, RoomBootstrapState } from "@troof/socket";
-import { useContext } from "react";
 import { useGameRoom } from "../hooks/useGameRoom";
 import usePlayerNotification from "../hooks/usePlayerNotification";
 import { GameContext } from "./GameContext";
-import {
-	PublicKeyProviderContext,
-	UsePublicKeyType,
-} from "./PublicKeyProvider";
 import { RoomContext } from "./RoomContext";
 
 interface GameRoomProviderProps {
@@ -24,22 +19,16 @@ export const GameRoomProvider = ({
 	initialBootstrap,
 	children,
 }: GameRoomProviderProps) => {
-	const { setPublicKey } = useContext(
-		PublicKeyProviderContext
-	) as UsePublicKeyType;
-
 	const {
 		players,
 		player,
 		gameStatus,
 		hasReceivedPlayers,
 		hasReceivedGameStatus,
-		hasReceivedPublicKey,
 	} = useGameRoom({
 		room_id,
 		initialPlayer,
 		initialBootstrap,
-		setPublicKey,
 	});
 
 	const bootstrap = {
@@ -57,7 +46,6 @@ export const GameRoomProvider = ({
 					gameStatus,
 					hasReceivedPlayers,
 					hasReceivedGameStatus,
-					hasReceivedPublicKey,
 				}}
 			>
 				{children}

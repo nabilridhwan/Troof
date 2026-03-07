@@ -37,7 +37,7 @@ const Players = () => {
 			{/* <p>Players ({players.length})</p> */}
 
 			<div className="my-1 h-full rounded-2xl border border-black/10 bg-white/30">
-				<div className="max-h-full ">
+				<div className="max-h-full">
 					{players.map((player, index) => (
 						<div
 							className="flex min-h-[50px] w-full flex-wrap items-center gap-2 px-4 py-2 even:bg-black/5"
@@ -52,7 +52,8 @@ const Players = () => {
 									"flex-1": true,
 									"break-all": true,
 									"transition-all duration-100 ease-out": true,
-									"font-semibold": currentPlayer.player_id === player.player_id,
+									"font-semibold":
+										currentPlayer?.player_id === player.player_id,
 								})}
 							>
 								{player.display_name}{" "}
@@ -67,12 +68,12 @@ const Players = () => {
 							{/* Buttons */}
 							<div className="flex gap-2 text-xs">
 								{p.is_party_leader &&
-									player.player_id === currentPlayer.player_id && (
+									player.player_id === currentPlayer?.player_id && (
 										<motion.button
 											whileHover={{ scale: 1.1 }}
 											disabled={players.length === 1}
 											whileTap={{ scale: 0.9 }}
-											className="flex h-fit w-fit items-center  justify-center gap-1 rounded-lg border border-amber-900/25 bg-amber-300 p-2 text-amber-900 disabled:opacity-50"
+											className="flex h-fit w-fit items-center justify-center gap-1 rounded-lg border border-amber-900/25 bg-amber-300 p-2 text-amber-900 disabled:opacity-50"
 											onClick={() => handleContinue()}
 										>
 											<IconPlayerTrackNext size={16} />
@@ -83,7 +84,7 @@ const Players = () => {
 								{/* Only show button to party leader for OTHER players */}
 								{(p.is_party_leader || player.player_id === p.player_id) && (
 									<Menu as="div" className="relative">
-										<Menu.Button className="border-black-900/25 bg-black-300 text-black-900 flex  h-fit w-fit items-center justify-center gap-1 rounded-lg border p-2">
+										<Menu.Button className="border-black-900/25 bg-black-300 text-black-900 flex h-fit w-fit items-center justify-center gap-1 rounded-lg border p-2">
 											<IconDotsVertical size={16} />
 										</Menu.Button>
 

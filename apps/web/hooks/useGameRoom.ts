@@ -4,7 +4,6 @@ import {
 	Player,
 	ROOM_EVENTS,
 	RoomBootstrapState,
-	SECURITY_EVENTS,
 	Status,
 	TRUTH_OR_DARE_EVENTS,
 } from "@troof/socket";
@@ -16,14 +15,12 @@ interface UseGameRoomOptions {
 	room_id: string;
 	initialPlayer: Player;
 	initialBootstrap: RoomBootstrapState;
-	setPublicKey: (publicKey: string) => void;
 }
 
 export function useGameRoom({
 	room_id,
 	initialPlayer,
 	initialBootstrap,
-	setPublicKey,
 }: UseGameRoomOptions) {
 	const socket = useContext(SocketProviderContext);
 
@@ -43,16 +40,9 @@ export function useGameRoom({
 	const [hasReceivedGameStatus, setHasReceivedGameStatus] = useState<boolean>(
 		!!initialBootstrap.room?.status
 	);
-	const [hasReceivedPublicKey, setHasReceivedPublicKey] = useState<boolean>(
-		!!initialBootstrap.public_key
-	);
 
 	useEffect(() => {
 		localStorage.setItem("displayName", initialPlayer.display_name);
-
-		if (initialBootstrap.public_key) {
-			setPublicKey(initialBootstrap.public_key);
-		}
 
 		if (!socket) return;
 
@@ -70,11 +60,6 @@ export function useGameRoom({
 		socket.on(ROOM_EVENTS.GAME_UPDATE, (data) => {
 			setGameStatus(data.status);
 			setHasReceivedGameStatus(true);
-		});
-
-		socket.on(SECURITY_EVENTS.PUBLIC_KEY, (publicKey: string) => {
-			setPublicKey(publicKey);
-			setHasReceivedPublicKey(true);
 		});
 
 		socket.on(ROOM_EVENTS.LEFT_GAME, (playerRemoved: Player) => {
@@ -102,14 +87,7 @@ export function useGameRoom({
 				window.location.reload();
 			}, 2500);
 		});
-	}, [
-		socket,
-		room_id,
-		initialBootstrap.public_key,
-		initialPlayer.player_id,
-		initialPlayer.display_name,
-		setPublicKey,
-	]);
+	}, [socket, room_id, initialPlayer.player_id, initialPlayer.display_name]);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -130,6 +108,5 @@ export function useGameRoom({
 		gameStatus,
 		hasReceivedPlayers,
 		hasReceivedGameStatus,
-		hasReceivedPublicKey,
 	};
 }

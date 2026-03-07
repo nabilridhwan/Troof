@@ -6,7 +6,7 @@ import { SocketProviderContext } from "../context/SocketProvider";
 
 interface UseTruthOrDareOptions {
 	room_id: string;
-	initialCurrentPlayer?: Partial<Player>;
+	initialCurrentPlayer?: Player | null;
 	initialText?: string;
 	initialAction?: Action;
 }
@@ -20,8 +20,8 @@ export function useTruthOrDare({
 	const socket = useContext(SocketProviderContext);
 
 	const [isLoadingState, setLoadingState] = useState<boolean>(false);
-	const [currentPlayer, setCurrentPlayer] = useState<Partial<Player>>(
-		initialCurrentPlayer ?? {}
+	const [currentPlayer, setCurrentPlayer] = useState<Player | null>(
+		initialCurrentPlayer ?? null
 	);
 	const [text, setText] = useState<string>(initialText ?? "");
 	const [action, setAction] = useState<Action>(
@@ -42,7 +42,7 @@ export function useTruthOrDare({
 			TRUTH_OR_DARE_EVENTS.INCOMING_DATA,
 			(log: Log, player: Player) => {
 				setText(log.data);
-				setCurrentPlayer(player ?? {});
+				setCurrentPlayer(player);
 				setAction(
 					(log.action as Action) ?? (Action.Waiting_For_Selection as Action)
 				);
