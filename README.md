@@ -5,199 +5,204 @@
 <h1 align="center">Troof</h1>
 
 <p align="center">
-  Realtime multiplayer Truth or Dare with private rooms, turn-based gameplay, and live chat.
+  Realtime multiplayer Truth or Dare with private rooms, live turns, and room chat.
 </p>
 
-## For New Users
+## Project overview
+Troof is a monorepo (npm workspaces + Turborepo) with:
+- `apps/web`: Next.js frontend
+- `apps/services`: Express + Socket.IO backend
+- `packages/*`: shared contracts and utilities used by both apps
 
-### What is Troof?
-Troof is a web app for playing Truth or Dare online with friends in private rooms.
+Core stack:
+- Next.js App Router (frontend)
+- Express + Socket.IO (backend)
+- PostgreSQL + Prisma 7 (`@prisma/adapter-pg`)
+- Zod validation + JWT auth
 
-It solves the common remote-party problem: "How do we run a smooth game without manual tracking, awkward turn order, or people talking over each other?" Troof handles room setup, player turns, prompts, and in-room chat so people can focus on the game.
+## Repository structure
+```text
+.
+├── apps/
+│   ├── web/                           # Next.js UI (home, game, legal/manual pages)
+│   │   ├── app/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── context/
+│   │   └── utils/
+│   └── services/                      # Express + Socket.IO API server
+│       ├── index.ts                   # Server entrypoint
+│       ├── routers/                   # /api routes
+│       ├── controllers/               # Route handlers
+│       ├── socket/                    # Realtime event handlers
+│       ├── model/                     # Room/player/chat/sequence data logic
+│       ├── middleware/                # reCAPTCHA validation
+│       └── database/prisma.ts         # Prisma client setup
+├── packages/
+│   ├── api/                           # Shared HTTP client functions for web
+│   ├── socket/                        # Shared socket event names and types
+│   ├── helpers/                       # Shared helpers (IDs, random truth/dare fetch)
+│   ├── jwt/                           # JWT helpers
+│   ├── logger/                        # Logging utilities
+│   ├── responses/                     # Standard API response classes
+│   ├── config/                        # Shared lint/prettier/tailwind config
+│   └── database/prisma/migrations/    # Prisma migration files
+├── prisma/schema.prisma               # Prisma schema
+├── scripts/prisma/seed.ts             # Seeds `question` table from text files
+├── scripts/truth-or-dare/textfiles/   # Prompt source text files
+├── prisma.config.ts                   # Prisma 7 config (schema + migrations + seed)
+└── docker-compose.yml                 # Local PostgreSQL service
+```
 
-### Who is it for?
-- Friend groups hosting online game nights
-- Communities running lightweight social games in voice/text sessions
-- Developers who want a complete reference implementation of a realtime party game stack
+## User flow
+1. User opens `/` and chooses **Create Room** or **Join Room**.
+2. User enters display name and passes reCAPTCHA.
+3. Web calls:
+   - `POST /api/room/create`, or
+   - `POST /api/room/join`
+4. Backend returns `room_id`, `player_id`, and JWT token.
+5. Web stores session cookies (`room_id`, `player_id`, `token`) and redirects to `/game/[room_id]`.
+6. Game page calls `GET /api/room/bootstrap` using token + room_id.
+7. Web opens Socket.IO with token in handshake headers.
+8. Realtime events power:
+   - player list updates (`room:*`)
+   - turn actions (`truth_or_dare:*`)
+   - chat and typing (`chat:*`)
+9. On leave/disconnect, backend updates room/player state and emits updates.
 
-### Quick Start (5-10 minutes)
+## API surface (services)
+- `GET /` server health + version + question counts
+- `GET /api/room?room_id=...` room existence/status
+- `GET /api/room/bootstrap?room_id=...` authenticated room bootstrap state
+- `POST /api/room/create` create room (`troof_captcha_token` header required)
+- `POST /api/room/join` join room (`troof_captcha_token` header required)
+- `GET /api/player` get current player from JWT (`token` header)
+- `GET /api/truth` list available truths
+- `GET /api/dare` list available dares
+
+## Local development
 Prerequisites:
 - Node.js `>=18`
-- npm `>=9` (repo uses `npm@11.9.0`)
-- Docker (recommended for local PostgreSQL)
+- npm (repo uses `npm@11.9.0`)
+- Docker (for local Postgres)
 
-1. Install dependencies from the repository root.
-
+1. Install deps:
 ```bash
 npm ci
 ```
 
-2. Configure environment variables.
-
+2. Configure env:
 ```bash
 cp .env.example .env
 ```
-
-Update at least:
-- `PORT` (backend, usually `4000`)
-- `DATABASE_URL` (PostgreSQL connection string)
+Required vars in `.env`:
+- `PORT`
+- `DATABASE_URL`
 - `JWT_SECRET`
 - `RECAPTCHA_SECRET`
-- `NEXT_PUBLIC_SERVICES_URL` (example: `http://localhost:4000`)
+- `NEXT_PUBLIC_SERVICES_URL`
 - `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`
 - `NEXT_PUBLIC_TENOR_API_KEY`
 
-3. Start the local database.
-
+3. Start DB:
 ```bash
 docker compose up -d db
 ```
 
-4. Apply Prisma migrations and generate Prisma Client.
-
+4. Apply schema + seed data:
 ```bash
 npx prisma migrate dev --config=./prisma.config.ts
-npm run prisma:generate
+npm run prisma:seed
 ```
 
-5. Start frontend and backend together.
-
+5. Start app:
 ```bash
 npm run dev
 ```
 
-6. Open the app.
-- Web: `http://localhost:3000`
-- Services health endpoint: `http://localhost:4000`
+## Deployment scripts (DB + split web/backend)
+This section assumes web and backend are deployed separately (different machines or SaaS).
 
-### First-use demo
-1. Open `http://localhost:3000`.
-2. Create a room with a display name.
-3. Copy the room code.
-4. Open a second browser tab (or incognito window), join with a different display name.
-5. Start the game, choose Truth/Dare on your turn, and chat in real time.
+### 1) Database initialization / upgrade
+Run this from the repo root in your deploy pipeline (or release job):
 
-## For Future Contributors and Maintainers
-
-### System architecture
-Troof is an npm-workspaces Turborepo with a clear split between web, services, and shared packages.
-
-```text
-Client (Next.js App Router)
-  -> REST (create/join/bootstrap/player/truth/dare)
-Services (Express)
-  -> JWT auth + input validation + captcha validation
-  -> Socket.IO realtime channels (room, game, chat)
-  -> Prisma ORM (PostgreSQL)
-Database (Postgres)
+```bash
+npm ci
+npx prisma migrate deploy --config=./prisma.config.ts
+npm run prisma:seed
 ```
 
-Runtime flow:
-1. User creates or joins a room over REST (`/api/room/create` or `/api/room/join`).
-2. Backend returns `player_id`, `room_id`, and JWT token.
-3. Web stores these in cookies and routes to `/game/[room_id]`.
-4. Game page bootstraps state via `GET /api/room/bootstrap`.
-5. Client opens authenticated Socket.IO connection using token header.
-6. Realtime events drive room updates, turn progression, and chat.
+Notes:
+- `prisma:seed` is safe to run repeatedly because the seed uses `createMany(..., skipDuplicates: true)`.
+- Seeding is required because gameplay fetches truth/dare prompts from the `question` table.
 
-### Project structure
+### 2) Backend deploy script (`apps/services`)
+Example script for a backend host (Railway/Render/Fly/VM):
 
-```text
-.
-├── apps/
-│   ├── services/
-│   │   ├── index.ts                  # Express + Socket.IO entrypoint
-│   │   ├── controllers/              # HTTP controller logic (room/player/truth-dare)
-│   │   ├── routers/                  # REST route registration under /api/*
-│   │   ├── middleware/               # Request middleware (reCAPTCHA verification)
-│   │   ├── socket/                   # Socket.IO event handlers (room/game/chat)
-│   │   ├── model/                    # Data-access and game-state model helpers
-│   │   └── database/prisma.ts        # Prisma client via @prisma/adapter-pg
-│   └── web/
-│       ├── app/                      # Next.js App Router pages and routes
-│       ├── components/               # UI and game components
-│       ├── hooks/                    # App hooks for room/game/chat actions
-│       ├── context/                  # React providers for socket/game/room state
-│       ├── styles/                   # Styling and Tailwind-related assets
-│       └── utils/                    # Cookie and client-side utility helpers
-├── packages/
-│   ├── api/                          # Shared HTTP client wrappers used by web
-│   ├── socket/                       # Shared event names and TypeScript event contracts
-│   ├── responses/                    # Standardized API response classes
-│   ├── helpers/                      # Shared helpers (room IDs, game utility logic)
-│   ├── jwt/                          # JWT helper package
-│   ├── logger/                       # Logging package wrappers
-│   ├── truth-or-dare/                # Prompt source files + generated truth/dare JSON
-│   ├── database/prisma/migrations/   # Prisma migration history
-│   └── config/                       # Shared lint/prettier/tailwind/postcss config
-├── prisma/
-│   └── schema.prisma                 # Database model definitions
-├── docker/
-│   └── init.sql                      # Database bootstrap SQL (uuid-ossp extension)
-├── docker-compose.yml                # Local Postgres service for development
-├── turbo.json                        # Turborepo task graph and caching behavior
-└── prisma.config.ts                  # Prisma 7 config (schema path, migration path, datasource URL)
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+npm ci
+npm run prisma:generate
+npm run build:services
+npx prisma migrate deploy --config=./prisma.config.ts
+npm run prisma:seed
+npm run start:services
 ```
 
-### Key design decisions and patterns
-- Monorepo + shared packages: API contracts, event names, response classes, and helpers are centralized in `packages/*` to prevent drift between frontend and backend.
-- Hybrid REST + Socket architecture: REST is used for session and bootstrap flows; Socket.IO is used for low-latency room/game/chat interactions.
-- Contract-first realtime events: all socket event names and payload types are declared in `packages/socket/index.ts` and reused by both apps.
-- Cookie-based client session: web stores `player_id`, `room_id`, and JWT token in cookies and uses them for room recovery and authenticated socket handshakes.
-- Defensive validation: request payloads are validated with Zod in controllers; create/join routes require reCAPTCHA middleware.
-- Prisma + PostgreSQL persistence: room, player, sequence, log, and chat state are persisted, so reconnect and bootstrap flows can restore the latest state.
+Backend env vars:
+- `PORT`
+- `DATABASE_URL`
+- `JWT_SECRET`
+- `RECAPTCHA_SECRET`
 
-### Core API endpoints (services)
-- `GET /` service health plus app/version metadata and truth/dare totals
-- `GET /api/room?room_id=...` room existence and status check
-- `GET /api/room/bootstrap?room_id=...` authenticated room bootstrap payload
-- `POST /api/room/create` create room (requires `troof_captcha_token` header)
-- `POST /api/room/join` join room (requires `troof_captcha_token` header)
-- `GET /api/player` resolve player from JWT in `token` header
-- `GET /api/truth` list truth prompts
-- `GET /api/dare` list dare prompts
+### 3) Web deploy script (`apps/web`)
+Example script for frontend host (Vercel/Netlify/VM):
 
-### Core socket event groups
-Source of truth: `packages/socket/index.ts`
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-- `room:*`: room info, players update, game status, leader transfer, self info
-- `truth_or_dare:*`: joined/continue/select truth/select dare/leave game
-- `chat:*`: latest messages, new message, replies, reactions, typing state
+npm ci
+npm run build:troof
+npm run start:troof
+```
 
-### Database model overview
-Defined in `prisma/schema.prisma`:
-- `game`: room lifecycle and current room status
-- `player`: player identity, room membership, party leader status, turn index
-- `player_sequence`: tracks current turn index for each room
-- `log`: turn-by-turn action log
-- `chat`: persisted messages and reply relationships
-- `question`: question metadata set
+Web env vars:
+- `NEXT_PUBLIC_SERVICES_URL` (public URL of backend, e.g. `https://api.example.com`)
+- `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`
+- `NEXT_PUBLIC_TENOR_API_KEY`
 
-### Local development commands
-Run from repository root.
+### 4) SaaS split deployment checklist
+1. Deploy DB first, then run migrations and seed.
+2. Deploy backend and verify `GET /` is healthy.
+3. Deploy web with `NEXT_PUBLIC_SERVICES_URL` pointing to backend URL.
+4. Verify flow end-to-end: create room -> join room -> bootstrap -> truth/dare turn -> chat.
 
-- `npm run dev`: run all workspace development servers via Turborepo
-- `npm run build:all`: build all apps/packages
-- `npm run build:services`: build backend only
-- `npm run build:troof`: build frontend only
-- `npm run start:all`: run start scripts for all workspaces
-- `npm run start:services`: start backend only
-- `npm run start:troof`: start frontend only
-- `npm run prisma:generate`: generate Prisma client with `prisma.config.ts`
-- `npm run prisma:seed`: run Prisma seed command
-- `npm run seed:truth-dare`: seed truth/dare rows from `scripts/truth-or-dare/textfiles/`
-- `npm run prettier`: format repository files
+## Common root commands
+- `npm run dev` - run all workspace dev servers
+- `npm run build:all` - build all workspaces
+- `npm run build:services` - build backend only
+- `npm run build:troof` - build web only
+- `npm run start:services` - start backend via turbo
+- `npm run start:troof` - start web via turbo
+- `npm run prisma:generate` - generate Prisma client
+- `npm run prisma:seed` - run seed command
+- `npm run seed:truth-dare` - direct seed script
+- `npm run prettier` - format codebase
 
-### Practical maintenance map
-- Room create/join/bootstrap logic: `apps/services/controllers/room.ts`
-- Socket room behavior: `apps/services/socket/roomHandler.ts`
-- Turn/game behavior: `apps/services/socket/gameHandler.ts`
-- Chat behavior: `apps/services/socket/messageHandler.ts`
-- Turn sequencing internals: `apps/services/model/sequence.ts`
-- Web game bootstrap page: `apps/web/app/game/[room_id]/page.tsx`
-- Shared socket contracts: `packages/socket/index.ts`
-- Truth/Dare source content: `scripts/truth-or-dare/textfiles/`
+## Maintenance map (where to edit)
+- Room endpoints and bootstrap: `apps/services/controllers/room.ts`
+- Socket room logic: `apps/services/socket/roomHandler.ts`
+- Socket game logic: `apps/services/socket/gameHandler.ts`
+- Socket chat logic: `apps/services/socket/messageHandler.ts`
+- Turn sequencing logic: `apps/services/model/sequence.ts`
+- Game page bootstrap: `apps/web/app/game/[room_id]/page.tsx`
+- Shared event contracts: `packages/socket/index.ts`
+- Seed source prompts: `scripts/truth-or-dare/textfiles/`
+- Seed implementation: `scripts/prisma/seed.ts`
 
 ## Notes
-- `apps/web/README.md` is still the default Next.js template and does not represent this app.
-- `docker-compose.yml` currently runs PostgreSQL only; containerized app services are present but commented out.
+- `apps/web/README.md` is the default Next.js template and is not project documentation.
+- `docker-compose.yml` currently runs PostgreSQL locally; app containers are commented out.
