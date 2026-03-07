@@ -1,3 +1,26 @@
+## Version - 1.3.0
+### Client - 1.3.0
+
+- Added room bootstrap loading for the game page to fetch room state, players, latest messages and current turn data in one go.
+- Removed end-to-end chat encryption flow from the client (including room key/public key usage).
+- Refactored game state management using dedicated room/game contexts and hooks for chat, players, reactions and truth/dare flow.
+- Migrated web routes from Pages Router to App Router (`app/` directory).
+- Fixed reply message bubble styling (blue background) and improved truth/dare text roll animation.
+
+### Server - 1.3.0
+
+- Added `GET /api/room/bootstrap` to return room bootstrap payload (room, self, players, current player, latest log and latest messages) with token validation.
+- Improved turn handling by introducing room-scoped `turn_index` sequencing for players.
+- Updated room/chat/truth-or-dare socket event naming to namespaced events for consistency.
+- Removed server-side encryption key dependency and related room key handling.
+
+### Packages
+
+- `@troof/api`: added `getRoomBootstrap` and exported it from the package index.
+- `@troof/socket`: updated event enums (`ROOM_EVENTS`, `CHAT_EVENTS`, `TRUTH_OR_DARE_EVENTS`) and added `RoomBootstrapState` type.
+- Removed `@troof/encrypt` and `@troof/gifpicker` packages.
+- Prisma updates: added player turn index sequencing support and removed the `keys` table after encryption removal.
+
 ## Version - 1.2.0
 
 ### Client - 1.2.0
