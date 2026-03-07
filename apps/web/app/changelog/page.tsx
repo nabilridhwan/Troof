@@ -2,7 +2,7 @@
 
 import fs from "fs/promises";
 import matter from "gray-matter";
-import md from "markdown-it";
+import { marked } from "marked";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "../../components/Container";
@@ -24,7 +24,7 @@ export default async function ChangelogPage() {
 				<div
 					className="mt-20"
 					dangerouslySetInnerHTML={{
-						__html: md().render(content),
+						__html: marked.parse(content),
 					}}
 				/>
 			</div>
