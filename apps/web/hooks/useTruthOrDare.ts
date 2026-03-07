@@ -31,24 +31,29 @@ export function useTruthOrDare({
 	useEffect(() => {
 		if (!socket) return;
 
-		socket.on(TRUTH_OR_DARE_EVENTS.CONTINUE, (log: Log, player: Player) => {
+		const onContinue = (log: Log, player: Player) => {
 			setCurrentPlayer(player);
 			setText("");
 			setAction(log.action as Action);
 			setLoadingState(false);
-		});
+		};
 
-		socket.on(
-			TRUTH_OR_DARE_EVENTS.INCOMING_DATA,
-			(log: Log, player: Player) => {
-				setText(log.data);
-				setCurrentPlayer(player);
-				setAction(
-					(log.action as Action) ?? (Action.Waiting_For_Selection as Action)
-				);
-				setLoadingState(false);
-			}
-		);
+		const onIncomingData = (log: Log, player: Player) => {
+			setText(log.data);
+			setCurrentPlayer(player);
+			setAction(
+				(log.action as Action) ?? (Action.Waiting_For_Selection as Action)
+			);
+			setLoadingState(false);
+		};
+
+		socket.on(TRUTH_OR_DARE_EVENTS.CONTINUE, onContinue);
+		socket.on(TRUTH_OR_DARE_EVENTS.INCOMING_DATA, onIncomingData);
+
+		return () => {
+			socket.off(TRUTH_OR_DARE_EVENTS.CONTINUE, onContinue);
+			socket.off(TRUTH_OR_DARE_EVENTS.INCOMING_DATA, onIncomingData);
+		};
 	}, [socket]);
 
 	const selectTruth = () => {

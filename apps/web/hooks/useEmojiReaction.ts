@@ -24,9 +24,7 @@ export function useEmojiReaction({ room_id }: UseEmojiReactionOptions) {
 	useEffect(() => {
 		if (!socket) return;
 
-		socket.emit(CHAT_EVENTS.JOIN, { room_id });
-
-		socket.on(CHAT_EVENTS.MESSAGE_REACTION, (data) => {
+		const onMessageReaction = (data: { message: string }) => {
 			const burst = Array.from({ length: NUMBER_OF_EMOJIS }).map(() => ({
 				emoji: data.message,
 				positionX: Math.floor(Math.random() * window.innerWidth),
@@ -35,7 +33,14 @@ export function useEmojiReaction({ room_id }: UseEmojiReactionOptions) {
 			}));
 
 			setEmojis((old) => [...old, ...burst]);
-		});
+		};
+
+		socket.emit(CHAT_EVENTS.JOIN, { room_id });
+		socket.on(CHAT_EVENTS.MESSAGE_REACTION, onMessageReaction);
+
+		return () => {
+			socket.off(CHAT_EVENTS.MESSAGE_REACTION, onMessageReaction);
+		};
 	}, [socket, room_id]);
 
 	return { emojis };

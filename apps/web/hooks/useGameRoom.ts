@@ -45,48 +45,64 @@ export function useGameRoom({
 		localStorage.setItem("displayName", initialPlayer.display_name);
 
 		if (!socket) return;
+		let disconnectTimeout: ReturnType<typeof setTimeout> | null = null;
 
-		socket.emit(TRUTH_OR_DARE_EVENTS.JOINED, { room_id });
-		socket.emit(ROOM_EVENTS.SELF_INFO, { player_id: initialPlayer.player_id });
-
-		socket.on(ROOM_EVENTS.PLAYERS_UPDATE, (data) => {
+		const onPlayersUpdate = (data: Player[]) => {
 			setPlayers(data);
 			setHasReceivedPlayers(true);
 			socket.emit(ROOM_EVENTS.SELF_INFO, {
 				player_id: initialPlayer.player_id,
 			});
-		});
+		};
 
-		socket.on(ROOM_EVENTS.GAME_UPDATE, (data) => {
+		const onGameUpdate = (data: { status: string }) => {
 			setGameStatus(data.status);
 			setHasReceivedGameStatus(true);
-		});
+		};
 
-		socket.on(ROOM_EVENTS.LEFT_GAME, (playerRemoved: Player) => {
+		const onLeftGame = (playerRemoved: Player) => {
 			if (playerRemoved.player_id === initialPlayer.player_id) {
 				Cookie.removePlayerID();
 				Cookie.removeRoomId();
 				Cookie.removeToken();
 				window.location.href = "/";
 			}
-		});
+		};
 
-		socket.on(ROOM_EVENTS.SELF_INFO, (updatedPlayer: Player) => {
+		const onSelfInfo = (updatedPlayer: Player) => {
 			setPlayer(updatedPlayer);
-		});
+		};
 
-		socket.on("disconnect", (reason) => {
+		const onDisconnect = (reason: string) => {
 			if (reason === "transport close") {
-				setTimeout(() => {
+				disconnectTimeout = setTimeout(() => {
 					window.location.reload();
 				}, 1500);
 				return;
 			}
 
-			setTimeout(() => {
+			disconnectTimeout = setTimeout(() => {
 				window.location.reload();
 			}, 2500);
-		});
+		};
+
+		socket.emit(TRUTH_OR_DARE_EVENTS.JOINED, { room_id });
+		socket.emit(ROOM_EVENTS.SELF_INFO, { player_id: initialPlayer.player_id });
+
+		socket.on(ROOM_EVENTS.PLAYERS_UPDATE, onPlayersUpdate);
+		socket.on(ROOM_EVENTS.GAME_UPDATE, onGameUpdate);
+		socket.on(ROOM_EVENTS.LEFT_GAME, onLeftGame);
+		socket.on(ROOM_EVENTS.SELF_INFO, onSelfInfo);
+		socket.on("disconnect", onDisconnect);
+
+		return () => {
+			socket.off(ROOM_EVENTS.PLAYERS_UPDATE, onPlayersUpdate);
+			socket.off(ROOM_EVENTS.GAME_UPDATE, onGameUpdate);
+			socket.off(ROOM_EVENTS.LEFT_GAME, onLeftGame);
+			socket.off(ROOM_EVENTS.SELF_INFO, onSelfInfo);
+			socket.off("disconnect", onDisconnect);
+			if (disconnectTimeout) clearTimeout(disconnectTimeout);
+		};
 	}, [socket, room_id, initialPlayer.player_id, initialPlayer.display_name]);
 
 	useEffect(() => {
