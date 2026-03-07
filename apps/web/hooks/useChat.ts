@@ -42,10 +42,6 @@ export function useChat({
 	useEffect(() => {
 		if (!socket) return;
 
-		const onLatestMessages = (data: MessageUpdatedFromServer[]) => {
-			setMessages([...data].reverse());
-		};
-
 		const onMessageNew = (data: MessageUpdatedFromServer) => {
 			setMessages((old) => [...old, data]);
 		};
@@ -74,14 +70,11 @@ export function useChat({
 			);
 		};
 
-		socket.emit(CHAT_EVENTS.JOIN, { room_id });
-		socket.on(CHAT_EVENTS.LATEST_MESSAGES, onLatestMessages);
 		socket.on(CHAT_EVENTS.MESSAGE_NEW, onMessageNew);
 		socket.on("disconnect", onDisconnect);
 		socket.on(CHAT_EVENTS.IS_TYPING, onIsTyping);
 
 		return () => {
-			socket.off(CHAT_EVENTS.LATEST_MESSAGES, onLatestMessages);
 			socket.off(CHAT_EVENTS.MESSAGE_NEW, onMessageNew);
 			socket.off("disconnect", onDisconnect);
 			socket.off(CHAT_EVENTS.IS_TYPING, onIsTyping);

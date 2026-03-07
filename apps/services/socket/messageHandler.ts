@@ -108,7 +108,7 @@ const messageHandler = (io: Server, socket: Socket) => {
 	};
 
 	socket.on(CHAT_EVENTS.IS_TYPING, isTypingHandler);
-	socket.on(CHAT_EVENTS.JOIN, joinMessageHandler);
+	// socket.on(CHAT_EVENTS.JOIN, joinMessageHandler);
 	socket.on(CHAT_EVENTS.MESSAGE_NEW, newMessageHandler);
 };
 

@@ -35,7 +35,6 @@ export function useEmojiReaction({ room_id }: UseEmojiReactionOptions) {
 			setEmojis((old) => [...old, ...burst]);
 		};
 
-		socket.emit(CHAT_EVENTS.JOIN, { room_id });
 		socket.on(CHAT_EVENTS.MESSAGE_REACTION, onMessageReaction);
 
 		return () => {
