@@ -40,27 +40,17 @@ export function useChat({
 	const doneTypingTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
 	useEffect(() => {
-		if (!initialMessages?.length || messages.length > 0) {
-			return;
-		}
-
-		setMessages([...initialMessages].reverse());
-	}, [initialMessages, messages.length]);
-
-	useEffect(() => {
 		if (!socket) return;
 
-		socket.emit(CHAT_EVENTS.JOIN, { room_id });
-
-		socket.on(CHAT_EVENTS.LATEST_MESSAGES, (data) => {
+		const onLatestMessages = (data: MessageUpdatedFromServer[]) => {
 			setMessages([...data].reverse());
-		});
+		};
 
-		socket.on(CHAT_EVENTS.MESSAGE_NEW, (data) => {
+		const onMessageNew = (data: MessageUpdatedFromServer) => {
 			setMessages((old) => [...old, data]);
-		});
+		};
 
-		socket.on("disconnect", () => {
+		const onDisconnect = () => {
 			const systemMsg: SystemMessage = {
 				message:
 					"You have been disconnected from the server. This page will refresh.",
@@ -71,17 +61,31 @@ export function useChat({
 				room_id,
 			};
 			setMessages((old) => [...old, systemMsg]);
-		});
+		};
 
-		socket.on(CHAT_EVENTS.IS_TYPING, (data) => {
+		const onIsTyping = (data: { is_typing: boolean; display_name: string }) => {
 			if (data.is_typing) {
 				setPeopleTyping((old) => [...old, data.display_name]);
-			} else {
-				setPeopleTyping((old) =>
-					old.filter((person) => person !== data.display_name)
-				);
+				return;
 			}
-		});
+
+			setPeopleTyping((old) =>
+				old.filter((person) => person !== data.display_name)
+			);
+		};
+
+		socket.emit(CHAT_EVENTS.JOIN, { room_id });
+		socket.on(CHAT_EVENTS.LATEST_MESSAGES, onLatestMessages);
+		socket.on(CHAT_EVENTS.MESSAGE_NEW, onMessageNew);
+		socket.on("disconnect", onDisconnect);
+		socket.on(CHAT_EVENTS.IS_TYPING, onIsTyping);
+
+		return () => {
+			socket.off(CHAT_EVENTS.LATEST_MESSAGES, onLatestMessages);
+			socket.off(CHAT_EVENTS.MESSAGE_NEW, onMessageNew);
+			socket.off("disconnect", onDisconnect);
+			socket.off(CHAT_EVENTS.IS_TYPING, onIsTyping);
+		};
 	}, [socket, room_id]);
 
 	// Typing indicator
@@ -106,6 +110,12 @@ export function useChat({
 				});
 			}, 3500);
 		}, 100);
+
+		return () => {
+			if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+			if (doneTypingTimeoutRef.current)
+				clearTimeout(doneTypingTimeoutRef.current);
+		};
 	}, [inputMessage, display_name, room_id, socket]);
 
 	const sendMessage = (
