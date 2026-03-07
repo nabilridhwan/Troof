@@ -10,13 +10,12 @@ import { JWT } from "@troof/jwt";
 import { logger, MorganStreamer } from "@troof/logger";
 import { SuccessResponse } from "@troof/responses";
 import { PlayerIDObject, ServerToClientEvents } from "@troof/socket";
-import all_dares from "@troof/truth-or-dare/output/all_dare.json";
-import all_truths from "@troof/truth-or-dare/output/all_truth.json";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import helmet from "helmet";
 import hpp from "hpp";
 import path from "path";
+import prisma from "./database/prisma";
 import dareRouter from "./routers/dareRouter";
 import playerRouter from "./routers/playerRouter";
 import roomRouter from "./routers/roomRouter";
@@ -46,13 +45,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.get("/", (req, res) => {
-	// TODO: Keep version somewhere sage
+app.get("/", async (req, res) => {
+	const [dares, truths] = await Promise.all([
+		prisma.question.count({
+			where: { type: "dare", available: true, under_review: false },
+		}),
+		prisma.question.count({
+			where: { type: "truth", available: true, under_review: false },
+		}),
+	]);
+
 	return new SuccessResponse("Server is running", {
 		version,
-		dares: all_dares.length,
-		truths: all_truths.length,
-		total: all_dares.length + all_truths.length,
+		dares,
+		truths,
+		total: dares + truths,
 	}).handleResponse(req, res);
 });
 

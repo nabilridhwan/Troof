@@ -1,21 +1,35 @@
-// https://github.com/ark-maker-bot/better-tord/blob/main/index.js
+import { PrismaClient } from "@prisma/client";
+import * as dotenv from "dotenv";
+import path from "path";
 
-// Read file from truth or dare generator
-import all_dares from "@troof/truth-or-dare/output/all_dare.json";
-import all_truths from "@troof/truth-or-dare/output/all_truth.json";
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
+dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
+dotenv.config();
 
-import { randomInRange } from "make-random";
+const prisma = new PrismaClient();
+
+async function getRandomQuestion(type: "truth" | "dare") {
+	const [question] = await prisma.$queryRaw<Array<{ data: string }>>`
+		SELECT data
+		FROM "question"
+		WHERE type = ${type}
+			AND available = true
+			AND under_review = false
+		ORDER BY RANDOM()
+		LIMIT 1
+	`;
+
+	if (!question) {
+		throw new Error(`No available ${type} question found in database`);
+	}
+
+	return question.data;
+}
 
 export async function get_truth() {
-	console.log("Getting truth...");
-	const randomNum = await randomInRange(0, all_truths.length);
-	console.log(`[TRUTH] Random number: ${randomNum}`);
-	return all_truths[randomNum].data;
+	return getRandomQuestion("truth");
 }
-export async function get_dare() {
-	console.log("Getting dare...");
-	const randomNum = await randomInRange(0, all_dares.length);
 
-	console.log(`[DARE] Random number: ${randomNum}`);
-	return all_dares[randomNum].data;
+export async function get_dare() {
+	return getRandomQuestion("dare");
 }

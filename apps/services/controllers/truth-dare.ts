@@ -2,22 +2,32 @@
 
 import { SuccessResponse } from "@troof/responses";
 import type { Request, Response } from "express";
-
-import all_dare from "@troof/truth-or-dare/output/all_dare.json";
-import all_truth from "@troof/truth-or-dare/output/all_truth.json";
+import prisma from "../database/prisma";
 
 const TruthDare = {
 	GetAllTruths: async (req: Request, res: Response) => {
+		const truths = await prisma.question.findMany({
+			where: { type: "truth", available: true, under_review: false },
+			select: { id: true, type: true, data: true, batch_name: true },
+			orderBy: { created_at: "asc" },
+		});
+
 		return new SuccessResponse("All truths", {
-			length: all_truth.length,
-			data: all_truth,
+			length: truths.length,
+			data: truths,
 		}).handleResponse(req, res);
 	},
 
 	GetAllDares: async (req: Request, res: Response) => {
+		const dares = await prisma.question.findMany({
+			where: { type: "dare", available: true, under_review: false },
+			select: { id: true, type: true, data: true, batch_name: true },
+			orderBy: { created_at: "asc" },
+		});
+
 		return new SuccessResponse("All dares", {
-			length: all_dare.length,
-			data: all_dare,
+			length: dares.length,
+			data: dares,
 		}).handleResponse(req, res);
 	},
 };

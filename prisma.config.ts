@@ -4,6 +4,7 @@ import { defineConfig } from "prisma/config";
 export default defineConfig({
 	schema: "prisma/schema.prisma",
 	migrations: {
+		seed: "npm run seed:truth-dare",
 		path: "packages/database/prisma/migrations",
 	},
 	datasource: {

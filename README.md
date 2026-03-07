@@ -184,6 +184,8 @@ Run from repository root.
 - `npm run start:services`: start backend only
 - `npm run start:troof`: start frontend only
 - `npm run prisma:generate`: generate Prisma client with `prisma.config.ts`
+- `npm run prisma:seed`: run Prisma seed command
+- `npm run seed:truth-dare`: seed truth/dare rows from `scripts/truth-or-dare/textfiles/`
 - `npm run prettier`: format repository files
 
 ### Practical maintenance map
@@ -194,7 +196,7 @@ Run from repository root.
 - Turn sequencing internals: `apps/services/model/sequence.ts`
 - Web game bootstrap page: `apps/web/app/game/[room_id]/page.tsx`
 - Shared socket contracts: `packages/socket/index.ts`
-- Truth/Dare source content: `packages/truth-or-dare/textfiles/`
+- Truth/Dare source content: `scripts/truth-or-dare/textfiles/`
 
 ## Notes
 - `apps/web/README.md` is still the default Next.js template and does not represent this app.

@@ -60,7 +60,7 @@ const MainItemSection = () => {
 					</motion.div>
 				</motion.main>
 
-				<p>{JSON.stringify(currentPlayer, null, 2)}</p>
+				<p>{JSON.stringify(bootstrap, null, 2)}</p>
 
 				{/* Show this below if the current player is not the player and that the action is waiting for selection */}
 				{!isCurrentPlayerTurn && action === Action.Waiting_For_Selection && (
