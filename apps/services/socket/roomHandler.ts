@@ -5,7 +5,6 @@ import {
 	ClientToServerEvents,
 	DisconnectedRoomObject,
 	PlayerIDObject,
-	Room,
 	ROOM_EVENTS,
 	RoomIDObject,
 	ServerToClientEvents,
@@ -25,30 +24,6 @@ const roomHandler = (
 	socket: Socket<ClientToServerEvents, ServerToClientEvents>
 ) => {
 	logger.info("Registered room handler");
-
-	const joinRoomHandler = async (obj: RoomIDObject) => {
-		// Make the socket join the room ID
-		socket.join(obj.room_id);
-
-		// Find all the players in the room
-		const players = PlayerModel.getPlayersInRoom(obj.room_id);
-
-		// Fetch the game so we can broadcast the status
-		const room = RoomModel.getRoom({ room_id: obj.room_id });
-
-		if (!room) return;
-
-		// Wait for all promises to complete
-		const [playersInRoom, roomData] = await Promise.all([players, room]);
-
-		// Broadcast back the room, updating the players
-		io.to(obj.room_id).emit(ROOM_EVENTS.PLAYERS_UPDATE, playersInRoom);
-
-		// Broadcast back the room, updating the game status
-		io.to(obj.room_id).emit(ROOM_EVENTS.GAME_UPDATE, {
-			...(roomData as Room),
-		});
-	};
 
 	const disconnectedHandler = async (obj: DisconnectedRoomObject) => {
 		logger.warn(
@@ -160,44 +135,11 @@ const roomHandler = (
 		io.to(obj.room_id).emit(ROOM_EVENTS.PLAYERS_UPDATE, p.player);
 	};
 
-	const getSelfInfo = async (obj: PlayerIDObject) => {
-		logger.info(`Get self info received for ${obj.player_id}`);
-		const playerWhoSentTheRequest = await PlayerModel.getPlayer({
-			player_id: socket.data.player_id,
-		});
-
-		if (!playerWhoSentTheRequest) {
-			logger.error("Player who sent the request is not in the database");
-			return;
-		}
-
-		// ! Check if the player is the current player
-		if (socket.data.player_id !== obj.player_id) {
-			logger.error(
-				`Can't get private info: Player ${socket.data.player_id} is not ${obj.player_id}`
-			);
-			return;
-		}
-
-		const p = await PlayerModel.getPlayer({
-			player_id: obj.player_id,
-		});
-
-		if (!p) {
-			logger.error(`[${ROOM_EVENTS.SELF_INFO}] Player not found`);
-			return;
-		}
-
-		socket.emit(ROOM_EVENTS.SELF_INFO, p);
-	};
-
 	socket.on(ROOM_EVENTS.GAME_UPDATE, statusChangeHandler);
 	socket.on(ROOM_EVENTS.DISCONNECTED, disconnectedHandler);
-	socket.on(ROOM_EVENTS.JOIN_ROOM, joinRoomHandler);
 	socket.on(ROOM_EVENTS.START_GAME, startGameHandler);
 	socket.on(ROOM_EVENTS.CHANGE_NAME, changeUserDisplayName);
 	socket.on(ROOM_EVENTS.TRANSFER_PARTY_LEADER, transferPartyLeaderHandler);
-	socket.on(ROOM_EVENTS.SELF_INFO, getSelfInfo);
 };
 
 export default roomHandler;

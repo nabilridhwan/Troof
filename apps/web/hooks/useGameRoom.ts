@@ -1,12 +1,6 @@
 /** @format */
 
-import {
-	Player,
-	ROOM_EVENTS,
-	RoomBootstrapState,
-	Status,
-	TRUTH_OR_DARE_EVENTS,
-} from "@troof/socket";
+import { Player, ROOM_EVENTS, RoomBootstrapState, Status } from "@troof/socket";
 import { useContext, useEffect, useState } from "react";
 import { SocketProviderContext } from "../context/SocketProvider";
 import { Cookie } from "../utils/Cookie";
@@ -50,9 +44,14 @@ export function useGameRoom({
 		const onPlayersUpdate = (data: Player[]) => {
 			setPlayers(data);
 			setHasReceivedPlayers(true);
-			socket.emit(ROOM_EVENTS.SELF_INFO, {
-				player_id: initialPlayer.player_id,
-			});
+
+			const updatedSelf = data.find(
+				(playerData) => playerData.player_id === initialPlayer.player_id
+			);
+
+			if (updatedSelf) {
+				setPlayer(updatedSelf);
+			}
 		};
 
 		const onGameUpdate = (data: { status: string }) => {
@@ -69,10 +68,6 @@ export function useGameRoom({
 			}
 		};
 
-		const onSelfInfo = (updatedPlayer: Player) => {
-			setPlayer(updatedPlayer);
-		};
-
 		const onDisconnect = (reason: string) => {
 			if (reason === "transport close") {
 				disconnectTimeout = setTimeout(() => {
@@ -86,20 +81,17 @@ export function useGameRoom({
 			}, 2500);
 		};
 
-		socket.emit(TRUTH_OR_DARE_EVENTS.JOINED, { room_id });
-		socket.emit(ROOM_EVENTS.SELF_INFO, { player_id: initialPlayer.player_id });
-
 		socket.on(ROOM_EVENTS.PLAYERS_UPDATE, onPlayersUpdate);
 		socket.on(ROOM_EVENTS.GAME_UPDATE, onGameUpdate);
 		socket.on(ROOM_EVENTS.LEFT_GAME, onLeftGame);
-		socket.on(ROOM_EVENTS.SELF_INFO, onSelfInfo);
 		socket.on("disconnect", onDisconnect);
+
+		socket.emit(ROOM_EVENTS.JOIN, { room_id });
 
 		return () => {
 			socket.off(ROOM_EVENTS.PLAYERS_UPDATE, onPlayersUpdate);
 			socket.off(ROOM_EVENTS.GAME_UPDATE, onGameUpdate);
 			socket.off(ROOM_EVENTS.LEFT_GAME, onLeftGame);
-			socket.off(ROOM_EVENTS.SELF_INFO, onSelfInfo);
 			socket.off("disconnect", onDisconnect);
 			if (disconnectTimeout) clearTimeout(disconnectTimeout);
 		};

@@ -45,24 +45,6 @@ const gameHandler = (io: Server, socket: Socket) => {
 		// Let the socket join the room
 		socket.join(obj.room_id);
 
-		// Obtain the last log item
-		const lastLogItem = prisma.log.findFirst({
-			where: {
-				game_room_id: obj.room_id,
-			},
-			orderBy: {
-				created_at: "desc",
-			},
-		});
-
-		// Find the current player
-		const sequenceData = await Sequence.getCurrentPlayer(obj.room_id);
-		if (!sequenceData) return;
-		const { current_player_id } = sequenceData;
-		const player = PlayerModel.getPlayer({
-			player_id: current_player_id,
-		});
-
 		// Find the player who joined
 		const playerWhoJoined = PlayerModel.getPlayer({
 			player_id: socket.data.player_id,
@@ -71,36 +53,21 @@ const gameHandler = (io: Server, socket: Socket) => {
 		// Broadcast the log to the room
 		logger.info("Broadcasting back");
 
-		// Get players in room
-		const playersInRoom = PlayerModel.getPlayersInRoom(obj.room_id);
+		const playerWhoJoinedData = await playerWhoJoined;
+		logger.info("Promise all resolved");
 
-		Promise.all([lastLogItem, player, playersInRoom, playerWhoJoined]).then(
-			([lastLogItem, player, playersInRoom, playerWhoJoinedData]) => {
-				logger.info("Promise all resolved");
+		const systemMessageToSend: SystemMessage = {
+			message: `${playerWhoJoinedData?.display_name} has joined the game`,
+			room_id: obj.room_id,
+			display_name: "",
+			reply_to: null,
+			created_at: new Date(),
+			type: "system",
+		};
 
-				// Broadcast the log to the room
-				socket.emit(TRUTH_OR_DARE_EVENTS.INCOMING_DATA, lastLogItem!, player!);
-
-				const systemMessageToSend: SystemMessage = {
-					message: `${playerWhoJoinedData?.display_name} has joined the game`,
-					room_id: obj.room_id,
-					display_name: "",
-					reply_to: null,
-					created_at: new Date(),
-					type: "system",
-				};
-
-				// https://stackoverflow.com/questions/10058226/send-response-to-all-clients-except-sender
-				// sending to all clients in 'game' room(channel) except sender
-				io.to(obj.room_id).emit(
-					CHAT_EVENTS.MESSAGE_SYSTEM,
-					systemMessageToSend
-				);
-
-				// Broadcast the players in the room
-				io.to(obj.room_id).emit(ROOM_EVENTS.PLAYERS_UPDATE, playersInRoom);
-			}
-		);
+		// https://stackoverflow.com/questions/10058226/send-response-to-all-clients-except-sender
+		// sending to all clients in 'game' room(channel) except sender
+		io.to(obj.room_id).emit(CHAT_EVENTS.MESSAGE_SYSTEM, systemMessageToSend);
 	};
 
 	const selectTruthHandler = async (obj: RoomIDObject) => {
@@ -492,7 +459,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 	socket.on(TRUTH_OR_DARE_EVENTS.SELECT_TRUTH, selectTruthHandler);
 	socket.on(TRUTH_OR_DARE_EVENTS.SELECT_DARE, selectDareHandler);
 	socket.on(TRUTH_OR_DARE_EVENTS.CONTINUE, continueHandler);
-	socket.on(TRUTH_OR_DARE_EVENTS.JOINED, joinHandler);
+	socket.on(ROOM_EVENTS.JOIN, joinHandler);
 };
 
 export default gameHandler;

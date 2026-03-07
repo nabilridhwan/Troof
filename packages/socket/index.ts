@@ -2,8 +2,8 @@ export enum ROOM_EVENTS {
 	// Server → Client: sends the current room details (status, creation time, etc.)
 	ROOM_INFO = "room:room_info",
 
-	// Client → Server: client requests to join a specific room by room_id
-	JOIN_ROOM = "room:join_room",
+	// Client → Server: joins the active room socket channel for realtime room/chat/game broadcasts
+	JOIN = "room:join",
 	// Bidirectional: client triggers a refresh; server broadcasts the updated player list to all room members
 	PLAYERS_UPDATE = "room:players_update",
 	// Client → Server: notifies the server that this client has disconnected from a room
@@ -20,14 +20,9 @@ export enum ROOM_EVENTS {
 	CHANGE_NAME = "room:change_name",
 	// Client → Server: party leader transfers the party leader role to another player
 	TRANSFER_PARTY_LEADER = "room:transfer_party_leader",
-
-	// Bidirectional: client requests its own player details; server responds with the Player object
-	SELF_INFO = "room:self_info",
 }
 
 export enum CHAT_EVENTS {
-	// Server → Client: sends the full message history when a client joins the chat room
-	LATEST_MESSAGES = "chat:latest_messages",
 	// Bidirectional: client sends a new chat message; server broadcasts it to all room members
 	MESSAGE_NEW = "chat:message_new",
 	// Bidirectional: client sends a reply to an existing message; server broadcasts it
@@ -42,8 +37,6 @@ export enum CHAT_EVENTS {
 	MESSAGE_SYSTEM = "chat:message_system",
 	// Bidirectional: client notifies the room it is typing; server broadcasts the typing state to other members
 	IS_TYPING = "chat:is_typing",
-	// Client → Server: client joins the chat channel for a specific room
-	JOIN = "chat:join",
 }
 
 export enum TRUTH_OR_DARE_EVENTS {
@@ -53,8 +46,6 @@ export enum TRUTH_OR_DARE_EVENTS {
 	SELECT_DARE = "truth_or_dare:select_dare",
 	// Bidirectional: client selects "truth" for their turn; server broadcasts the updated room state
 	SELECT_TRUTH = "truth_or_dare:select_truth",
-	// Bidirectional: client signals it has joined an active game session; server broadcasts to the room
-	JOINED = "truth_or_dare:joined",
 	// Bidirectional: client advances to the next turn; server broadcasts the updated log and next player
 	CONTINUE = "truth_or_dare:continue",
 	// Bidirectional: client leaves an active game mid-session; server broadcasts the updated room state
@@ -153,21 +144,17 @@ export interface ServerToClientEvents {
 	[ROOM_EVENTS.GAME_UPDATE]: (room: Room) => void;
 	[ROOM_EVENTS.LEFT_GAME]: (playerRemoved: Player) => void;
 
-	[ROOM_EVENTS.SELF_INFO]: (obj: Player) => void;
-
 	[TRUTH_OR_DARE_EVENTS.INCOMING_DATA]: (log: Log, player: Player) => void;
 
 	[TRUTH_OR_DARE_EVENTS.LEAVE_GAME]: (room: Room) => void;
 	[TRUTH_OR_DARE_EVENTS.SELECT_TRUTH]: (room: Room) => void;
 	[TRUTH_OR_DARE_EVENTS.SELECT_DARE]: (room: Room) => void;
 	[TRUTH_OR_DARE_EVENTS.CONTINUE]: (log: Log, player: Player) => void;
-	[TRUTH_OR_DARE_EVENTS.JOINED]: (log: Log, player: Player) => void;
 
 	// Messages
 	[CHAT_EVENTS.MESSAGE_NEW]: (message: MessageUpdatedFromServer) => void;
 	[CHAT_EVENTS.MESSAGE_ANSWER]: (message: MessageUpdatedFromServer) => void;
 	[CHAT_EVENTS.MESSAGE_SYSTEM]: (message: SystemMessage) => void;
-	[CHAT_EVENTS.LATEST_MESSAGES]: (messages: MessageUpdatedFromServer[]) => void;
 
 	[CHAT_EVENTS.MESSAGE_REACTION]: (message: MessageUpdatedFromServer) => void;
 
@@ -181,10 +168,8 @@ export interface ClientToServerEvents {
 	[ROOM_EVENTS.GAME_UPDATE]: (obj: StatusChangeObject) => void;
 	[ROOM_EVENTS.PLAYERS_UPDATE]: (obj: StatusChangeObject) => void;
 	[ROOM_EVENTS.DISCONNECTED]: (obj: DisconnectedRoomObject) => void;
-	[ROOM_EVENTS.JOIN_ROOM]: (obj: RoomIDObject) => void;
+	[ROOM_EVENTS.JOIN]: (obj: RoomIDObject) => void;
 	[ROOM_EVENTS.START_GAME]: (obj: RoomIDObject) => void;
-
-	[ROOM_EVENTS.SELF_INFO]: (obj: PlayerIDObject) => void;
 
 	[ROOM_EVENTS.CHANGE_NAME]: (
 		obj: RoomIDObject &
@@ -205,12 +190,9 @@ export interface ClientToServerEvents {
 
 	[TRUTH_OR_DARE_EVENTS.CONTINUE]: (obj: RoomIDObject) => void;
 
-	[TRUTH_OR_DARE_EVENTS.JOINED]: (obj: RoomIDObject) => void;
-
 	// Messages
 	[CHAT_EVENTS.MESSAGE_NEW]: (obj: BaseNewMessage) => void;
 	[CHAT_EVENTS.MESSAGE_ANSWER]: (obj: BaseNewMessage) => void;
-	[CHAT_EVENTS.JOIN]: (obj: RoomIDObject) => void;
 
 	[CHAT_EVENTS.IS_TYPING]: (
 		obj: RoomIDObject & PlayerDisplayNameObject & { is_typing: boolean }

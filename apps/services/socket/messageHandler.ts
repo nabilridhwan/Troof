@@ -19,27 +19,6 @@ import PlayerModel from "../model/player";
 const messageHandler = (io: Server, socket: Socket) => {
 	logger.info("Registered message handler");
 
-	const joinMessageHandler = async (obj: RoomIDObject) => {
-		// ! Check if the player is part of the room
-		const p = await PlayerModel.getPlayer({
-			player_id: socket.data.player_id,
-			game_room_id: obj.room_id,
-		});
-
-		if (!p) {
-			logger.error("Can't join room: Player is not part of the room");
-			return;
-		}
-
-		socket.join(obj.room_id);
-
-		// Get the latest 10 chat messages
-		const messages = await ChatModel.getLatestMessagesByRoomID(obj.room_id);
-
-		// Send the messages back to the client
-		socket.emit(CHAT_EVENTS.LATEST_MESSAGES, messages);
-	};
-
 	// This method handles new message/reaction
 	const newMessageHandler = async (obj: BaseNewMessage) => {
 		// ! Check if the player is part of the room
@@ -108,7 +87,6 @@ const messageHandler = (io: Server, socket: Socket) => {
 	};
 
 	socket.on(CHAT_EVENTS.IS_TYPING, isTypingHandler);
-	// socket.on(CHAT_EVENTS.JOIN, joinMessageHandler);
 	socket.on(CHAT_EVENTS.MESSAGE_NEW, newMessageHandler);
 };
 
