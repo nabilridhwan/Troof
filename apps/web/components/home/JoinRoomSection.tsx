@@ -22,8 +22,8 @@ const JoinRoomSection = ({
 	const { join } = useJoinRoom();
 
 	const [loading, setLoading] = useState(false);
-	const [captchaVerified, setCaptchaVerified] = useState(false);
 	const [captchaToken, setCaptchaToken] = useState("");
+	const [captchaError, setCaptchaError] = useState("");
 
 	const handleJoinRoom = async () => {
 		setLoading(true);
@@ -32,12 +32,15 @@ const JoinRoomSection = ({
 	};
 
 	const handleRecaptchaError = () => {
-		setCaptchaVerified(false);
-		window.location.href = "/?error=Please verify that you are not a robot.";
+		setCaptchaToken("");
+		setCaptchaError(
+			"Please verify that you are not a robot. If this keeps happening, refresh and try again."
+		);
 	};
 
 	const handleRecaptchaVerified = (recaptchaToken: string) => {
 		setCaptchaToken(recaptchaToken);
+		setCaptchaError("");
 	};
 
 	return (
@@ -81,6 +84,9 @@ const JoinRoomSection = ({
 					onExpire={handleRecaptchaError}
 				/>
 			</div>
+			{captchaError && (
+				<p className="mt-2 text-center text-sm text-red-500">{captchaError}</p>
+			)}
 
 			<motion.button
 				initial={{ opacity: 0 }}
