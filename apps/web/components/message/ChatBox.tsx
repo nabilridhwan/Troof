@@ -35,7 +35,7 @@ import OtherPlayerChatBubble from "./OtherPlayerChatBubble";
 import SelfChatBubble from "./SelfChatBubble";
 
 const ChatBox = () => {
-	const { room_id, player } = useRoomContext();
+	const { room_id, player, bootstrap } = useRoomContext();
 	const display_name = player.display_name;
 
 	const [replyToMessage, setReplyToMessage] =
@@ -56,6 +56,7 @@ const ChatBox = () => {
 		room_id,
 		display_name,
 		inputMessage,
+		initialMessages: bootstrap.latest_messages,
 	});
 
 	// Scroll to bottom when new messages arrive
@@ -157,7 +158,7 @@ const ChatBox = () => {
 															? findMessageById(
 																	message.reply_to,
 																	messages as MessageUpdatedFromServer[]
-															  )
+																)
 															: undefined
 													}
 													displayName={message.display_name}
@@ -172,7 +173,7 @@ const ChatBox = () => {
 															? findMessageById(
 																	message.reply_to,
 																	messages as MessageUpdatedFromServer[]
-															  )
+																)
 															: undefined
 													}
 													displayName={message.display_name}
@@ -194,7 +195,7 @@ const ChatBox = () => {
 															? findMessageById(
 																	message.reply_to,
 																	messages as MessageUpdatedFromServer[]
-															  )
+																)
 															: undefined
 													}
 													displayName={message.display_name}
@@ -210,7 +211,7 @@ const ChatBox = () => {
 															? findMessageById(
 																	message.reply_to,
 																	messages as MessageUpdatedFromServer[]
-															  )
+																)
 															: undefined
 													}
 													displayName={message.display_name}
@@ -266,7 +267,7 @@ const ChatBox = () => {
 				<div className="relative">
 					{showEmojiPicker && (
 						<>
-							<div className="absolute bottom-14 -left-3 z-30">
+							<div className="absolute -left-3 bottom-14 z-30">
 								{/* Emoji blocking screen */}
 								<AnimatePresence>
 									{emojiDisabled && (
@@ -276,7 +277,7 @@ const ChatBox = () => {
 											exit={{ opacity: 0 }}
 											transition={{ ease: "easeOut" }}
 											id={emojiPickerBlockScreenId}
-											className="absolute top-0 left-0 z-50 flex h-full w-full items-center justify-center rounded-lg bg-white/50 backdrop-blur-sm"
+											className="absolute left-0 top-0 z-50 flex h-full w-full items-center justify-center rounded-lg bg-white/50 backdrop-blur-sm"
 										>
 											Please Wait!
 										</motion.div>
@@ -327,7 +328,7 @@ const ChatBox = () => {
 							initial={{ opacity: 0, y: -10 }}
 							animate={{ opacity: 1, y: 0 }}
 							exit={{ opacity: 0, y: -10 }}
-							className=" relative my-1 w-full items-center space-y-1 rounded-lg border border-black/10 bg-black/5 p-2 px-3"
+							className="relative my-1 w-full items-center space-y-1 rounded-lg border border-black/10 bg-black/5 p-2 px-3"
 						>
 							<div className="items-center gap-2 text-xs">
 								<div className="flex gap-1 opacity-60">
@@ -401,7 +402,7 @@ const ChatBox = () => {
 								tabIndex={0}
 								disabled={!isReady}
 								placeholder="Type a message..."
-								className="h-[15px] border-[1px] "
+								className="h-[15px] border-[1px]"
 								value={inputMessage}
 								onChange={(e) => setInputMessage(e.target.value)}
 							/>

@@ -11,8 +11,11 @@ import {
 import { Status } from "@troof/socket";
 import type { Request, Response } from "express";
 import { z, ZodError, ZodIssue } from "zod";
+import prisma from "../database/prisma";
+import ChatModel from "../model/chat";
 import PlayerModel from "../model/player";
 import RoomModel from "../model/room";
+import Sequence from "../model/sequence";
 
 const GetRoomSchema = z.object({
 	room_id: z.string(),
@@ -25,6 +28,10 @@ const JoinRoomSchema = z.object({
 
 const CreateRoomSchema = z.object({
 	display_name: z.string().max(20),
+});
+
+const BootstrapRoomSchema = z.object({
+	room_id: z.string(),
 });
 
 const Room = {
@@ -132,6 +139,117 @@ const Room = {
 			room_id,
 			status: room.status,
 			token,
+		}).handleResponse(req, res);
+	},
+
+	Bootstrap: async (
+		req: Request<{}, {}, {}, { room_id: string }>,
+		res: Response
+	) => {
+		try {
+			BootstrapRoomSchema.parse(req.query);
+		} catch (error) {
+			if (error instanceof ZodError) {
+				const e = error.flatten((issue: ZodIssue) => ({
+					message: issue.message,
+					error: issue.code,
+				}));
+
+				return new BadRequest("Invalid request", e).handleResponse(req, res);
+			}
+		}
+
+		if (!req.headers.token) {
+			return new BadRequest("Token not found", []).handleResponse(req, res);
+		}
+
+		const verified = JWT.verify<{ player_id: string }>(
+			req.headers.token as string,
+			process.env.JWT_SECRET as string
+		);
+
+		if (!verified) {
+			return new BadRequest("Invalid token", []).handleResponse(req, res);
+		}
+
+		const { room_id } = req.query;
+
+		const self = await PlayerModel.getPlayer({
+			player_id: verified.player_id,
+		});
+
+		if (!self) {
+			return new NotFoundResponse("Player not found", []).handleResponse(
+				req,
+				res
+			);
+		}
+
+		if (self.game_room_id !== room_id.toLowerCase()) {
+			return new BadRequest(
+				"Player is not part of this room",
+				[]
+			).handleResponse(req, res);
+		}
+
+		const roomData = RoomModel.getRoom({
+			room_id: room_id.toLowerCase(),
+			status: {
+				not: Status.Game_Over,
+			},
+		});
+
+		const playersData = PlayerModel.getPlayersInRoom(room_id.toLowerCase());
+		const messagesData = ChatModel.getLatestMessagesByRoomID(
+			room_id.toLowerCase()
+		);
+		const latestLogData = prisma.log.findFirst({
+			where: {
+				game_room_id: room_id.toLowerCase(),
+			},
+			orderBy: [{ created_at: "desc" }, { id: "desc" }],
+		});
+		const keyData = prisma.keys.findFirst({
+			where: {
+				room_id: room_id.toLowerCase(),
+			},
+			select: {
+				public: true,
+			},
+		});
+		const sequenceData = Sequence.getCurrentPlayer(room_id.toLowerCase());
+
+		const [room, players, latest_messages, latest_log, key, sequence] =
+			await Promise.all([
+				roomData,
+				playersData,
+				messagesData,
+				latestLogData,
+				keyData,
+				sequenceData,
+			]);
+
+		if (!room) {
+			return new NotFoundResponse("Room does not exist", []).handleResponse(
+				req,
+				res
+			);
+		}
+
+		const current_player = sequence
+			? await PlayerModel.getPlayer({
+					player_id: sequence.current_player_id,
+				})
+			: null;
+
+		return new SuccessResponse("Successfully got room bootstrap", {
+			room,
+			self,
+			players,
+			current_player,
+			latest_log,
+			latest_messages,
+			public_key: key?.public ?? null,
 		}).handleResponse(req, res);
 	},
 

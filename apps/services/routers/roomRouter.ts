@@ -7,6 +7,7 @@ import VerifyCaptcha from "../middleware/VerifyCaptcha";
 const roomRouter: Router = Router();
 
 roomRouter.get("/", Room.Get);
+roomRouter.get("/bootstrap", Room.Bootstrap);
 
 roomRouter.post(
 	"/create",

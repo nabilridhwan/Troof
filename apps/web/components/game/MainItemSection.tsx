@@ -7,7 +7,13 @@ import { useRoomContext } from "../../context/RoomContext";
 import { useTruthOrDare } from "../../hooks/useTruthOrDare";
 
 const MainItemSection = () => {
-	const { room_id, player, players } = useRoomContext();
+	const { room_id, player, players, bootstrap } = useRoomContext();
+
+	const initialAction =
+		(bootstrap.latest_log?.action as Action) ?? Action.Waiting_For_Selection;
+	const initialText = bootstrap.latest_log?.data ?? "";
+	const initialCurrentPlayer = bootstrap.current_player ?? {};
+
 	const {
 		isLoadingState,
 		currentPlayer,
@@ -16,7 +22,12 @@ const MainItemSection = () => {
 		selectTruth,
 		selectDare,
 		handleContinue,
-	} = useTruthOrDare({ room_id });
+	} = useTruthOrDare({
+		room_id,
+		initialCurrentPlayer,
+		initialText,
+		initialAction,
+	});
 
 	const handleReroll = () => {
 		if (action === Action.Dare) {
@@ -48,9 +59,7 @@ const MainItemSection = () => {
 					</motion.div>
 				</motion.main>
 
-				<p>
-					{JSON.stringify(currentPlayer, null, 2)}
-				</p>
+				<p>{JSON.stringify(currentPlayer, null, 2)}</p>
 
 				{/* Show this below if the current player is not the player and that the action is waiting for selection */}
 				{currentPlayer.player_id !== player.player_id &&
@@ -121,7 +130,7 @@ const MainItemSection = () => {
 									whileTap={{
 										scale: [0.9, 1.3, 0.9, 1],
 									}}
-									className="mx-auto flex w-fit items-center justify-center gap-1 rounded-lg bg-stone-700 py-1 px-2 text-sm text-white disabled:text-opacity-50"
+									className="mx-auto flex w-fit items-center justify-center gap-1 rounded-lg bg-stone-700 px-2 py-1 text-sm text-white disabled:text-opacity-50"
 									disabled={isLoadingState}
 									onClick={handleReroll}
 								>

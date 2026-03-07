@@ -6,15 +6,27 @@ import { SocketProviderContext } from "../context/SocketProvider";
 
 interface UseTruthOrDareOptions {
 	room_id: string;
+	initialCurrentPlayer?: Partial<Player>;
+	initialText?: string;
+	initialAction?: Action;
 }
 
-export function useTruthOrDare({ room_id }: UseTruthOrDareOptions) {
+export function useTruthOrDare({
+	room_id,
+	initialCurrentPlayer,
+	initialText,
+	initialAction,
+}: UseTruthOrDareOptions) {
 	const socket = useContext(SocketProviderContext);
 
 	const [isLoadingState, setLoadingState] = useState<boolean>(false);
-	const [currentPlayer, setCurrentPlayer] = useState<Partial<Player>>({});
-	const [text, setText] = useState<string>("");
-	const [action, setAction] = useState<Action>(Action.Waiting_For_Selection);
+	const [currentPlayer, setCurrentPlayer] = useState<Partial<Player>>(
+		initialCurrentPlayer ?? {}
+	);
+	const [text, setText] = useState<string>(initialText ?? "");
+	const [action, setAction] = useState<Action>(
+		initialAction ?? Action.Waiting_For_Selection
+	);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -26,14 +38,17 @@ export function useTruthOrDare({ room_id }: UseTruthOrDareOptions) {
 			setLoadingState(false);
 		});
 
-		socket.on(TRUTH_OR_DARE_EVENTS.INCOMING_DATA, (log: Log, player: Player) => {
-			setText(log.data);
-			setCurrentPlayer(player ?? {});
-			setAction(
-				(log.action as Action) ?? (Action.Waiting_For_Selection as Action)
-			);
-			setLoadingState(false);
-		});
+		socket.on(
+			TRUTH_OR_DARE_EVENTS.INCOMING_DATA,
+			(log: Log, player: Player) => {
+				setText(log.data);
+				setCurrentPlayer(player ?? {});
+				setAction(
+					(log.action as Action) ?? (Action.Waiting_For_Selection as Action)
+				);
+				setLoadingState(false);
+			}
+		);
 	}, [socket]);
 
 	const selectTruth = () => {

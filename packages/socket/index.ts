@@ -142,6 +142,16 @@ export interface MessageUpdatedFromServer extends BaseNewMessage {
 	id: string;
 }
 
+export interface RoomBootstrapState {
+	room: Room;
+	self: Player;
+	players: Player[];
+	current_player: Player | null;
+	latest_log: Log | null;
+	latest_messages: MessageUpdatedFromServer[];
+	public_key: string | null;
+}
+
 // This interface represents the events that are from server to clients when you use socket.emit/io.emit
 export interface ServerToClientEvents {
 	[ROOM_EVENTS.ROOM_INFO]: (room: Room) => void;
@@ -163,13 +173,9 @@ export interface ServerToClientEvents {
 	[CHAT_EVENTS.MESSAGE_NEW]: (message: MessageUpdatedFromServer) => void;
 	[CHAT_EVENTS.MESSAGE_ANSWER]: (message: MessageUpdatedFromServer) => void;
 	[CHAT_EVENTS.MESSAGE_SYSTEM]: (message: SystemMessage) => void;
-	[CHAT_EVENTS.LATEST_MESSAGES]: (
-		messages: MessageUpdatedFromServer[]
-	) => void;
+	[CHAT_EVENTS.LATEST_MESSAGES]: (messages: MessageUpdatedFromServer[]) => void;
 
-	[CHAT_EVENTS.MESSAGE_REACTION]: (
-		message: MessageUpdatedFromServer
-	) => void;
+	[CHAT_EVENTS.MESSAGE_REACTION]: (message: MessageUpdatedFromServer) => void;
 
 	[CHAT_EVENTS.IS_TYPING]: (
 		obj: PlayerDisplayNameObject & { is_typing: boolean }
@@ -193,9 +199,13 @@ export interface ClientToServerEvents {
 			PlayerIDObject & { display_name: string; new_name: string }
 	) => void;
 
-	[ROOM_EVENTS.TRANSFER_PARTY_LEADER]: (obj: RoomIDObject & PlayerIDObject) => void;
+	[ROOM_EVENTS.TRANSFER_PARTY_LEADER]: (
+		obj: RoomIDObject & PlayerIDObject
+	) => void;
 
-	[TRUTH_OR_DARE_EVENTS.LEAVE_GAME]: (obj: RoomIDObject & PlayerIDObject) => void;
+	[TRUTH_OR_DARE_EVENTS.LEAVE_GAME]: (
+		obj: RoomIDObject & PlayerIDObject
+	) => void;
 
 	[TRUTH_OR_DARE_EVENTS.SELECT_TRUTH]: (obj: RoomIDObject) => void;
 

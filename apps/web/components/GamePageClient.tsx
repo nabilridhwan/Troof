@@ -2,7 +2,7 @@
 
 "use client";
 
-import { Player } from "@troof/socket";
+import { Player, RoomBootstrapState } from "@troof/socket";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
@@ -19,14 +19,12 @@ import FullScreenLoadingScreen from "./FullScreenLoadingScreen";
 const ChatBox = dynamic(() => import("./message/ChatBox"), {
 	ssr: false,
 });
-const MainItemSection = dynamic(
-	() => import("./game/MainItemSection"),
-	{ ssr: false }
-);
-const RoomCodeSection = dynamic(
-	() => import("./game/RoomCodeSection"),
-	{ ssr: false }
-);
+const MainItemSection = dynamic(() => import("./game/MainItemSection"), {
+	ssr: false,
+});
+const RoomCodeSection = dynamic(() => import("./game/RoomCodeSection"), {
+	ssr: false,
+});
 const EmojiReactionScreen = dynamic(
 	() => import("./message/EmojiReactionScreen"),
 	{ ssr: false }
@@ -36,11 +34,13 @@ const Players = dynamic(() => import("./Players"), {
 });
 
 export default function GamePageClient({
-	r: roomID,
+	roomId,
 	player,
+	bootstrap,
 }: {
-	r: string;
+	roomId: string;
 	player: Player;
+	bootstrap: RoomBootstrapState;
 }) {
 	const pathname = usePathname();
 
@@ -65,7 +65,11 @@ export default function GamePageClient({
 			></motion.div>
 			<PublicKeyProvider>
 				<SocketProvider>
-					<GameRoomProvider room_id={roomID} initialPlayer={player}>
+					<GameRoomProvider
+						room_id={roomId}
+						initialPlayer={player}
+						initialBootstrap={bootstrap}
+					>
 						<GamePageContent />
 					</GameRoomProvider>
 				</SocketProvider>
@@ -89,7 +93,7 @@ function GamePageContent() {
 					!hasReceivedPublicKey && <FullScreenLoadingScreen />}
 			</AnimatePresence>
 
-			<div className="h-screen py-10 ">
+			<div className="h-screen py-10">
 				<div className="h-full items-center justify-center gap-10 lg:grid lg:grid-cols-4">
 					<div className="col-span-1 rounded-2xl border-black/10 px-1 lg:h-full lg:border">
 						{players.length < 8 && (

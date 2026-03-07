@@ -1,13 +1,48 @@
-/** @format */
-
-import { getPlayer } from "@troof/api";
+import { getRoomBootstrap } from "@troof/api";
 import { BadRequest, NotFoundResponse } from "@troof/responses";
-import { Player } from "@troof/socket";
+import { RoomBootstrapState } from "@troof/socket";
 import { AxiosError, isAxiosError } from "axios";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { permanentRedirect, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import GamePageClient from "../../../components/GamePageClient";
+
+const GENERIC_ERROR_MESSAGE =
+	"An unknown error occurred. Please try again later.";
+const NETWORK_ERROR_MESSAGE =
+	"Unable to reach the server right now. Please check your connection and try again.";
+
+function buildHomeRedirectURL({
+	roomId,
+	error,
+}: {
+	roomId?: string;
+	error?: string;
+}) {
+	const searchParams = new URLSearchParams();
+
+	if (roomId) {
+		searchParams.set("room_id", roomId);
+	}
+
+	if (error) {
+		searchParams.set("error", error);
+	}
+
+	const query = searchParams.toString();
+	return query ? `/?${query}` : "/";
+}
+
+function getSafeErrorMessage(message: unknown) {
+	if (typeof message !== "string") return GENERIC_ERROR_MESSAGE;
+
+	const trimmedMessage = message.trim();
+	if (!trimmedMessage) return GENERIC_ERROR_MESSAGE;
+
+	return trimmedMessage.length > 200
+		? `${trimmedMessage.slice(0, 200)}...`
+		: trimmedMessage;
+}
 
 export async function generateMetadata({
 	params,
@@ -32,49 +67,64 @@ export default async function GamePage({
 	const token = cookieStore.get("token")?.value ?? null;
 
 	if (!player_id || !token) {
-		permanentRedirect(`/?room_id=${room_id}`);
+		redirect(buildHomeRedirectURL({ roomId: room_id }));
 	}
 
 	try {
-		// Find the player using the API
-		const playerAPIData = await getPlayer(token);
-		const player = playerAPIData.data.data;
+		const bootstrapResponse = await getRoomBootstrap(token, room_id);
+		const bootstrap: RoomBootstrapState = bootstrapResponse.data.data;
 
-		if (!player) {
-			permanentRedirect("/");
+		if (!bootstrap?.self) {
+			redirect(
+				buildHomeRedirectURL({
+					error: "Could not find your player session for this room.",
+				})
+			);
 		}
 
-		const rtnPlayer: Player = {
-			is_party_leader: player.is_party_leader,
-			display_name: player.display_name,
-			player_id: player.player_id,
-			game_room_id: player.game_room_id,
-			joined_at: null,
-		};
+		if (bootstrap.self.game_room_id !== room_id) {
+			redirect(
+				buildHomeRedirectURL({
+					roomId: room_id,
+					error: "Player is not in this room.",
+				})
+			);
+		}
 
-		return <GamePageClient r={room_id} player={rtnPlayer} />;
+		return (
+			<GamePageClient
+				roomId={room_id}
+				player={bootstrap.self}
+				bootstrap={bootstrap}
+			/>
+		);
 	} catch (error) {
 		if (isAxiosError(error)) {
-			let e: AxiosError<BadRequest | NotFoundResponse> = error;
-
-			console.log(e);
+			const e: AxiosError<BadRequest | NotFoundResponse> = error;
+			console.error("Failed to bootstrap room", e);
 
 			if (!e.response) {
-				// The user does not have an internet connection because there is no error response hence why there is no reply from server
-				console.log(
-					"The user does not have an internet connection because there is no error response (No connection to server)"
-				);
-				permanentRedirect(
-					"/?error=An unknown error occurred. Please try again later. (No connection to server)"
+				redirect(
+					buildHomeRedirectURL({
+						roomId: room_id,
+						error: NETWORK_ERROR_MESSAGE,
+					})
 				);
 			}
 
-			let {
-				data: { message },
-			} = e.response;
-			permanentRedirect(`/?error=${message}`);
+			redirect(
+				buildHomeRedirectURL({
+					roomId: room_id,
+					error: getSafeErrorMessage(e.response.data?.message),
+				})
+			);
 		}
 
-		redirect("/?error=An unknown error occurred. Please try again later.");
+		redirect(
+			buildHomeRedirectURL({
+				roomId: room_id,
+				error: GENERIC_ERROR_MESSAGE,
+			})
+		);
 	}
 }

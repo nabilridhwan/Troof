@@ -18,20 +18,52 @@ interface UseChatOptions {
 	room_id: string;
 	display_name: string;
 	inputMessage: string;
+	initialMessages?: MessageUpdatedFromServer[];
 }
 
-export function useChat({ room_id, display_name, inputMessage }: UseChatOptions) {
+export function useChat({
+	room_id,
+	display_name,
+	inputMessage,
+	initialMessages,
+}: UseChatOptions) {
 	const socket = useContext(SocketProviderContext);
-	const { publicKey } = useContext(PublicKeyProviderContext) as UsePublicKeyType;
+	const { publicKey } = useContext(
+		PublicKeyProviderContext
+	) as UsePublicKeyType;
+
+	const decryptMessages = (
+		data: MessageUpdatedFromServer[],
+		key: string
+	): MessageUpdatedFromServer[] => {
+		return [...data].reverse().map((d) => ({
+			...d,
+			message: Encryption.decryptWithPublic(d.message, key),
+		}));
+	};
 
 	const [messages, setMessages] = useState<
 		(MessageUpdatedFromServer | SystemMessage)[]
-	>([]);
+	>(() => {
+		if (!publicKey || !initialMessages?.length) {
+			return [];
+		}
+
+		return decryptMessages(initialMessages, publicKey);
+	});
 	const [peopleTyping, setPeopleTyping] = useState<string[]>([]);
 	const uniquePeopleTyping = Array.from(new Set(peopleTyping));
 
 	const typingTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 	const doneTypingTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+
+	useEffect(() => {
+		if (!publicKey || !initialMessages?.length || messages.length > 0) {
+			return;
+		}
+
+		setMessages(decryptMessages(initialMessages, publicKey));
+	}, [initialMessages, messages.length, publicKey]);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -40,7 +72,7 @@ export function useChat({ room_id, display_name, inputMessage }: UseChatOptions)
 
 		socket.on(CHAT_EVENTS.LATEST_MESSAGES, (data) => {
 			if (!publicKey) return;
-			const decrypted = data.reverse().map((d) => ({
+			const decrypted = [...data].reverse().map((d) => ({
 				...d,
 				message: Encryption.decryptWithPublic(d.message, publicKey),
 			}));
