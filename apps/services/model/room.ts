@@ -67,6 +67,7 @@ const RoomModel = {
 					create: {
 						...player,
 						is_party_leader: true,
+						turn_index: 0,
 					},
 				},
 				keys: {

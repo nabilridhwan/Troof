@@ -100,9 +100,8 @@ const Room = {
 			);
 		}
 
-		const { player_id: playerCount } = await RoomModel.getNumberOfPeopleInRoom(
-			room_id
-		);
+		const { player_id: playerCount } =
+			await RoomModel.getNumberOfPeopleInRoom(room_id);
 
 		// Limit the number of players
 		if (playerCount >= 8) {
@@ -114,14 +113,10 @@ const Room = {
 			).handleResponse(req, res);
 		}
 
-		// Create a new player
-		const { player_id } = await PlayerModel.createPlayer({
-			display_name,
-			game: {
-				connect: {
-					room_id: room.room_id,
-				},
-			},
+		// Create a new player with a room-scoped turn index.
+		const { player_id } = await PlayerModel.createPlayerInRoom({
+			roomId: room.room_id,
+			displayName: display_name,
 		});
 
 		const token = JWT.generate(
