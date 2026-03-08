@@ -4,10 +4,8 @@
 		"outDir": "./dist",
 		"baseUrl": ".",
 		"paths": {
-			"@troof/*": [
-				"../../packages/*/index.ts",
-				"../../packages/*/src/index.ts"
-			]
+			"@troof/helpers/server": ["../../packages/helpers/src/server.ts"],
+			"@troof/*": ["../../packages/*/index.ts", "../../packages/*/src/index.ts"]
 		}
 	},
 	"exclude": ["node_modules", "dist"]

@@ -6,7 +6,6 @@ import morgan from "morgan";
 import { Server } from "socket.io";
 import { version } from "./package.json";
 
-import { createAdapter } from "@socket.io/redis-adapter";
 import { JWT } from "@troof/jwt";
 import { logger, MorganStreamer } from "@troof/logger";
 import { SuccessResponse } from "@troof/responses";
@@ -15,7 +14,6 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import helmet from "helmet";
 import hpp from "hpp";
-import { Redis } from "ioredis";
 import path from "path";
 import prisma from "./database/prisma";
 import dareRouter from "./routers/dareRouter";
@@ -26,22 +24,30 @@ import gameHandler from "./socket/gameHandler";
 import messageHandler from "./socket/messageHandler";
 import roomHandler from "./socket/roomHandler";
 
-const pubClient = new Redis({
-	host: process.env.REDIS_HOST || "localhost",
-	port: parseInt(process.env.REDIS_PORT || "6379", 10),
-	password: process.env.REDIS_PASSWORD || undefined,
-	username: process.env.REDIS_USERNAME || undefined,
-});
-const subClient = pubClient.duplicate();
+// const pubClient = new Redis({
+// 	host: process.env.REDIS_HOST || "localhost",
+// 	port: parseInt(process.env.REDIS_PORT || "6379", 10),
+// 	password: process.env.REDIS_PASSWORD || undefined,
+// 	username: process.env.REDIS_USERNAME || undefined,
+// });
+
+// const subClient = pubClient.duplicate();
+
+// pubClient.on("error", (err) => {
+// 	logger.error("Redis Client Error", err);
+// });
+
+// subClient.on("error", (err) => {
+// 	logger.error("Redis Sub Client Error", err);
+// });
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server<ServerToClientEvents>(server, {
-	adapter: createAdapter(pubClient, subClient),
 	cors: {
 		origin: "*",
 	},
-	transports: ["websocket"],
+	transports: ["websocket", "polling"],
 });
 
 // Config dotenv

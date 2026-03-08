@@ -1,11 +1,6 @@
 /** @format */
 
-// @ts-ignore
-import {
-	get_dare,
-	get_truth,
-} from "../../../packages/helpers/src/files/truthOrDareGenerator";
-// @ts-ignore
+import { get_dare, get_truth } from "@troof/helpers/server";
 import { logger } from "@troof/logger";
 import {
 	Action,
