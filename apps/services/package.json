@@ -15,6 +15,7 @@
 	"dependencies": {
 		"@prisma/adapter-pg": "^7.4.2",
 		"@prisma/client": "7.4.2",
+		"@socket.io/redis-adapter": "^8.3.0",
 		"@troof/config": "*",
 		"@troof/helpers": "*",
 		"@troof/jwt": "*",
@@ -30,6 +31,7 @@
 		"express": "^5.2.1",
 		"helmet": "^8.0.0",
 		"hpp": "^0.2.3",
+		"ioredis": "^5.10.0",
 		"make-random": "^3.0.2",
 		"morgan": "^1.10.0",
 		"nanoid": "^3.3.8",
@@ -44,10 +46,10 @@
 	},
 	"devDependencies": {
 		"@types/cors": "^2.8.17",
-		"@types/pg": "^8.11.0",
 		"@types/express": "^5.0.6",
 		"@types/hpp": "^0.2.2",
 		"@types/morgan": "^1.9.3",
+		"@types/pg": "^8.11.0",
 		"@types/uuid": "^9.0.0",
 		"nodemon": "^3.1.0"
 	}
