@@ -6,16 +6,16 @@ import morgan from "morgan";
 import { Server } from "socket.io";
 import { version } from "./package.json";
 
-import { JWT } from "@troof/jwt";
 import { logger, MorganStreamer } from "@troof/logger";
 import { SuccessResponse } from "@troof/responses";
-import { PlayerIDObject, ServerToClientEvents } from "@troof/socket";
+import { ServerToClientEvents } from "@troof/socket";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import helmet from "helmet";
 import hpp from "hpp";
 import path from "path";
 import prisma from "./database/prisma";
+import socketAuthMiddleware from "./middleware/socketAuth";
 import dareRouter from "./routers/dareRouter";
 import playerRouter from "./routers/playerRouter";
 import roomRouter from "./routers/roomRouter";
@@ -88,30 +88,7 @@ app.use("/api/truth", truthRouter);
 app.use("/api/dare", dareRouter);
 
 // ! Token middleware
-io.use((socket, next) => {
-	let { token } = socket.handshake.headers;
-
-	if (typeof token !== "string") {
-		logger.error("Token is not a string");
-		return;
-	}
-
-	if (!token) {
-		return next(new Error("Authentication error"));
-	}
-
-	const verifiedData = JWT.verify<PlayerIDObject>(
-		token,
-		process.env.JWT_SECRET!
-	);
-
-	if (!verifiedData) {
-		return next(new Error("Authentication error - cannot verify token"));
-	}
-
-	socket.data.player_id = verifiedData.player_id;
-	next();
-});
+io.use(socketAuthMiddleware);
 
 io.on("connection", (socket) => {
 	logger.warn(`Current active sockets: ${io.engine.clientsCount}`);
