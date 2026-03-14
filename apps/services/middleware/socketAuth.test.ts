@@ -79,7 +79,14 @@ describe("socketAuthMiddleware", () => {
 		const { default: socketAuthMiddleware } = await import("./socketAuth");
 
 		const next = vi.fn();
-		const socket = {
+		const socket: {
+			handshake: {
+				headers: {
+					token: string;
+				};
+			};
+			data: Record<string, any>;
+		} = {
 			handshake: {
 				headers: {
 					token: "valid-token",
