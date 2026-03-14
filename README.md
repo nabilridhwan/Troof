@@ -21,8 +21,8 @@ A party game where players join private rooms and take turns choosing Truth or D
 | Backend | Express 5, Socket.IO 4, Prisma 7, Zod |
 | Frontend | Next.js 16, React 18, Tailwind CSS, Framer Motion |
 | Database | PostgreSQL 16 |
-| Scaling | Redis 7 + Socket.IO Redis adapter |
-| Auth | JWT in cookies + socket handshake headers |
+| Scaling | Redis 7 (service configured in Docker; adapter wiring is currently disabled in server bootstrap) |
+| Auth | reCAPTCHA + JWT (token persisted in web cookies and sent in API/socket headers) |
 | Language | TypeScript throughout |
 
 ---
@@ -62,7 +62,7 @@ A party game where players join private rooms and take turns choosing Truth or D
 | Player Model | `apps/services/model/player.ts` |
 | Room Model | `apps/services/model/room.ts` |
 | Socket Events | `packages/socket/index.ts` |
-| JWT Utils | `packages/jwt/index.ts` |
+| JWT Utils | `apps/services/utils/jwt.ts` |
 | ID Generators | `packages/helpers/src/files/generators.ts` |
 | Database Schema | `prisma/schema.prisma` |
 | Game Page | `apps/web/app/game/[room_id]/page.tsx` |
@@ -105,10 +105,8 @@ Core stack:
 │   ├── api/                           # Shared HTTP client functions for web
 │   ├── socket/                        # Shared socket event names and types
 │   ├── helpers/                       # Shared helpers (IDs, random truth/dare fetch)
-│   ├── jwt/                           # JWT helpers
 │   ├── logger/                        # Logging utilities
-│   ├── responses/                     # Standard API response classes
-│   ├── config/                        # Shared lint/prettier/tailwind config
+│   └── responses/                     # Standard API response classes
 ├── prisma/schema.prisma               # Prisma schema
 ├── prisma/migrations                  # Prisma schema
 ├── scripts/prisma/seed.ts             # Seeds `question` table from text files
@@ -167,9 +165,15 @@ Required vars in `.env`:
 - `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`
 - `NEXT_PUBLIC_TENOR_API_KEY`
 
+Optional vars in `.env` (for Redis adapter wiring):
+- `REDIS_HOST`
+- `REDIS_PORT`
+- `REDIS_PASSWORD`
+- `REDIS_USERNAME`
+
 3. Start DB:
 ```bash
-docker compose up -d db
+docker compose up -d db redis
 ```
 
 4. Apply schema + seed data:
@@ -220,6 +224,12 @@ Backend env vars:
 - `JWT_SECRET`
 - `RECAPTCHA_SECRET`
 
+Optional backend env vars (if Redis adapter is enabled):
+- `REDIS_HOST`
+- `REDIS_PORT`
+- `REDIS_PASSWORD`
+- `REDIS_USERNAME`
+
 ### 3) Web deploy script (`apps/web`)
 Example script for frontend host (Vercel/Netlify/VM):
 
@@ -245,15 +255,78 @@ Web env vars:
 
 ## Common root commands
 - `npm run dev` - run all workspace dev servers
+- `npm run test` - run test suite once via Vitest
+- `npm run test:watch` - run Vitest in watch mode
+- `npm run check-types` - run TypeScript type-check across workspace
 - `npm run build:all` - build all workspaces
 - `npm run build:services` - build backend only
 - `npm run build:troof` - build web only
 - `npm run start:services` - start backend via turbo
 - `npm run start:troof` - start web via turbo
+- `npm run start:all` - start all workspace apps
 - `npm run prisma:generate` - generate Prisma client
 - `npm run prisma:seed` - run seed command
 - `npm run seed:truth-dare` - direct seed script
 - `npm run prettier` - format codebase
+
+## Troubleshooting
+
+### 1) npm workspace install issues (`@undefined`, ERESOLVE, arborist)
+If npm reports workspace package versions as `@undefined` or throws unexpected arborist/ERESOLVE errors in this monorepo, clean stale nested installs and lockfiles, then reinstall from root:
+
+```bash
+find . -name node_modules -type d -prune -exec rm -rf '{}' +
+find . -name package-lock.json -not -path './package-lock.json' -delete
+rm -f package-lock.json
+npm install
+```
+
+If you want strict reproducibility afterward, commit the regenerated root lockfile and use `npm ci` in CI/deploy.
+
+### 2) Prisma migration drift or schema mismatch
+Check migration state first:
+
+```bash
+npx prisma migrate status --config=./prisma.config.ts
+```
+
+For normal local development changes:
+
+```bash
+npx prisma migrate dev --config=./prisma.config.ts
+npm run prisma:seed
+```
+
+If your local dev database is disposable and drift is severe, reset it:
+
+```bash
+npx prisma migrate reset --force --config=./prisma.config.ts
+```
+
+### 3) Missing/invalid environment variables
+Most startup failures come from missing `.env` keys.
+
+Quick checklist:
+- `DATABASE_URL` must point to a reachable Postgres instance.
+- `JWT_SECRET` and `RECAPTCHA_SECRET` must be set for services.
+- `NEXT_PUBLIC_SERVICES_URL` must point to the backend URL used by web.
+- `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` must be set for create/join room flows.
+
+Create from template if needed:
+
+```bash
+cp .env.example .env
+```
+
+### 4) Local DB/Redis not reachable
+Start or restart local infra:
+
+```bash
+docker compose up -d db redis
+docker compose ps
+```
+
+If ports are occupied, free `5432`/`6379` or remap ports in `docker-compose.yml`.
 
 ## Maintenance map (where to edit)
 - Room endpoints and bootstrap: `apps/services/controllers/room.ts`
@@ -268,4 +341,5 @@ Web env vars:
 
 ## Notes
 - `apps/web/README.md` is the default Next.js template and is not project documentation.
-- `docker-compose.yml` currently runs PostgreSQL locally; app containers are commented out.
+- `docker-compose.yml` currently runs PostgreSQL + Redis locally; app containers are commented out.
+- Socket.IO Redis adapter dependencies are installed in `apps/services`, but the adapter bootstrap code in `apps/services/index.ts` is currently commented out.
