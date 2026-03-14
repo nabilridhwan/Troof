@@ -5,6 +5,7 @@
 	"main": "./dist/apps/services/index.js",
 	"private": true,
 	"scripts": {
+		"check-types": "tsc --noEmit",
 		"start": "node ./dist/apps/services/index.js",
 		"build": "tsc",
 		"dev": "nodemon --watch . --watch ../../packages --ext ts,json --exec \"node -r ts-node/register/transpile-only -r tsconfig-paths/register ./index.ts\""

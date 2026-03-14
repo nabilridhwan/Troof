@@ -9,6 +9,7 @@
 	"private": true,
 	"license": "MIT",
 	"scripts": {
+		"check-types": "tsc --noEmit",
 		"build": "tsc",
 		"dev": "tsc -w --preserveWatchOutput"
 	}

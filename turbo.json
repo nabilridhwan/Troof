@@ -1,9 +1,12 @@
 {
-	"$schema": "https://turbo.build/schema.json",
+	"$schema": "https://turborepo.dev/schema.json",
 	"tasks": {
 		"build": {
-			"outputs": [".next/**", "dist/**", "output/**"],
+			"outputs": [".next/**", "!.next/cache/**", "**/dist*", "output/**"],
 			"dependsOn": ["^build"]
+		},
+		"check-types": {
+			"dependsOn": ["^check-types"]
 		},
 		"lint": {
 			"outputs": []

@@ -10,6 +10,7 @@
 	"author": "Nabil Ridhwan <nabridhwan@gmail.com>",
 	"license": "MIT",
 	"scripts": {
+		"check-types": "tsc --noEmit",
 		"start:services": "turbo run start --filter=services",
 		"start:troof": "turbo run start --filter=web",
 		"start:all": "turbo run start",
