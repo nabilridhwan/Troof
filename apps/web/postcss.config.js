@@ -1,5 +1,5 @@
 /** @format */
 
 module.exports = {
-	...require("@troof/config/postcss.config"),
+	...require("../../postcss.config"),
 };

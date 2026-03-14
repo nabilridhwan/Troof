@@ -1,7 +1,6 @@
 /** @format */
 
 import { generateRoomID } from "@troof/helpers";
-import { JWT } from "@troof/jwt";
 import { logger } from "@troof/logger";
 import {
 	BadRequest,
@@ -16,6 +15,7 @@ import ChatModel from "../model/chat";
 import PlayerModel from "../model/player";
 import RoomModel from "../model/room";
 import Sequence from "../model/sequence";
+import { JWT } from "../utils/jwt";
 
 const GetRoomSchema = z.object({
 	room_id: z.string(),

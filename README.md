@@ -109,8 +109,8 @@ Core stack:
 │   ├── logger/                        # Logging utilities
 │   ├── responses/                     # Standard API response classes
 │   ├── config/                        # Shared lint/prettier/tailwind config
-│   └── database/prisma/migrations/    # Prisma migration files
 ├── prisma/schema.prisma               # Prisma schema
+├── prisma/migrations                  # Prisma schema
 ├── scripts/prisma/seed.ts             # Seeds `question` table from text files
 ├── scripts/truth-or-dare/textfiles/   # Prompt source text files
 ├── prisma.config.ts                   # Prisma 7 config (schema + migrations + seed)

@@ -1,6 +1,11 @@
-/** @format */
-
-// prettier.config.js
 module.exports = {
-	...require("@troof/config/prettier.config"),
+	trailingComma: "es5",
+	tabWidth: 2,
+	printWidth: 80,
+	useTabs: true,
+	semi: true,
+	singleQuote: false,
+	bracketSameLine: false,
+	arrowParens: "always",
+	bracketSpacing: true,
 };

@@ -1,7 +1,7 @@
-import { JWT } from "@troof/jwt";
 import { logger } from "@troof/logger";
 import { PlayerIDObject } from "@troof/socket";
 import { ExtendedError, Socket } from "socket.io";
+import { JWT } from "../utils/jwt";
 
 const socketAuthMiddleware = (
 	socket: Socket,

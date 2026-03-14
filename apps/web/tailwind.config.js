@@ -3,5 +3,5 @@
  */
 
 module.exports = {
-	...require("@troof/config/tailwind.config"),
+	...require("../../tailwind.config"),
 };

@@ -1,6 +1,5 @@
 /** @format */
 
-import { JWT } from "@troof/jwt";
 import {
 	BadRequest,
 	NotFoundResponse,
@@ -9,6 +8,7 @@ import {
 import { PlayerIDObject } from "@troof/socket";
 import type { Request, Response } from "express";
 import prisma from "../database/prisma";
+import { JWT } from "../utils/jwt";
 
 const Player = {
 	Find: async (req: Request, res: Response) => {
