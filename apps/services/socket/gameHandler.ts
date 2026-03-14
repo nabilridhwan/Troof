@@ -1,6 +1,5 @@
 /** @format */
 
-import { get_dare, get_truth } from "@troof/helpers/server";
 import { logger } from "@troof/logger";
 import {
 	Action,
@@ -18,6 +17,7 @@ import ChatModel from "../model/chat";
 import PlayerModel from "../model/player";
 import RoomModel from "../model/room";
 import Sequence from "../model/sequence";
+import { getDare, getTruth } from "../model/truth-dare.model";
 
 const gameHandler = (io: Server, socket: Socket) => {
 	logger.info("Registering game handler");
@@ -84,7 +84,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 	const selectTruthHandler = async (obj: RoomIDObject) => {
 		logger.info(`Received select truth ${obj.room_id}`);
 		// Emit a dare to the room for the player
-		const truth = await get_truth();
+		const truth = await getTruth();
 
 		// Find the player
 		const sequenceData = await Sequence.getCurrentPlayer(obj.room_id);
@@ -169,7 +169,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 
 		// Emit a dare to the room for the player
 
-		const dare = await get_dare();
+		const dare = await getDare();
 
 		// Find the player
 		const sequenceData = await Sequence.getCurrentPlayer(obj.room_id);

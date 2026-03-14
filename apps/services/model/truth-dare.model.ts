@@ -31,10 +31,10 @@ async function getRandomQuestion(type: "truth" | "dare") {
 	return question.data;
 }
 
-export async function get_truth() {
+export async function getTruth() {
 	return getRandomQuestion("truth");
 }
 
-export async function get_dare() {
+export async function getDare() {
 	return getRandomQuestion("dare");
 }
